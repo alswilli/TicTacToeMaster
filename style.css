@@ -1,0 +1,15 @@
+li
+{
+    padding: 20px;
+    float: left;
+} 
+
+.listNoBullet
+{
+     list-style-type: none;
+}
+
+.gameDiv
+{
+    
+}
