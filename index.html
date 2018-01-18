@@ -1,52 +1,26 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <title>Tic Tac Toe</title>
-        <!-- Include the Phaser API -->
-        <link rel = "stylesheet"
-            type = "text/css"
-            href = "style.css" />
+        <title>Login Form</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css"></link>
+        <link rel="stylesheet" typy="text/css" href="css/font-awesome.css">
     </head>
-    
+
     <body>
-
-
-    
-    <div style="width:250px;" class="sideBar">
-            <a href="game.html">Skins</a>
-            <a href="game.html">User Settings</a>
-            <a href="game.html">Logout</a>
-    </div>
-    
-    <ul class="listNoBullet">
-         <li>
-             <div class="gameDiv">
-                <a href="game.html">
-                    <img src="imgs/moon.png" alt="TicTacToe" height="75" width="75">
-                    </img>
-                </a>
-                <br>
-                <a href="game.html">TicTacToe</a>
-             </div>
-         </li>
-        
-        <li>
-             <a href="game.html">
-                <img src="imgs/moon.png" alt="TicTacToe" height="42" width="42">
-                </img>
-             </a>
-         </li>
-         
-         <li>
-             <a href="game.html">
-                <img src="imgs/moon.png" alt="TicTacToe" height="42" width="42">
-                </img>
-             </a>
-         </li>
-
-         
-         
-    </ul>
+        <div class="container">
+            <img src="SiteImages/dudeicon.png"/>
+            <form action="mainMenu.html">
+                <div class="form-input">
+                    <input type="text" name="username" placeholder="Username:">
+                </div>
+                <div class="form-input">
+                    <input type="password" name="password" placeholder="Password:">
+                </div>
+                <input type="submit" name="submit" value="Log In" class="btn-login"><br>
+                <input type="submit" name="submit" value="Guest Log In" class="btn-guest"><br>
+                <a href="#">Forget Password?</a> <br><br>
+                <a href="#">Create New Account?</a>
+            </form>
+        </div>
     </body>
 </html>
