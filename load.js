@@ -13,7 +13,6 @@ var loadState = {
         game.load.image('star', 'imgs/star.png');
         game.load.image('square', 'imgs/square.png');
         game.load.image('moon', 'imgs/moon.png');   
-          
     },  
     
     /*
@@ -22,6 +21,5 @@ var loadState = {
     */
     create() {
         game.state.start('menu');
-        
     }
 };
