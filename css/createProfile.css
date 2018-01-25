@@ -13,11 +13,21 @@ body {
     margin-top: 150px;
 }
 
+.image{
+    width:120px;
+    height:120px
+}
+
 .container img {
     width: 150px;
     height: 150px;
     margin-top: -10px;
     margin-bottom: 30px;
+}
+
+input[type="file"]{
+    margin-right: -60px;
+    margin-bottom: 20px;
 }
 
 input[type="text"],input[type="password"]{
@@ -29,7 +39,7 @@ input[type="text"],input[type="password"]{
     border: none;
 }
 
-.btn-createAccount {
+.btn-login {
     padding: 8px 20px;
     background-color: #fff;
     cursor: pointer;
@@ -39,28 +49,4 @@ input[type="text"],input[type="password"]{
     margin-bottom: 10px;
 }
 
-.btn-guest {
-    padding: 8px 20px;
-    background-color: rgb(250, 182, 182);
-    cursor: pointer;
-    border: none;
-    border-radius: 8px;
-    border-bottom: 3px solid #917777;
-    margin-bottom: 20px;
-}
 
-a {
-    color: #fff;
-    margin-bottom: 5px;
-    font-size: 16px;
-}
-
-#avatarUpload
-{
-    display: none;
-}
-
-#profileImage
-{
-    cursor: pointer;
-}

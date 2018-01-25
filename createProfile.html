@@ -2,13 +2,19 @@
 <html>
     <head>
         <title>Login Form</title>
-        <link rel="stylesheet" type="text/css" href="css/style.css"></link>
+        <link rel="stylesheet" type="text/css" href="css/createProfile.css"></link>
         <link rel="stylesheet" typy="text/css" href="css/font-awesome.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="js/createProfile.js"></script>
     </head>
 
     <body>
         <div class="container">
-            <img src="SiteImages/dudeicon.png"/>
+            <div>
+                <img src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" class="image">
+            </div>
+                                
+                <input type="file" id="profile_image">
             <form action="mainMenu.html">
                 <div class="form-input">
                     <input id="username" type="text" name="username" placeholder="Username:">
@@ -19,12 +25,7 @@
                 <div class="form-input">
                     <input id="battleText" type="text" name="battleText" placeholder="Battle Phrase:">
                 </div>
-                <div class="form-input">
-                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-                    <image id="profileImage" src="http://lorempixel.com/100/100" />
-                    <input id="avaterUpload" type="file" name="avatarImage" placeholder="Avatar Image:" required="" capture>
-                </div>
-                <input type="submit" name="submit" value="Create Account" class="btn-createAccount"><br>
+                <input type="submit" name="submit" value="Create Account" id ="btn-login" class="btn-login"><br>
             </form>
         </div>
     </body>
