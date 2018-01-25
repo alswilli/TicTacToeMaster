@@ -15,11 +15,21 @@ li
     text-align: center;
 }
 
+.banner
+{
+    width: 100%;
+    height: 150px;
+    margin: 0;
+    padding: 0;
+    background-image: url('../SiteImages/banner.png');
+    background-repeat: no-repeat;
+
+}
 
 /* The side navigation menu */
 .sideBar {
     height: 100%; /* 100% Full-height */
-    width: 250; /* 0 width - change this with JavaScript */
+    width: 250px; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     top: 0; /* Stay at the top */
     left: 0;
