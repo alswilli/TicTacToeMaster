@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -16,7 +16,8 @@
             h6 {font-size: 15px;}
         </style>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     </head>
     
     <body>
@@ -40,6 +41,8 @@
                 <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='customization.html'">Customization</a>
                 <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray " onclick="location.href='leaderboard.html'">Leaderboard</a>
                 <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='index.html'">Logout</a>
+                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray">User Setting</a>
+                <a id="logout" class="w3-bar-item w3-button w3-hover-blue-gray">logout</a>
             </div>
         <!--
             <div class="gameSelection">
@@ -153,6 +156,9 @@
         }
         </script>
 -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="js/signout.js"></script>
 
     </body>
 </html>

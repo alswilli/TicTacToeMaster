@@ -13,19 +13,21 @@
         <div class="container">
             <img src="SiteImages/dudeicon.png"/>
             <!--<form action="mainMenu.html">-->
-            <form>
+            <form onSumbit="check()">
                 <div class="form-input">
                     <input type="text" name="username" id="username" placeholder="Username:">
                 </div>
                 <div class="form-input">
                     <input type="password" name="password" id="password" placeholder="Password:">
                 </div>
-                <input type="submit" name="submit" value="Log In" id ="btn-login" class="btn-login"><br>
-                <input type="submit" name="submit" value="Guest Log In" id="btn-signout" class="btn-guest"><br>
+                <input type="submit" name="submit" value="Log In" id="login" class="btn-login"><br>
+                <input type="submit" name="submit" value="Guest Log In" class="btn-guest"><br>
                 <a href="passwordRecovery.html">Forget Password?</a> <br><br>
                 <a href="createProfile.html">Create New Account?</a>
             </form>
         </div>
-        <script src = "signIn.js"></script> 
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+       <script src = "signIn.js"></script>
     </body>
 </html>
