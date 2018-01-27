@@ -21,9 +21,8 @@
     </head>
     
     <body>
-            <div>
-                <img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px">
-            </div>
+
+
 
 
             <div class="w3-sidebar w3-light-gray w3-bar-block w3-card" style="width:25%">
@@ -31,28 +30,30 @@
                     <h2>Username</h2>
                     <p class="w3-right-align">waaaa</p>
                 </div>
+
+
+                <img src="imgs/waluigi.png" alt="TicTacToe" style="width:100%">
+                    
+
+                <a href="#" class="w3-bar-item w3-button" onclick="location.href='editProfile.html'">Edit Profile</a>
+
+
                 
-                <!--
-                <div class="profile-img-edit">
-                    <div class="profile-img-edit-menu">Change Profile Picture</div>
-                    <img class="waluigi" src="imgs/waluigi.png">
-                </div>
-                 -->
-                <div>
-                    <img src="imgs/waluigi.png" alt="TicTacToe" style="width:100%">
-                        <div class="profile-img-edit-menu">Change Profile Picture</div>
-                 </div>
-                 
+                <!-- drop down
+
                 <button class="w3-button w3-block w3-hover-blue-gray w3-left-align" onclick="accordion('themeButton')">Theme <i class="fa fa-caret-down"></i>
                 </button>
                 <div id="themeButton" class="w3-hide w3-white w3-card">
                     <a href="#" class="w3-bar-item w3-button">Select Theme</a>
                     <a href="#" class="w3-bar-item w3-button">Theme Shop</a>
                 </div>
-                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray">User Setting</a>
-                <a id="logout" class="w3-bar-item w3-button w3-hover-blue-gray">logout</a>
+                -->
+                <a href="#" class="w3-bar-item w3-blue-gray">Home Page</a>
+                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='achievements.html'">Achievements</a>
+                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='customization.html'">Customization</a>
+                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray " onclick="location.href='leaderboard.html'">Leaderboard</a>
+                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='index.html'">Logout</a>
             </div>
-            <div style="margin-left:25%">
         <!--
             <div class="gameSelection">
                 <ul class="listNoBullet">
@@ -101,67 +102,57 @@
                      
                      
                 </ul>
-         -->
-            </div>
-
-         
-        
-
-
-
-         
-        
-        <div class="games">
-
-            <div class="w3-card w3-left" style="width:175px; margin-left:30%" >
-                <header class="w3-container w3-light-blue w3-center">
-                    <h5>Tic Tac Toe</h5>
-                </header>
-                <div class="w3-container w3-center">
-                    <img src="imgs/moon.png" alt="Avatar" style="width:80%">
-                    <button class="w3-button w3-block w3-dark-grey" onclick="location.href='game.html'" type="button">Play</button>
+         -->       
+        <div class="games"style="margin-left:25%;margin-bottom:10%">
+            <img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px">
+            <div class="w3-container w3-section">
+                <div class="w3-card w3-left" style="width:175px; float:left; margin-left:10%; margin-right:10%; margin-bottom:16px" >
+                    <header class="w3-container w3-light-blue w3-center">
+                        <h5>Tic Tac Toe</h5>
+                    </header>
+                    <div class="w3-container w3-center">
+                        <img src="imgs/moon.png" alt="Avatar" style="width:80%">
+                        <button class="w3-button w3-block w3-dark-grey" onclick="location.href='game.html'" type="button">Play</button>
+                    </div>
                 </div>
-               
-               
-            </div>
-            
-            <div class="w3-card w3-left w3-margin-left" style="width:175px; float:left;" >
-                <header class="w3-container w3-light-blue w3-center">
-                    <h5>3D Tic Tac Toe</h5>
-                </header>
-                <div class="w3-container w3-center">
-                    <img src="imgs/moon.png" alt="Avatar" style="width:80%">
-                        <button class="w3-button w3-block w3-dark-grey" onclick="location.href='otherMainMenu.html'" type="button">Play</button>
-                </div>
-                    
-            </div>
-            
-            <div class="w3-card w3-left w3-margin-left" style="width:175px; float:left;" >
-                <header class="w3-container w3-light-blue w3-center">
-                    <h5>Order&#38;Chaos</h5>
-                </header>
-                <div class="w3-container w3-center">
-                    <img src="imgs/moon.png" alt="Avatar" style="width:80%">
-                        <button class="w3-button w3-block w3-dark-grey">Play</button>
-                        </div>
-                
-            </div>
-            
-            <div class="w3-card w3-left w3-margin-left" style="width:175px; float:left;" >
-                <header class="w3-container w3-light-blue w3-center">
-                    <h6>Ultimate Tic Tac Toe</h6>
-                </header>
-                <div class="w3-container w3-center">
-                    <img src="imgs/moon.png" alt="Avatar" style="width:80%">
-                        <button class="w3-button w3-block w3-dark-grey">Play</button>
+
+                <div class="w3-card w3-left" style="width:175px; float:right; margin-left:10%; margin-right:10%" >
+                    <header class="w3-container w3-light-blue w3-center">
+                        <h5>3D Tic Tac Toe</h5>
+                    </header>
+                    <div class="w3-container w3-center">
+                        <img src="imgs/moon.png" alt="Avatar" style="width:80%">
+                            <button class="w3-button w3-block w3-dark-grey" onclick="location.href='otherMainMenu.html'" type="button">Play</button>
+                    </div>
+
                 </div>
             </div>
-            
+            <div class="w3-container w3-section">
+                <div class="w3-card w3-left" style="width:175px; float:left; margin-left:10%; margin-right:10%; margin-bottom:16px" >
+                    <header class="w3-container w3-light-blue w3-center">
+                        <h5>Order&#38;Chaos</h5>
+                    </header>
+                    <div class="w3-container w3-center">
+                        <img src="imgs/moon.png" alt="Avatar" style="width:80%">
+                            <button class="w3-button w3-block w3-dark-grey">Play</button>
+                            </div>
+                </div>
+
+                <div class="w3-card w3-left" style="width:175px; float:left; margin-left:10%; margin-right:10%">
+                    <header class="w3-container w3-light-blue w3-center">
+                        <h6>Ultimate Tic Tac Toe</h6>
+                    </header>
+                    <div class="w3-container w3-center">
+                        <img src="imgs/moon.png" alt="Avatar" style="width:80%">
+                            <button class="w3-button w3-block w3-dark-grey">Play</button>
+                    </div>
+                </div>
+            </div>
         </div>
        
        
 
-
+<!--
         <script>
         function accordion(id) {
             var x = document.getElementById(id);
@@ -174,6 +165,7 @@
             }
         }
         </script>
+-->
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="js/signout.js"></script>
