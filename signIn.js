@@ -39,10 +39,13 @@ $(document).ready(function(){
                             
                             })
                       .catch(function(error) {
+                             $('#error').css("visibility", "visible")
                              console.log("Login Failed!", error);
                              //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
                              });
                       }
-                });
+    });
+    
      
  })
+

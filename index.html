@@ -13,8 +13,11 @@
         <div class="container">
             <img src="SiteImages/dudeicon.png"/>
             <!--<form action="mainMenu.html">-->
+            <div id="error" style="color:red;  visibility: hidden;">
+                Incorrect username or email
+            </div>
             <form onSumbit="check()">
-                <div class="form-input">
+                <div class="form-input" >
                     <input type="text" name="username" id="username" placeholder="Username:">
                 </div>
                 <div class="form-input">
