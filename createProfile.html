@@ -18,18 +18,29 @@
     
             <form action="mainMenu.html">
                 <div class="form-input">
-                    <input id="username" type="text" name="username" placeholder="Username:">
+                    <input id="username" type="text" name="username" placeholder="Username:" required>
                 </div>
                 <div class="form-input">
-                        <input id="email" type="text" name="email" placeholder="Email:">
+                        <input id="email" type="text" name="email" placeholder="Email:" required>
                 </div>
                 <div class="form-input">
-                    <input id="password" type="password" name="password" placeholder="Password:">
+                    <input id="password" type="password" name="password" placeholder="Password:" required>
                 </div>
                 <div class="form-input">
-                    <input id="battleText" type="text" name="battleText" placeholder="Battle Phrase:">
+                    <input id="battleText" type="text" name="battleText" placeholder="Battle Phrase:" required>
                 </div>
-                <input type="submit" name="submit" value="Create Account" id ="btn-login" class="btn-login"><br>
+                <div class="form-input">
+                    <select>
+                            <option value="birthdate">Where were you born?</option>
+                            <option value="petName">What is your first pet's name?</option>
+                            <option value="moveName">What is your favorite movie?</option>
+                            <option value="dadName">What is your father's middle name?</option>
+                    </select>
+                </div>
+                <div class="form-input">
+                    <input id="secQAnswer" type="text" name="secQAnswer" placeholder="Answer:" required>
+                </div>
+                <input type="submit" name="submit" value="Create Account" id ="btn-submit" class="btn-submit"><br>
             </form>
         </div>
     </body>
