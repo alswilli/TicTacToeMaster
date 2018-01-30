@@ -75,6 +75,13 @@ $(document).ready(function(){
                     //     console.log("hola");
                     // }
     });
-     
- })
+ 
+$('#guestlogin').on('click', function (e){
+    e.preventDefault();
+    window.location.href = "mainMenu.html";
+})
+
+})
+
+
 
