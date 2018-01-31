@@ -17,11 +17,18 @@ $(document).ready(function(){
  var Auth = firebase.auth();
  var dbRef = firebase.database();
  var auth = null;
- 
-  
+
+// const preUsers = document.getElementById('users');
+// var dbRefObject = firebase.database().ref().child('users');
+// dbRefObject.set({
+//           email: 'poop'
+//       });
+// dbRefObject.on('value', snap => console.log(snap.val()));
+
  //Login
  $('#login').on('click', function (e)
                 {
+                  var isValidated = false;
                   e.preventDefault();
                   
                   if( $('#loginEmail').val() != '' && $('#loginPassword').val() != '' ){
@@ -33,8 +40,26 @@ $(document).ready(function(){
                       firebase.auth().signInWithEmailAndPassword(data.email, data.password)
                       .then(function(authData) {
                             console.log("Authenticated successfully");
-                            window.location.href = "mainMenu.html";
+                            // const preUsers = document.getElementById('users');
+                            // var dbRefObject = firebase.database().ref().child('users');
+                            // dbRefObject.set({
+                            //            email: data.email
+                            //        });
+                            console.log("pee");
+                            // TO-DO: Something that Austin did so it wouldn't fluke before refreshing
+                            isValidated = true;
                             auth = authData;
+                            console.log("cock");
+                            if(isValidated == true){
+                                window.location.href = "mainMenu.html";
+                                console.log("hola");
+                            }
+                             // Save message to firebase
+
+                            //  var newUserRef = emailRef.push();
+                            //  newUserRef.set({
+                            //      email: data.email
+                            //  });
                             //$('#messageModalLabel').html(spanText('Success!', ['center', 'success']))
                             
                             })
@@ -44,8 +69,19 @@ $(document).ready(function(){
                              //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
                              });
                       }
+                    // console.log("cock");
+                    // if(isValidated == true){
+                    //     window.location.href = "mainMenu.html";
+                    //     console.log("hola");
+                    // }
     });
-    
-     
- })
+ 
+$('#guestlogin').on('click', function (e){
+    e.preventDefault();
+    window.location.href = "mainMenu.html";
+})
+
+})
+
+
 
