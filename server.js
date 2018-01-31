@@ -42,46 +42,47 @@ io.on('connection',function(socket){
       console.log("new connection!")
       
       
-      //Increase roomno if 2 clients are present in a room.
-      if(io.nsps['/'].adapter.rooms["room-"+server.roomno] && io.nsps['/'].adapter.rooms["room-"+server.roomno].length > 1)
-      {
-            server.roomno++;
-      }
-      socket.join("room-"+server.roomno);
-      
-      //Send this event to everyone in the room.
-      io.sockets.in("room-"+server.roomno).emit('connectToRoom', "You are in room no. "+server.roomno);
-      
-      socket.player =
-      {
-            id: server.lastPlayderID++,
-            board: [["","",""],["","",""],["","",""]],
-            roomNo: server.roomno
-      };
+     
       
       socket.on('makeNewPlayer',function(){
             //create new player
+                //Increase roomno if 2 clients are present in a room.
+                if(io.nsps['/'].adapter.rooms["room-"+server.roomno] && io.nsps['/'].adapter.rooms["room-"+server.roomno].length > 1)
+                {
+                server.roomno++;
+                }
+                socket.join("room-"+server.roomno);
+                
+                //Send this event to everyone in the room.
+                io.sockets.in("room-"+server.roomno).emit('connectToRoom', "You are in room no. "+server.roomno);
+                
+                socket.player =
+                {
+                id: server.lastPlayderID++,
+                board: [["","",""],["","",""],["","",""]],
+                roomNo: server.roomno
+                };
             
                 //broadcast messagess ; Socket.emit() sends a message to one specific socket
                 //Here, we send to the newly connected client a message labeled 'allplayers',
                 //and as a second argument, the output of Client.getAllPlayers()
                 socket.emit('confirmPlayer',socket.player);
-                //The socket.emit.broadcast() sends a message to all connected sockets, except the socket
-                //who triggered the callback.
-                //pass this newly created player above as argument to newplayer callback
-                socket.broadcast.emit('newplayer',socket.player);
+
                 
-                socket.on('click',function(board){
+                
+                socket.on('click',function(board, x, y){
                     console.log('server received click '+board);
                     socket.player.board = board
-                    io.emit('switchTurn',socket.player);
+                    io.sockets.in("room-"+socket.player.roomNo).emit('switchTurn',socket.player, x, y);
                           
-                }); 
+                });
                 
                 //Increase roomno if 2 clients are present in a room.
-                if(io.nsps['/'].adapter.rooms["room-"+socket.player..roomNo].length > 1)
+                if(io.nsps['/'].adapter.rooms["room-"+socket.player.roomNo].length > 1)
                 {
-                    server.roomno++;
+                    console.log("start the game, roomNo " +socket.player.roomNo)
+                    // sending to all clients in 'game'
+                    io.sockets.in("room-"+socket.player.roomNo).emit('startGame', socket.player);
                 }
             }
                 

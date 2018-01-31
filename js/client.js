@@ -14,8 +14,13 @@ Client.confirmNewPlayer = function(){
 
 
 Client.socket.on('newplayer',function(data){
-                 Game.addNewPlayer(data.id,data.x,data.y);
+                 game.addNewPlayer(data.id,data.x,data.y);
 });
+
+Client.socket.on('startGame',function(data){
+                 console.log("tell them to start!");
+                 game.startMatch(data.id);
+                 });
 
 Client.socket.on('opponentFound', function(data){
      game.startMatch()
@@ -29,15 +34,15 @@ Client.socket.on('confirmPlayer',function(data){
     game.assignRoom(data.room);
  });
 
-Client.socket.on('switchTurn',function(data){
+Client.socket.on('switchTurn',function(data, x, y){
      console.log("sending message to game to switch turn");
      game.updateBoard(data.id, data.board);
-     game.switchTurn();
+     game.synchronizeTurn(data.id, x, y);
 });
 
-Client.sendClick = function(board){
+Client.sendClick = function(board, x, y){
     console.log("Client received sendCClick, now Sending click to server")
-    Client.socket.emit('click',board);
+    Client.socket.emit('click',board,x, y);
 };
 
 Client.socket.on('connectToRoom',function(data) {

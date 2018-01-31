@@ -30,7 +30,7 @@ var ticTacState = {
         game.startingX = 115
         game.startingY = 115
         
-        game.waiting = false
+        game.waiting = true
         
         
         //record of the pieces that have been placed
@@ -52,6 +52,7 @@ var ticTacState = {
         game.assignID = this.assignID
         game.assignRoom = this.assignRoom
         game.startMatch = this.startMatch
+        game.synchronizeTurn = this.synchronizeTurn
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         //create the board on screen and makes each square clickable
@@ -67,6 +68,12 @@ var ticTacState = {
             game.firstPlay = false
         }
         
+        else if(game.player === "x")
+            game.waiting = false
+        else if(game.player === "o")
+            game.waiting = true
+            
+        console.log(game.player)
         
     },
     
@@ -130,24 +137,31 @@ var ticTacState = {
             //place either an x or o, depending whose turn it is
 
         if(game.isXTurn){
-            game.addSprite(sprite.x, sprite.y, 'star');
+            var piece = game.addSprite(sprite.x, sprite.y, 'star');
+            game.placedPieces.push(piece);
             game.board[indexY][indexX] = "x"
         }
         else{
-            game.addSprite(sprite.x, sprite.y, 'moon');
+            var piece = game.addSprite(sprite.x, sprite.y, 'moon');
+            game.placedPieces.push(piece);
             game.board[indexY][indexX] = "o"
+            
         }
         
 
  
         
         //if the game is over, siaply the winner
-        if(game.checkIfOver(indexX, indexY))
+        if(game.singleplayer && game.checkIfOver(indexX, indexY))
+        {
             game.displayWinner()
+        }
         else {
             //switch to the next player's turn
             if(game.singleplayer)
                 game.switchTurn()
+            else
+                game.waiting = true;
             
         }
         
@@ -157,8 +171,8 @@ var ticTacState = {
             game.displayDraw()
         else{
             console.log(game.board)
-            Client.sendClick(game.board);
-            }
+            Client.sendClick(game.board, indexX, indexY);
+        }
         
         
     },
@@ -168,7 +182,16 @@ var ticTacState = {
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
         game.turns++
-        
+    },
+    
+    synchronizeTurn(id, x, y){
+        if( game.id === id)
+            game.waiting = true
+        else
+            game.waiting = false
+        if(game.checkIfOver(x, y))
+            game.displayWinner()
+        game.switchTurn()
     },
     
     /*
@@ -276,6 +299,13 @@ var ticTacState = {
             return
         game.board = board
         console.log(board)
+        
+        //rub out pieces, so we don;t draw multiple on top of each other
+        /*for(var i in game.placedPieces) {
+            game.placedPieces[i].kill();
+            game.placedPieces.splice(i, 1);
+        }*/
+        console.log(game.placedPieces)
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {
                 
@@ -293,13 +323,26 @@ var ticTacState = {
     
     assignID(id){
         game.id = id;
+        console.log("id is "+ game.id)
     },
     
     assignRoom(room){
         game.room = room
     },
     
-    startMatch(){
+    startMatch(id){
+        console.log("does my id, " + game.id + " match the id " + id)
+        if( game.id === id){
+            game.waiting = true
+            game.player = "o"
+        }
+        else{
+            game.waiting = false
+            console.log("no longer waiting!")
+            game.player = "x"
+        }
+        
+        console.log(game.player)
         
     }
 };
