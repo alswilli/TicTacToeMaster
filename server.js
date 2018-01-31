@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
+//app.use(express.static(__dirname + '/Public'));
+app.use(express.static('public'))
 
 //var app = require('express')();
 //var http = require('http').Server(app);
