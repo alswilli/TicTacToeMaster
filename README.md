@@ -1,18 +1,30 @@
 # TicTacToeMaster
+----Installations needed----
+
+node.js
+https://nodejs.org/en/download/
+
+
+
 
 ----How To Run----
 
-From the top directory of your repo (i.e where all the .js files are), run
-the following command (Note that you will need Python installed)
+From the top directory of your repo (i.e where Procfile is), run
+the following command (Note that you will need Heroku installed)
 
-    python -m SimpleHTTPServer
-   
-Then, go to http://127.0.0.1:8000 on your browser, or http://192.168.1.2:8000
-Check this link for more info on running a local server
-  http://www.linuxjournal.com/content/tech-tip-really-simple-http-server-python
+    node server.js
+
+Then, go to http://localhost:8081/ on your browser
+
+----Our Actual Website----
+
+We have an actual site you can navigate to, with just a URL! No 
+localhost hoops to jump through! Also allows us to play against 
+each other for networking
+
+https://tic-tac-toe-master.herokuapp.com/
   
-  
-----Structure of Code----
+----Structure of Game Code----
 
 In the index.html, there are multiple javascript sources in the body, these are
 the files that run the tictactoe game. Each file, except for game.js, is a different 
