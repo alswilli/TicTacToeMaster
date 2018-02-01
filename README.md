@@ -21,6 +21,11 @@ Then, go to http://localhost:5000/ on your browser
 Check this link for more info on running heroku via a local server
   https://devcenter.heroku.com/articles/heroku-local
 
+If this does not work, use the following command from the top directory
+
+    node server.js
+
+Then, go to http://localhost:8081/ on your browser
 
 ----Our Actual Website----
 
