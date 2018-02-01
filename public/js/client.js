@@ -1,7 +1,7 @@
 var Client = {};
 Client.socket = io.connect();
 
-//create a callback function
+/*functions that can be called directly form the game to communicate with the server*/
 Client.makeNewPlayer = function(){
     console.log("making new player!")
     Client.socket.emit('makeNewPlayer');
@@ -17,6 +17,7 @@ Client.askForRematch = function(roomNo){
     Client.socket.emit('askForRematch', roomNo);
 };
 
+/*Callbacks that are called when the server sends a signal with the given name*/
 Client.socket.on('startGame',function(data){
                  console.log("tell them to start!");
                  game.startMatch(data.id);
@@ -39,8 +40,6 @@ Client.socket.on('restartGame',function(data) {
     game.restartMatch()
     console.log(data)
 });
-
-
 
 Client.socket.on('connectToRoom',function(data) {
                  //for debugging, prints room number

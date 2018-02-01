@@ -83,8 +83,8 @@ io.on('connection',function(socket){
                 io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch = 0;
                 socket.on('askForRematch',function(board, x, y)
                 {
+                          //increment number of people ready for a rematch 
                     io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch++
-                    console.log(io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch + " are ready for rematch")
                     if(io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch > 1)
                     {
                         // sending to all clients in 'game'

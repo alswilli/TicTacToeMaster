@@ -21,10 +21,14 @@ Check this link for more info on running heroku via a local server
   https://devcenter.heroku.com/articles/heroku-local
 
 
-----Our Actual Website!---
+----Our Actual Website----
+We have an actual site you can navigate to, with just a URL! No 
+localhost hoops to jump through! Also allows us to play against 
+each other for networking
+
+https://tic-tac-toe-master.herokuapp.com/
   
-  
-----Structure of Code----
+----Structure of Game Code----
 
 In the index.html, there are multiple javascript sources in the body, these are
 the files that run the tictactoe game. Each file, except for game.js, is a different 
