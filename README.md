@@ -1,5 +1,6 @@
 # TicTacToeMaster
 ----Installations needed----
+
 heroku
 https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up
 
@@ -22,6 +23,7 @@ Check this link for more info on running heroku via a local server
 
 
 ----Our Actual Website----
+
 We have an actual site you can navigate to, with just a URL! No 
 localhost hoops to jump through! Also allows us to play against 
 each other for networking
