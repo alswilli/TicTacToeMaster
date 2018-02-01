@@ -1,9 +1,6 @@
 # TicTacToeMaster
 ----Installations needed----
 
-heroku
-https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up
-
 node.js
 https://nodejs.org/en/download/
 
