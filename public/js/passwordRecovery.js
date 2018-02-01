@@ -1,6 +1,4 @@
 $(document).ready(function() {
-                  
-      MYAPP = {};
       
       // Initialize Firebase
       var config = {
