@@ -1,15 +1,27 @@
 # TicTacToeMaster
+----Installations needed----
+heroku
+https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up
+
+node.js
+https://nodejs.org/en/download/
+
+
+
 
 ----How To Run----
 
-From the top directory of your repo (i.e where all the .js files are), run
-the following command (Note that you will need Python installed)
+From the top directory of your repo (i.e where Procfile is), run
+the following command (Note that you will need Heroku installed)
 
-    python -m SimpleHTTPServer
+    heroku local
    
-Then, go to http://127.0.0.1:8000 on your browser, or http://192.168.1.2:8000
-Check this link for more info on running a local server
-  http://www.linuxjournal.com/content/tech-tip-really-simple-http-server-python
+Then, go to http://localhost:5000/ on your browser
+Check this link for more info on running heroku via a local server
+  https://devcenter.heroku.com/articles/heroku-local
+
+
+----Our Actual Website!---
   
   
 ----Structure of Code----
