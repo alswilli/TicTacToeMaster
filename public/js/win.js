@@ -10,7 +10,8 @@ const winState = {
             it can be displayed in this winState
         */
         game.endingBoard.forEach(function(element) {
-            ticTacState.addSprite(element.x, element.y, element.key);
+            if(element.key != 'text')
+                ticTacState.addSprite(element.x, element.y, element.key);
         });
     
         var message

@@ -15,7 +15,6 @@ var ticTacState = {
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
-        game.singleplayer = false
         
         game.squareSize = 115
         //the size of the board, i.e nxn board, 3x3 for tictactoe
@@ -30,7 +29,7 @@ var ticTacState = {
         game.startingX = 115
         game.startingY = 115
         
-        game.waiting = true
+        game.waiting = false
         
         
         //record of the pieces that have been placed
@@ -53,26 +52,31 @@ var ticTacState = {
         game.assignRoom = this.assignRoom
         game.startMatch = this.startMatch
         game.synchronizeTurn = this.synchronizeTurn
+        game.restartMatch = this.restartMatch
+        game.askForRematch = this.askForRematch
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         //create the board on screen and makes each square clickable
         game.makeBoardOnScreen()
         
-        
+        this.addTexts()
 
         game.playerMap = []
+        
+        if(game.singleplayer)
+            return
 
         if(typeof game.firstPlay === 'undefined'){
             Client.makeNewPlayer();
             console.log("firstPlay!")
             game.firstPlay = false
+            game.waiting = true
+        }
+        else
+        {
+            game.askForRematch()
         }
         
-        else if(game.player === "x")
-            game.waiting = false
-        else if(game.player === "o")
-            game.waiting = true
-            
         console.log(game.player)
         
     },
@@ -144,8 +148,7 @@ var ticTacState = {
         else{
             var piece = game.addSprite(sprite.x, sprite.y, 'moon');
             game.placedPieces.push(piece);
-            game.board[indexY][indexX] = "o"
-            
+            game.board[indexY][indexX] = "o";
         }
         
 
@@ -161,15 +164,15 @@ var ticTacState = {
             if(game.singleplayer)
                 game.switchTurn()
             else
+            {
                 game.waiting = true;
+            }
             
         }
         
         //for debugging
         game.printBoard();
-        if(game.turns >= 9)
-            game.displayDraw()
-        else{
+        if(!game.singleplayer){
             console.log(game.board)
             Client.sendClick(game.board, indexX, indexY);
         }
@@ -182,6 +185,13 @@ var ticTacState = {
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
         game.turns++
+        var turn = game.isXTurn ? "x" : "o"
+        if(game.singleplayer)
+            game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
+        else if(game.player === turn)
+            game.turnStatusText.setText("Your Turn")
+        else
+            game.turnStatusText.setText("Opponent's turn")
     },
     
     synchronizeTurn(id, x, y){
@@ -244,20 +254,26 @@ var ticTacState = {
             console.log("GameOver! h")
             gameOver = true
         }
-        
-        if(vertical.size === 1){
+        else if(vertical.size === 1){
             console.log("GameOver! v")
             gameOver = true
         }
         //if all entries in a diagonal are the same AND that entry is not blank,
         //then the game is over
-        if(posDiagonal.size === 1 && !posDiagonal.has("")){
+        else if(posDiagonal.size === 1 && !posDiagonal.has("")){
             console.log("GameOver! pD")
             gameOver = true
+            game.isDraw = false
         }
-        if(negDiagonal.size === 1 && !negDiagonal.has("")) {
+        else if(negDiagonal.size === 1 && !negDiagonal.has("")) {
             console.log("GameOver! nD")
             gameOver = true
+            game.isDraw = false
+        }
+        else if(game.turns >= 8)
+        {
+            gameOver = true;
+            game.isDraw = true
         }
         
         return gameOver
@@ -271,18 +287,10 @@ var ticTacState = {
         game.winner = game.isXTurn ? 'x' : 'o'
         
         game.saveBoard()
-        game.isDraw = false
+        
         game.state.start('win')
     },
     
-    /*
-     switch to the winState, indicating that the game ended in a draw
-     */
-    displayDraw() {
-        game.saveBoard()
-        game.isDraw = true
-        game.state.start('win')
-    },
     
     /*
      save the ending board for game state, so that is can be displayed in the winState
@@ -300,11 +308,11 @@ var ticTacState = {
         game.board = board
         console.log(board)
         
-        //rub out pieces, so we don;t draw multiple on top of each other
-        /*for(var i in game.placedPieces) {
+        //rub out pieces, so we don't draw multiple on top of each other
+        for(var i in game.placedPieces) {
             game.placedPieces[i].kill();
             game.placedPieces.splice(i, 1);
-        }*/
+        }
         console.log(game.placedPieces)
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {
@@ -335,14 +343,74 @@ var ticTacState = {
         if( game.id === id){
             game.waiting = true
             game.player = "o"
+            game.playerPieceText.setText("You are O")
+            game.turnStatusText.setText("Opponent's turn")
         }
         else{
             game.waiting = false
             console.log("no longer waiting!")
             game.player = "x"
+            game.playerPieceText.setText("You are X")
+            game.turnStatusText.setText("Your Turn")
         }
+            
         
         console.log(game.player)
+        
+    },
+    
+    restartMatch(){
+       console.log("REMATCH BITCH")
+        if(game.player === "x")
+        {
+            game.waiting = true
+            game.player = "o"
+            game.playerPieceText.setText("You are O")
+            game.turnStatusText.setText("Opponent's turn")
+        }
+        else if(game.player === "o")
+        {
+            game.waiting = false
+            console.log("no longer waiting!")
+            game.player = "x"
+            game.playerPieceText.setText("You are X")
+            game.turnStatusText.setText("Your Turn")
+        }
+        
+        
+        console.log(game.player)
+        
+    },
+
+    askForRematch(){
+        game.waiting = true
+        console.log("ask client for rematch")
+        game.playerPieceText.setText("")
+        game.turnStatusText.setText("Waiting for opponent")
+        Client.askForRematch(game.room)
+    },
+    
+    
+    addTexts(){
+        var startingMessage = game.singleplayer ? "Current Turn: X" : "Searching for Opponent"
+        
+        game.turnStatusText = game.add.text(
+            game.world.centerX, 50, startingMessage,
+                    { font: '50px Arial', fill: '#ffffff' }
+        )
+        //setting anchor centers the text on its x, y coordinates
+        game.turnStatusText.anchor.setTo(0.5, 0.5)
+        game.turnStatusText.key = 'text'
+        
+        game.playerPieceText = game.add.text(
+            game.world.centerX, 600-50, '',
+                { font: '50px Arial', fill: '#ffffff' }
+        )
+        //setting anchor centers the text on its x, y coordinates
+        game.playerPieceText .anchor.setTo(0.5, 0.5)
+        game.playerPieceText.key = 'text'
+        
+        
         
     }
 };

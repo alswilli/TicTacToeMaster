@@ -10,27 +10,22 @@ var menuState = {
         
         // display game name
         const gameName = game.add.text(
-            game.world.centerX, 200, 'Tic Tac Toe',
+            game.world.centerX, 100, 'Tic Tac Toe',
             { font: '50px Arial', fill: '#ffffff' }
         )
         //setting anchor centers the text on its x, y coordinates 
         gameName.anchor.setTo(0.5, 0.5)
+        
+        
+        game.addMenuOption('SinglePlayer', function () {
+                           game.singleplayer = true
+                           game.state.start("ticTac");
+                           });
+        game.addMenuOption('Multiplayer', function () {
+                           game.singleplayer = false
+                           game.state.start("ticTac");
+                           });
 
-        // explain how to start the game
-        const startGame = game.add.text(
-            game.world.centerX, 250, 'click to start',
-            { font: '20px Arial', fill: '#ffffff' }
-        )
-        startGame.anchor.setTo(0.5, 0.5)
-
-        //add a callback/listener that responds to when the user clicks the screen.
-        game.input.onDown.add(this.startGame, this)
     },
     
-    /*
-        callback that switches the state to the tictactoe game
-    */
-    startGame() {
-        game.state.start('ticTac')
-    }
 };

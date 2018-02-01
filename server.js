@@ -51,18 +51,18 @@ io.on('connection',function(socket){
                 //Increase roomno if 2 clients are present in a room.
                 if(io.nsps['/'].adapter.rooms["room-"+server.roomno] && io.nsps['/'].adapter.rooms["room-"+server.roomno].length > 1)
                 {
-                server.roomno++;
+                    server.roomno++;
                 }
                 socket.join("room-"+server.roomno);
                 
-                //Send this event to everyone in the room.
+                //Send this event to everyone in the room. Fore debugging
                 io.sockets.in("room-"+server.roomno).emit('connectToRoom', "You are in room no. "+server.roomno);
                 
                 socket.player =
                 {
-                id: server.lastPlayderID++,
-                board: [["","",""],["","",""],["","",""]],
-                roomNo: server.roomno
+                    id: server.lastPlayderID++,
+                    board: [["","",""],["","",""],["","",""]],
+                    roomNo: server.roomno
                 };
             
                 //broadcast messagess ; Socket.emit() sends a message to one specific socket
@@ -77,6 +77,21 @@ io.on('connection',function(socket){
                     socket.player.board = board
                     io.sockets.in("room-"+socket.player.roomNo).emit('switchTurn',socket.player, x, y);
                           
+                });
+                
+                //keep track of if both players in a room want a remathc or not
+                io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch = 0;
+                socket.on('askForRematch',function(board, x, y)
+                {
+                    io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch++
+                    console.log(io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch + " are ready for rematch")
+                    if(io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch > 1)
+                    {
+                        // sending to all clients in 'game'
+                        io.sockets.in("room-"+socket.player.roomNo).emit('restartGame', socket.player);
+                        io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch = 0;
+                    }
+                    
                 });
                 
                 //Increase roomno if 2 clients are present in a room.
