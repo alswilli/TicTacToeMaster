@@ -29,6 +29,7 @@ $(document).ready(function() {
        var inDB = false;
 
        var key;
+       var user;
    
        //firebase.database().ref('/users/email/').once('value').then(function(snapshot) {
        firebase.database().ref().child('users').orderByChild('email').equalTo(email).on("value", function(snapshot) {
@@ -38,10 +39,23 @@ $(document).ready(function() {
            snapshot.forEach(function(data){
                console.log(data.key);
                key = data.key;
-               var dbRefObject = firebase.database().ref();
-               dbRefObject.update({
-                    key: key,
-                });
+               firebase.database().ref('/users/' + key).once('value').then(function(snapshot) {
+                   user = (snapshot.val().username); 
+                   console.log("foundUser:", user);
+                   var dbRefObject = firebase.database().ref().child('savedVariables');
+                   dbRefObject.child(user).set({
+                       key : key,
+                   });
+                $('#ct2').css("visibility", "visible")
+                $('#ct1').css("visibility", "hidden")
+               });
+            //    user = data.key.username;
+            //    console.log(data.key.username);
+            //    var dbRefObject = firebase.database().ref().child('savedVariables');
+            //    dbRefObject.child(user).set({
+            //         key : key,
+            //     });
+                
                 console.log("Hello");
                //localStorage.setItem("key", key);
             //    localStorage.setItem("key", key);
@@ -59,7 +73,7 @@ $(document).ready(function() {
             var inDB = true;
             // var demo = 123;
             // document.getElementById('myLink').setAttribute('href', 'somelink.php?demo=' + demo);
-            document.location.href = "passwordRecoveryp2.html";
+            //document.location.href = "passwordRecoveryp2.html";
            }
            //$('emailForm').attr('action') = "passwordRecoveryp2.html";
            //document.getElementById("emailForm").action = "passwordRecoveryp2.html";
