@@ -50,8 +50,10 @@ $(document).ready(function(){
                             isValidated = true;
                             auth = authData;
                             console.log("cock");
+                            var text = firebase.auth().currentUser.uid;
+                            console.log(text);
                             if(isValidated == true){
-                                window.location.href = "mainMenu.html";
+                                window.location.href = "mainMenu.html" + '#' + text;
                                 console.log("hola");
                             }
                              // Save message to firebase
