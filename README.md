@@ -4,7 +4,8 @@
 node.js
 https://nodejs.org/en/download/
 
-
+heroku(if you want to push changes to website)
+https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up
 
 
 ----How To Run----
@@ -16,6 +17,12 @@ the following command (Note that you will need Heroku installed)
 
 Then, go to http://localhost:8081/ on your browser
 
+If you decide to use heroku, the following command works too
+
+    heroku local
+    
+Then, go to http://localhost:5000 on your browser
+
 ----Our Actual Website----
 
 We have an actual site you can navigate to, with just a URL! No 
@@ -23,6 +30,23 @@ localhost hoops to jump through! Also allows us to play against
 each other for networking
 
 https://tic-tac-toe-master.herokuapp.com/
+
+To push changes you have made to the website, install heroku, 
+then make sure you have a remote in your repo to the existing
+tic-tac-toe-master website, with the foloowing command.
+
+    heroku git:remote -a tic-tac-toe-master
+    
+To use heroku commands, you will have to register an account 
+with heroku.
+
+To push your changes to the website, use the folowing commands,
+also available in herokuPushCommands.txt
+    
+    git pull heroku master
+    git add .
+    git commit -m "push <whatever you did> to heroku site"
+    git push heroku master
   
 ----Structure of Game Code----
 
