@@ -33,12 +33,16 @@ $( window ).on( "load", function() {
     if(keyValue != null){
         firebase.database().ref('/users/' + keyValue).once('value').then(function(snapshot) {
             nameOfUser = (snapshot.val().username);
+            console.log("Image: ", nameOfUser);
             document.getElementById('username').innerHTML = nameOfUser;
             var battleText = (snapshot.val().battleText);
+            console.log("Image: ", battleText);
             document.getElementById('battleText').innerHTML = battleText;
             // var img = "SiteImages/testAvatarImage.jpg";
             var img = (snapshot.val().image);
             console.log("Image: ", img);
+            var cashMoney = (snapshot.val().cash);
+            document.getElementById('cash').innerHTML = '$' + cashMoney;
             var url;
             
             //$scope.getImgUrl = function(file) {
