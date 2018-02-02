@@ -28,45 +28,27 @@ var ticTacState = {
         //to get window size and I didn't feel like learning that right now
         game.startingX = 115
         game.startingY = 115
-        
+        //intialize waiting status to false, update accordingly later if multiplayer
         game.waiting = false
-        
-        
+
         //record of the pieces that have been placed
         game.placedPieces = []
         
+        //asign functions ot the game object, so they can be called by the client
+        this.assignFunctions()
         
-        game.makeBoardOnScreen = this.makeBoardOnScreen;
-        game.addNewPlayer = this.addNewPlayer;
-        game.switchTurn = this.switchTurn;
-        game.placePiece = this.placePiece
-        game.makeBoardAsArray = this.makeBoardAsArray
-        game.addSprite = this.addSprite
-        game.displayDraw = this.displayDraw
-        game.displayWinner = this.displayWinner
-        game.saveBoard = this.saveBoard
-        game.checkIfOver = this.checkIfOver
-        game.printBoard = this.printBoard
-        game.updateBoard = this.updateBoard
-        game.assignID = this.assignID
-        game.assignRoom = this.assignRoom
-        game.startMatch = this.startMatch
-        game.synchronizeTurn = this.synchronizeTurn
-        game.restartMatch = this.restartMatch
-        game.askForRematch = this.askForRematch
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         //create the board on screen and makes each square clickable
         game.makeBoardOnScreen()
-        
+        //add messages that display turn status, connection statuses
         this.addTexts()
-
-        game.playerMap = []
-        
+        //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
-
-        if(typeof game.firstPlay === 'undefined'){
+        //if this is the first play against an opponent, create a new player on the server
+        if(typeof game.firstPlay === 'undefined')
+        {
             Client.makeNewPlayer();
             console.log("firstPlay!")
             game.firstPlay = false
@@ -77,13 +59,6 @@ var ticTacState = {
             game.askForRematch()
         }
         
-        console.log(game.player)
-        
-    },
-    
-    addNewPlayer(id, x, y){
-        console.log("calling addNewPlayer from TicTac!")
-        game.playerMap[id] = "yo" //game.add.sprite(x,y,'sprite');
     },
     
     /*
@@ -124,7 +99,8 @@ var ticTacState = {
     /*
         places a piece on an empty square, either x or o depending whose turn it is
      */
-    placePiece(sprite, pointer) {
+    placePiece(sprite, pointer)
+    {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
@@ -138,8 +114,8 @@ var ticTacState = {
         //string, don't do anything
         if(game.board[indexY][indexX] != "")
             return
-            //place either an x or o, depending whose turn it is
-
+           
+         //place either an x or o, depending whose turn it is
         if(game.isXTurn){
             var piece = game.addSprite(sprite.x, sprite.y, 'star');
             game.placedPieces.push(piece);
@@ -152,35 +128,12 @@ var ticTacState = {
         }
         
 
- 
-        
-        //if the game is over, siaply the winner
-        if(game.singleplayer && game.checkIfOver(indexX, indexY))
-        {
-            game.displayWinner()
-        }
-        else {
-            //switch to the next player's turn
-            if(game.singleplayer)
-                game.switchTurn()
-            else
-            {
-                game.waiting = true;
-            }
-            
-        }
-        
-        //for debugging
-        game.printBoard();
-        if(!game.singleplayer){
-            console.log(game.board)
-            Client.sendClick(game.board, indexX, indexY);
-        }
-        
-        
+        game.updateTurnStatus(indexX, indexY)
     },
     
-    
+    /*
+        switch current turn, and display whose turn it is
+     */
     switchTurn(){
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
@@ -194,12 +147,17 @@ var ticTacState = {
             game.turnStatusText.setText("Opponent's turn")
     },
     
-    synchronizeTurn(id, x, y){
-        if( game.id === id)
+    /*
+        Make sure only one player is waiting at a time for the opponent
+     */
+    synchronizeTurn(id, x, y)
+    {
+        //if the id received is this player, that means this player just moved, so they should be waiting now
+        if(game.id === id)
             game.waiting = true
         else
             game.waiting = false
-        if(game.checkIfOver(x, y))
+        if(game.isOver(x, y))
             game.displayWinner()
         game.switchTurn()
     },
@@ -229,7 +187,8 @@ var ticTacState = {
     /*
      check if the game is over, given the index of the piece that was just placed
      */
-    checkIfOver(col, row){
+    isOver(col, row)
+    {
         //create Sets for each direction. Since a Set has unique entries, if there
         //is only one entry and it is not an empty string, that entry is the winner
         var horizontal = new Set()
@@ -250,23 +209,25 @@ var ticTacState = {
         //if all entries in a row or column are the same, then the game is over
         //we don't need to check that the only entry is not a blank string, since
         //these Sets will include the piece that was just placed, which cannot possibly be blank
-        if(horizontal.size === 1){
-            console.log("GameOver! h")
-            gameOver = true
-        }
-        else if(vertical.size === 1){
-            console.log("GameOver! v")
-            gameOver = true
-        }
-        //if all entries in a diagonal are the same AND that entry is not blank,
-        //then the game is over
-        else if(posDiagonal.size === 1 && !posDiagonal.has("")){
-            console.log("GameOver! pD")
+        if(horizontal.size === 1)
+        {
             gameOver = true
             game.isDraw = false
         }
-        else if(negDiagonal.size === 1 && !negDiagonal.has("")) {
-            console.log("GameOver! nD")
+        else if(vertical.size === 1)
+        {
+            gameOver = true
+            game.isDraw = false
+        }
+        //if all entries in a diagonal are the same AND that entry is not blank,
+        //then the game is over
+        else if(posDiagonal.size === 1 && !posDiagonal.has(""))
+        {
+            gameOver = true
+            game.isDraw = false
+        }
+        else if(negDiagonal.size === 1 && !negDiagonal.has(""))
+        {
             gameOver = true
             game.isDraw = false
         }
@@ -295,16 +256,23 @@ var ticTacState = {
     /*
      save the ending board for game state, so that is can be displayed in the winState
      */
-    saveBoard(){
+    saveBoard()
+    {
         game.endingBoard = []
-        game.world.forEach(function(item) {
-                           game.endingBoard.push(item)
+        game.world.forEach(function(item)
+        {
+              game.endingBoard.push(item)
         });
     },
     
-    updateBoard(id, board){
+    /*
+        Update the board, given a 2D array of the board. Used to update boards between two players
+     */
+    updateBoard(id, board)
+    {
         if(game.state.current==="win")
             return
+        //updated the game board
         game.board = board
         console.log(board)
         
@@ -313,7 +281,7 @@ var ticTacState = {
             game.placedPieces[i].kill();
             game.placedPieces.splice(i, 1);
         }
-        console.log(game.placedPieces)
+        //draw the pieces on the screen
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {
                 
@@ -329,6 +297,7 @@ var ticTacState = {
         }
     },
     
+    
     assignID(id){
         game.id = id;
         console.log("id is "+ game.id)
@@ -338,27 +307,32 @@ var ticTacState = {
         game.room = room
     },
     
+    /*
+        Start an initial match between two players
+     */
     startMatch(id){
-        console.log("does my id, " + game.id + " match the id " + id)
-        if( game.id === id){
+        //assign a player to be O, this will be the second player to join a match
+        if(game.id === id)
+        {
             game.waiting = true
             game.player = "o"
             game.playerPieceText.setText("You are O")
             game.turnStatusText.setText("Opponent's turn")
         }
-        else{
+        else
+        {
             game.waiting = false
             console.log("no longer waiting!")
             game.player = "x"
             game.playerPieceText.setText("You are X")
             game.turnStatusText.setText("Your Turn")
         }
-            
-        
-        console.log(game.player)
         
     },
     
+    /*
+        Restart a match between two players, switches the last x player to be o this time and vice versa
+     */
     restartMatch(){
        console.log("REMATCH BITCH")
         if(game.player === "x")
@@ -377,11 +351,11 @@ var ticTacState = {
             game.turnStatusText.setText("Your Turn")
         }
         
-        
-        console.log(game.player)
-        
     },
 
+    /*
+        Notify the server that this palyer wants to play again, and wait until the other player responds
+     */
     askForRematch(){
         game.waiting = true
         console.log("ask client for rematch")
@@ -390,7 +364,9 @@ var ticTacState = {
         Client.askForRematch(game.room)
     },
     
-    
+    /*
+        Initialize the texts used to display turn status and matching status
+     */
     addTexts(){
         var startingMessage = game.singleplayer ? "Current Turn: X" : "Searching for Opponent"
         
@@ -412,5 +388,57 @@ var ticTacState = {
         
         
         
+    },
+    
+    /*
+        Update the status of the current turn player
+     */
+    updateTurnStatus(indexX, indexY)
+    {
+        if(game.singleplayer)
+        {
+            //if single player, check if game ended right after placing a piece
+            if(game.isOver(indexX, indexY))
+                game.displayWinner()
+            else
+                game.switchTurn()
+        }
+        //if multiplayer, set waiting to true so that you can't place two pieces in one turn
+        else
+        {
+            game.waiting = true;
+            //send updated board to the server so the opponent's board is updated too
+            Client.sendClick(game.board, indexX, indexY);
+        }
+        
+        //for debugging
+        game.printBoard();
+    },
+    
+    /*
+        asign functions ot the game object, so they can be called by the client
+        technically this is a state object, so the functions in this file are not 
+        automatically assigned to the game object. 
+     */
+    assignFunctions()
+    {
+        game.makeBoardOnScreen = this.makeBoardOnScreen;
+        game.switchTurn = this.switchTurn;
+        game.placePiece = this.placePiece
+        game.makeBoardAsArray = this.makeBoardAsArray
+        game.addSprite = this.addSprite
+        game.displayDraw = this.displayDraw
+        game.displayWinner = this.displayWinner
+        game.saveBoard = this.saveBoard
+        game.isOver = this.isOver
+        game.printBoard = this.printBoard
+        game.updateBoard = this.updateBoard
+        game.assignID = this.assignID
+        game.assignRoom = this.assignRoom
+        game.startMatch = this.startMatch
+        game.synchronizeTurn = this.synchronizeTurn
+        game.restartMatch = this.restartMatch
+        game.askForRematch = this.askForRematch
+        game.updateTurnStatus = this.updateTurnStatus
     }
 };
