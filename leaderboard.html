@@ -18,15 +18,8 @@
 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       
-      <script type="text/javascript">
-         var activeBoard = "board1"
-         function switchToLeaderBoard(clickedBoard) {
-           if (clickedBoard !== activeBoard) {
-              document.getElementById(clickedBoard).classList.add('w3-blue')
-              document.getElementById(activeBoard).classList.toggle('w3-blue')
-              activeBoard = clickedBoard
-           } 
-         }
+      <script type="text/javascript" src="js/leaderboard.js">
+          
       </script>
     </head>
     
@@ -62,8 +55,8 @@
         </div>
         
         <div class="w3-responsive">
-          <table class="w3-table-all w3-hoverable w3-centered w3-large">
-            <tr>
+          <table id="table" class="w3-table-all w3-hoverable w3-centered w3-large">
+            <!--<tr>
               <th>Player Name</th>
               <th>Wins</th>
               <th>Losses</th>
@@ -93,6 +86,7 @@
               <td>0</td>
               <td>100.00%</td>
             </tr>
+          -->
           </table>
         </div>
                 
