@@ -13,7 +13,7 @@ var waitingRoomState = {
         //setting anchor centers the text on its x, y coordinates
         gameName.anchor.setTo(0.5, 0.5)
         
-        
+        game.optionCount = 0;
         game.addMenuOption('Search For Another', function () {
            game.singleplayer = false
            game.state.start("ticTac");
