@@ -11,6 +11,7 @@ game.state.add('load', loadState)
 game.state.add('menu', menuState)
 game.state.add('ticTac', ticTacState)
 game.state.add('win', winState)
+game.state.add('waitingRoom', waitingRoomState)
 
 game.optionCount = 0;
 game.addMenuOption = function(text, callback) {

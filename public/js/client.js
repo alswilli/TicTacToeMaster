@@ -36,7 +36,7 @@ Client.socket.on('switchTurn',function(data, x, y){
 
 Client.socket.on('restartGame',function(data) {
     //for debugging, prints room number
-    console.log("sending message to game to restart");          
+    console.log("sending message to game to restart");
     game.restartMatch()
     console.log(data)
 });
@@ -44,4 +44,8 @@ Client.socket.on('restartGame',function(data) {
 Client.socket.on('connectToRoom',function(data) {
                  //for debugging, prints room number
     console.log(data)
+});
+
+Client.socket.on('playerLeft',function(data) {
+    game.handleOpponentLeaving()
 });
