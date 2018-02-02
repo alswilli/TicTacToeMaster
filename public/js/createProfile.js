@@ -16,14 +16,6 @@ var contactsRef = dbRef.ref('contacts')
 var usersRef = dbRef.ref('users')
 var auth = null;
 
-<<<<<<< HEAD
-=======
-// Get image ref
-const storageRef = firebase.storage().ref();
-
-var imageName;
-
->>>>>>> 4274a592ef20b897e6c3b79ff557d0684294ab96
 var e = document.getElementById("secQ");
 var secQ = e.options[e.selectedIndex].text; 
 
@@ -72,6 +64,7 @@ $('#btn-submit').on('click', function (e) {
             battleText: $('#battleText').val(), //get battle text
             secQ: secQ,
             secQAnswer: $('#secQAnswer').val(),
+            cash: 0
     
     
         };
@@ -105,24 +98,7 @@ $('#btn-submit').on('click', function (e) {
 
 $(function(){
     $('#profile_image').change( function(e) {
-       const file = document.querySelector('#profile_image').files[0];
-       
-       
-       
-       const name = (+new Date()) + '-' +file.name;
-       const metadata = {
-       contentType: file.type
-       };
-       const task = storageRef.child(name).put(file, metadata);
-       imageName = name;
-       
-       task.then((snapshot) => {
-                 const url = snapshot.downloadURL;
-                 console.log(name);
-                 console.log(imageName);
-                 }).catch((error) => {
-                          console.error(error);
-                          });
+        
         var img = URL.createObjectURL(e.target.files[0]);
         $('.image').attr('src', img);
     });
