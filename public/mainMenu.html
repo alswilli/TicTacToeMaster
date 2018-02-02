@@ -18,6 +18,8 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
         <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="js/mainMenu.js"></script>
     </head>
     
     <body>
@@ -27,12 +29,13 @@
 
             <div class="w3-sidebar w3-light-gray w3-bar-block w3-card" style="width:25%">
                 <div class="w3-container w3-blue-gray">
-                    <h2>Username</h2>
-                    <p class="w3-right-align">waaaa</p>
+                    <h2 id='username'>Username</h2>
+                    <p class="w3-right-align" id='battleText'>waaaa</p>
+                    <p class="w3-right-align" id='cash'>moneyay</p>
                 </div>
 
 
-                <img src="imgs/waluigi.png" alt="TicTacToe" style="width:100%">
+                <img id="profileImage" alt="TicTacToe" style="width:100%" class=image>
                     
 
                 <a href="#" class="w3-bar-item w3-button" onclick="location.href='editProfile.html'">Edit Profile</a>
@@ -167,8 +170,6 @@
         </script>
 -->
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script src="js/signout.js"></script>
 
     </body>
 </html>

@@ -16,71 +16,84 @@ var contactsRef = dbRef.ref('contacts')
 var usersRef = dbRef.ref('users')
 var auth = null;
 
-// Get image ref
-const storageRef = firebase.storage().ref();
-
-const file = document.querySelector('#profile_image').files[0];
-
-var imageName;
-
-const name = (+new Date()) + '-' +file.name;
-const metadata = {
-    contentType: file.type
-};
-const task = storageRef.child(name).put(file, metadata);
-imageName = name;
-    
-task.then((snapshot) => {
-    const url = snapshot.downloadURL;
-    console.log(name);
-    console.log(imageName);
-}).catch((error) => {
-    console.error(error);
-});
-
 var e = document.getElementById("secQ");
 var secQ = e.options[e.selectedIndex].text; 
 
 //Register
 $('#btn-submit').on('click', function (e) {
     e.preventDefault();
-    var data = {
-        image: imageName,
-        email: $('#email').val(), //get the email from Form
-        username: $('#username').val(), //get username
-        password: $('#password').val(), //get password
-        battleText: $('#battleText').val(), //get battle text
-        secQ: secQ,
-        secQAnswer: $('#secQAnswer').val(),
 
+    // Get image ref
+    const storageRef = firebase.storage().ref();
 
-    };
-    
-    if (data.email != '' && data.password != '') {
-            //create the user
+    const file = document.querySelector('#profile_image').files[0];
 
-        firebase.auth()
-          .createUserWithEmailAndPassword(data.email, data.password)
-          .then(function (user) {
-              //now user is needed to be logged in to save data
-              console.log("Authenticated successfully with payload:", user);
-              alert("User profile created!");
-              auth = user;
-              //now saving the profile data
-              usersRef
-                .child(user.uid)
-                .set(data)
-                .then(function () {
-                    console.log("User Information Saved:", user.uid);
-                    document.location.href = "index.html";
-                })
+    if(file === undefined)
+    {
+        alert("Image file invalid, please enter a valid image!");
+        console.log("penios");
+        //break;
+    }
+    else{
+        console.log("file: ", file);
 
-          .catch(function (error) {
-              console.log("Error creating user:", error);
-          });
-          });
-        }
+        var imageName;
+
+        const name = (+new Date()) + '-' +file.name;
+        console.log("name: ", name);
+
+        const metadata = {
+            contentType: file.type
+        };
+        const task = storageRef.child(name).put(file, metadata);
+        imageName = name;
         
+        task.then((snapshot) => {
+            const url = snapshot.downloadURL;
+            console.log(name);
+            console.log(imageName);
+        }).catch((error) => {
+            console.error(error);
+        });
+
+        var data = {
+            image: imageName,
+            email: $('#email').val(), //get the email from Form
+            username: $('#username').val(), //get username
+            password: $('#password').val(), //get password
+            battleText: $('#battleText').val(), //get battle text
+            secQ: secQ,
+            secQAnswer: $('#secQAnswer').val(),
+            cash: 0
+    
+    
+        };
+        
+        if (data.email != '' && data.password != '') {
+                //create the user
+    
+            firebase.auth()
+              .createUserWithEmailAndPassword(data.email, data.password)
+              .then(function (user) {
+                  //now user is needed to be logged in to save data
+                  console.log("Authenticated successfully with payload:", user);
+                  alert("User profile created!");
+                  auth = user;
+                  //now saving the profile data
+                  usersRef
+                    .child(user.uid)
+                    .set(data)
+                    .then(function () {
+                        console.log("User Information Saved:", user.uid);
+                        document.location.href = "index.html";
+                    })
+    
+              .catch(function (error) {
+                  console.log("Error creating user:", error);
+              });
+              });
+            }
+    }   
 });
 
 $(function(){
