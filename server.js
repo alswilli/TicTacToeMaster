@@ -29,6 +29,7 @@ server.listen(process.env.PORT || 8081,function(){
 
 server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
 server.roomno = 1;
+server.roomSize = 2;
 
 
 /*
@@ -49,7 +50,7 @@ io.on('connection',function(socket){
       socket.on('makeNewPlayer',function(){
             //create new player
                 //Increase roomno if 2 clients are present in a room.
-                if(io.nsps['/'].adapter.rooms["room-"+server.roomno] && io.nsps['/'].adapter.rooms["room-"+server.roomno].length > 1)
+                if(io.nsps['/'].adapter.rooms["room-"+server.roomno] && io.nsps['/'].adapter.rooms["room-"+server.roomno].length >= server.roomSize)
                 {
                     server.roomno++;
                 }
@@ -79,13 +80,13 @@ io.on('connection',function(socket){
                           
                 });
                 
-                //keep track of if both players in a room want a remathc or not
+                //keep track of if both players in a room want a rematch or not
                 io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch = 0;
                 socket.on('askForRematch',function(board, x, y)
                 {
-                          //increment number of people ready for a rematch 
+                          //increment number of people ready for a rematch
                     io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch++
-                    if(io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch > 1)
+                    if(io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch >= server.roomSize)
                     {
                         // sending to all clients in 'game'
                         io.sockets.in("room-"+socket.player.roomNo).emit('restartGame', socket.player);
@@ -95,7 +96,7 @@ io.on('connection',function(socket){
                 });
                 
                 //Increase roomno if 2 clients are present in a room.
-                if(io.nsps['/'].adapter.rooms["room-"+socket.player.roomNo].length > 1)
+                if(io.nsps['/'].adapter.rooms["room-"+socket.player.roomNo].length >= server.roomSize)
                 {
                     console.log("start the game, roomNo " +socket.player.roomNo)
                     // sending to all clients in 'game'
