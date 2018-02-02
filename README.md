@@ -5,7 +5,13 @@ node.js
 https://nodejs.org/en/download/
 
 heroku(if you want to push changes to website)
+
 https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up
+
+Express
+user the following command
+
+    npm install express --save
 
 
 ----How To Run----
