@@ -15,69 +15,6 @@ function switchToLeaderBoard(clickedBoard) {
 }
 
 function table() {
-    alert("table function2");
-	/*
-    var table = document.createElement("TABLE");
-    table.setAttribute("id", "table1");
-    document.body.appendChild(table);
-    */
-    var row0 = document.createElement("TR");
-    var row1 = document.createElement("TR");
-    var row2 = document.createElement("TR");
-    var row3 = document.createElement("TR");
-    var row4 = document.createElement("TR");
-    
-    var th1 = document.createElement("TH");
-    var th2 = document.createElement("TH");
-    var th3 = document.createElement("TH");
-    var th4 = document.createElement("TH");
-    
-    var t1 = document.createTextNode("Player Name");
-    var t2 = document.createTextNode("Wins");
-    var t3 = document.createTextNode("Losses");
-    var t4 = document.createTextNode("Winrate");
-    
-    var td1a = document.createElement("TD");
-    var td2a = document.createElement("TD");
-    var td3a = document.createElement("TD");
-    var td4a = document.createElement("TD");
-    
-    var name1 = document.createTextNode("Jill Stein");
-    
-  
-    var name2 = document.createTextNode("Dingus");
-    var name3 = document.createTextNode("OpenGLuva");
-    var name4 = document.createTextNode("Ugandan Warrior");
-  
-    document.getElementById("table").appendChild(row0);
-    document.getElementById("table").appendChild(row1);
-    document.getElementById("table").appendChild(row2);
-    document.getElementById("table").appendChild(row3);
-    document.getElementById("table").appendChild(row4);
-  
-  	row0.appendChild(th1);
-    row0.appendChild(th2);
-    row0.appendChild(th3);
-    row0.appendChild(th4);
-    
-    th1.appendChild(t1);
-    th2.appendChild(t2);
-    th3.appendChild(t3);
-    th4.appendChild(t4);
-  
-    row1.appendChild(td1a);
-    row2.appendChild(td2a);
-    row3.appendChild(td3a);
-    row4.appendChild(td4a);      
-  
-    td1a.appendChild(name1);
-    td2a.appendChild(name2);
-    td3a.appendChild(name3);
-    td4a.appendChild(name4); 
-  
-}
-
-function table2() {
     alert("table function1");
 	/*
     var table = document.createElement("TABLE");
@@ -102,7 +39,7 @@ function table2() {
     
   
     var name1 = document.createTextNode("Jill Stein");
-    var win1  = documnet.createTextNode("1");
+    var win1  = document.createTextNode("1");
     var lose1 = document.createTextNode("2");
     var winrate1 = document.createTextNode("33.33%");
     var td1a = document.createElement("TD");
@@ -111,7 +48,7 @@ function table2() {
     var td1d = document.createElement("TD");
   
     var name2 = document.createTextNode("Dingus");
-    var win2  = documnet.createTextNode("2");
+    var win2  = document.createTextNode("2");
     var lose2 = document.createTextNode("4");
     var winrate2 = document.createTextNode("50.00%");
     var td2a = document.createElement("TD");
@@ -120,7 +57,7 @@ function table2() {
     var td2d = document.createElement("TD");
   
     var name3 = document.createTextNode("OpenGLuva");
-    var win3  = documnet.createTextNode("1");
+    var win3  = document.createTextNode("1");
     var lose3 = document.createTextNode("7");
     var winrate3 = document.createTextNode("0.14%");
     var td3a = document.createElement("TD");
@@ -129,7 +66,7 @@ function table2() {
     var td3d = document.createElement("TD");
   
     var name4 = document.createTextNode("Ugandan Warrior");
-    var win4  = documnet.createTextNode("10");
+    var win4  = document.createTextNode("10");
     var lose4 = document.createTextNode("0");
     var winrate4 = document.createTextNode("100.00%");
     var td4a = document.createElement("TD");
