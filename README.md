@@ -5,7 +5,18 @@ node.js
 https://nodejs.org/en/download/
 
 heroku(if you want to push changes to website)
+
 https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up
+
+Express
+use the following command
+
+    npm install express --save
+    
+Socket.io
+use the following command
+
+    npm install socket.io --save
 
 
 ----How To Run----
