@@ -1,9 +1,51 @@
 var activeBoard = "board1";
+var snapshotArr;
 
-document.addEventListener('DOMContentLoaded', function() {
-    //alert("3");
-    table();
-}, false);
+$(document).ready(function() {
+   console.log("START: $document.ready()")
+
+   // Initialize Firebase
+   var config = {
+   apiKey: "AIzaSyARQqkwmw-yDfR4Fl7eyDSs464kPyDTWpo",
+   authDomain: "tictactoemaster-b46ab.firebaseapp.com",
+   databaseURL: "https://tictactoemaster-b46ab.firebaseio.com",
+   projectId: "tictactoemaster-b46ab",
+   storageBucket: "tictactoemaster-b46ab.appspot.com",
+   messagingSenderId: "1050901435462"
+   };
+   firebase.initializeApp(config);
+   console.log("AFTER: firebase intialization");
+   table();
+   
+   firebase.database().ref().child('leaderboard/TTT').orderByChild('Wins').on('value', function(snapshot) {
+      //console.log(snapshotToArray(snapshot));
+      snapshotArr = snapshotToArray(snapshot);
+      console.log(snapshotArr);
+      console.log("elem 0", snapshotArr[0]);
+      for (var i=0; i<snapshotArr.length; i++) {
+         console.log(snapshotArr[i].key + ' ' + snapshotArr[i].Wins + ' '+ snapshotArr[i].Losses);  
+      }
+      
+   });
+   
+   
+   
+   // since database functions are asynchronous, snapshotArr contains nothing at
+   // this point even though it's after the firebase code
+   //console.log(snapshotArr);
+   
+});
+
+function snapshotToArray(snapshot) {
+   var returnArr = [];
+   snapshot.forEach(function(childSnapshot) {
+      var item = childSnapshot.val();
+      item.key = childSnapshot.key;
+      
+      returnArr.push(item);
+   });
+   return returnArr; 
+};
 
 function switchToLeaderBoard(clickedBoard) {
   //alert("lel");
@@ -15,7 +57,8 @@ function switchToLeaderBoard(clickedBoard) {
 }
 
 function table() {
-    alert("table function1");
+    console.log("START: table()");
+    //var database = firebase.database();
 	/*
     var table = document.createElement("TABLE");
     table.setAttribute("id", "table1");
