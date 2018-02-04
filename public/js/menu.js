@@ -16,7 +16,7 @@ var menuState = {
         //setting anchor centers the text on its x, y coordinates 
         gameName.anchor.setTo(0.5, 0.5)
         
-        
+        game.optionCount = 0;
         game.addMenuOption('SinglePlayer', function () {
                            game.singleplayer = true
                            game.state.start("ticTac");

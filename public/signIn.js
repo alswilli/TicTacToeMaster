@@ -18,6 +18,11 @@ $(document).ready(function(){
  var dbRef = firebase.database();
  var auth = null;
 
+ var keyValue;
+ var nameOfUser;
+ var battleText;
+ var cashMoney;
+ var urlVal;
 // const preUsers = document.getElementById('users');
 // var dbRefObject = firebase.database().ref().child('users');
 // dbRefObject.set({
@@ -50,12 +55,32 @@ $(document).ready(function(){
                             isValidated = true;
                             auth = authData;
                             console.log("cock");
-                            var text = firebase.auth().currentUser.uid;
-                            console.log(text);
+                            // var text = firebase.auth().currentUser.uid;
+                            //console.log(text);
+                            keyValue = firebase.auth().currentUser.uid;
+                            // var htmlId = 'Icamefromlogin';
                             if(isValidated == true){
-                                window.location.href = "mainMenu.html" + '#' + text;
-                                console.log("hola");
-                            }
+                                firebase.database().ref('/users/' + keyValue).once('value').then(function(snapshot) {
+                                    nameOfUser = (snapshot.val().username);
+                                    console.log("Image: ", nameOfUser);
+                                    battleText = (snapshot.val().battleText);
+                                    console.log("Image: ", battleText);
+                                    // var img = "SiteImages/testAvatarImage.jpg";
+                                    var img = (snapshot.val().image);
+                                    console.log("Image: ", img);
+                                    cashMoney = (snapshot.val().cash);
+                                    
+                                    //$scope.getImgUrl = function(file) {
+                                        firebase.storage().ref(img).getDownloadURL().then(function(url) {
+                                        //$('.image').attr('src', url);
+                                        urlVal = url;
+                                        window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal;
+                                        console.log("hola");
+                                        })
+                                // window.location.href = "mainMenu.html" + '#&&' + text + '&&' + htmlId;
+                                // console.log("hola");
+                            })
+                        }
                              // Save message to firebase
 
                             //  var newUserRef = emailRef.push();

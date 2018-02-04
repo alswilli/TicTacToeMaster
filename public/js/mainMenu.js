@@ -11,58 +11,80 @@ var config = {
 };
 firebase.initializeApp(config);
 
-var keyValue = window.location.hash.substring(1)
+console.log("In Home Page");
+
+var keyValue;
 var nameOfUser;
+var battleText;
+var cashMoney;
+var url;
+
+var argumentVals = window.location.hash.split('&&');
+console.log(argumentVals);
+
+keyValue = argumentVals[1]; 
+console.log(keyValue);
+nameOfUser = argumentVals[2];
+console.log(nameOfUser);
+battleText = argumentVals[3];
+console.log(battleText);
+cashMoney = argumentVals[4];
+console.log(cashMoney);
+url = argumentVals[5];
+console.log(url);
 
 $( window ).on( "load", function() { 
 
-    //var hola = 123456;
+    console.log("Poooooooop!!");
 
-    // var dbRefObject = firebase.database().ref().child(keyValue);
-    // dbRefObject.set({
-    //      Hola: hola,
-    //  });
+    document.getElementById('username').innerHTML = nameOfUser;
+    document.getElementById('battleText').innerHTML = battleText;
+    document.getElementById('cash').innerHTML = '$' + cashMoney;
+    $('.image').attr('src', url);
 
-    // firebase.database().ref('/users/' + userKey).once('value').then(function(snapshot) {
-    //     userKey = (snapshot.val().username); 
-    //     console.log("foundUser:", userKey);
-    //     document.getElementById('username').innerHTML = userKey;
-    // });
+    //Achievements
+    $('#achievements').on('click', function (e) {
+        e.preventDefault();
 
+        console.log("going to achievements");
+        console.log("name: ", nameOfUser);
+        console.log("battleText: ", battleText);
+        console.log("cashMoney: ", cashMoney);
+        console.log("url: ", url);
 
-    if(keyValue != null){
-        firebase.database().ref('/users/' + keyValue).once('value').then(function(snapshot) {
-            nameOfUser = (snapshot.val().username);
-            console.log("Image: ", nameOfUser);
-            document.getElementById('username').innerHTML = nameOfUser;
-            var battleText = (snapshot.val().battleText);
-            console.log("Image: ", battleText);
-            document.getElementById('battleText').innerHTML = battleText;
-            // var img = "SiteImages/testAvatarImage.jpg";
-            var img = (snapshot.val().image);
-            console.log("Image: ", img);
-            var cashMoney = (snapshot.val().cash);
-            document.getElementById('cash').innerHTML = '$' + cashMoney;
-            var url;
+        // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
+        // console.log("arguments: ", argumentData);
+
+        window.location.href = "achievements.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url;
+        //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
-            //$scope.getImgUrl = function(file) {
-                firebase.storage().ref(img).getDownloadURL().then(function(url) {
-                $('.image').attr('src', url);
-                  //return url;
-                }).catch(function(error) {
-                  // Handle any errors here
-                });
-         //}
+    });
 
-    })};
+    //Customization
+    $('#customization').on('click', function (e) {
+        e.preventDefault();
 
-    // var username = "Waluigi";
-    // document.getElementById('username').innerHTML = username;
-    // var battleText = "I am the best! Hah";
-    // document.getElementById('battleText').innerHTML = battleText;
-    // var img = "SiteImages/testAvatarImage.jpg";
-    // $('.image').attr('src', img);
-    // alert("Image isfd loaded");
+        console.log("going to customization");
+        console.log("name: ", nameOfUser);
+        console.log("battleText: ", battleText);
+        console.log("cashMoney: ", cashMoney);
+        console.log("url: ", url);
+
+        window.location.href = "customization.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url;
+    });
+
+    //Leaderboard
+    $('#leaderboard').on('click', function (e) {
+        e.preventDefault();
+
+        console.log("going to leaderboards");
+        console.log("name: ", nameOfUser);
+        console.log("battleText: ", battleText);
+        console.log("cashMoney: ", cashMoney);
+        console.log("url: ", url);
+
+        window.location.href = "leaderboard.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url;
+    });
 })
 
  //create firebase references
@@ -70,9 +92,29 @@ $( window ).on( "load", function() {
  var dbRef = firebase.database();
  var auth = null;
 
+//  console.log("name: ", nameOfUser);
+//  console.log("battleText: ", battleText);
+//  console.log("cashMoney: ", cashMoney);
+//  console.log("url: ", url);
+ 
+// //Achievements
+// $('#achievements').on('click', function (e) {
+//     e.preventDefault();
+
+//     console.log("going to achievements");
+//     console.log("name: ", nameOfUser);
+//     console.log("battleText: ", battleText);
+//     console.log("cashMoney: ", cashMoney);
+//     console.log("url: ", url);
+
+//     window.location.href = "achievements.html" + '#' + keyValue + '#' + nameOfUser + '#' + battleText + '#' + cashMoney + '#' + url;
+// });
+
  //Logout
  $('#logout').on('click', function (e) {
      e.preventDefault();
+
+     console.log("loggin out");
 
      firebase.auth().signOut()
                    .then(function(authData) {
