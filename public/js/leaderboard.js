@@ -1,9 +1,13 @@
-var activeBoard = "board1";
-var snapshotArr;
+
+var table;                  //the ID of the table element
+var activeBoard = "board1"; //the default game to show rankings for when loading leaderboard.html                 
+var snapshotArr;            //the snapshot as an array, of the leaderboard names
 
 $(document).ready(function() {
-   console.log("START: $document.ready()")
+   console.log("START: $document.ready()");
 
+   table = document.getElementById("table"); //set table to be the table element
+   
    // Initialize Firebase
    var config = {
    apiKey: "AIzaSyARQqkwmw-yDfR4Fl7eyDSs464kPyDTWpo",
@@ -15,7 +19,7 @@ $(document).ready(function() {
    };
    firebase.initializeApp(config);
    console.log("AFTER: firebase intialization");
-   table();
+   createTable();
    
    firebase.database().ref().child('leaderboard/TTT').orderByChild('Wins').on('value', function(snapshot) {
       //console.log(snapshotToArray(snapshot));
@@ -28,11 +32,6 @@ $(document).ready(function() {
       
    });
    
-   
-   
-   // since database functions are asynchronous, snapshotArr contains nothing at
-   // this point even though it's after the firebase code
-   //console.log(snapshotArr);
    
 });
 
@@ -56,7 +55,33 @@ function switchToLeaderBoard(clickedBoard) {
   }
 }
 
-function table() {
+function addNewRow(name, win, lose) {   
+   var row = document.createElement("TR");
+   
+   var td1 = document.createElement("TD");
+   var td2 = document.createElement("TD");
+   var td3 = document.createElement("TD");
+   var td4 = document.createElement("TD");
+   
+   var name_    = document.createTextNode(name);
+   var win_     = document.createTextNode(win);
+   var lose_    = document.createTextNode(lose);
+   var winRate_ = document.createTextNode(win/lose * 100 + '%');
+   
+   td1.appendChild(name_);
+   td2.appendChild(win_);
+   td3.appendChild(lose_);
+   td4.appendChild(winRate_);
+   
+   row.appendChild(td1);
+   row.appendChild(td2);
+   row.appendChild(td3);
+   row.appendChild(td4);
+   
+   table.appendChild(row);
+}
+
+function createTable() {
     console.log("START: table()");
     //var database = firebase.database();
 	/*
@@ -64,23 +89,12 @@ function table() {
     table.setAttribute("id", "table1");
     document.body.appendChild(table);
     */
-    var row0 = document.createElement("TR");
+
     var row1 = document.createElement("TR");
     var row2 = document.createElement("TR");
     var row3 = document.createElement("TR");
     var row4 = document.createElement("TR");
-    
-    var th1 = document.createElement("TH");
-    var th2 = document.createElement("TH");
-    var th3 = document.createElement("TH");
-    var th4 = document.createElement("TH");
-    
-    var t1 = document.createTextNode("Player Name");
-    var t2 = document.createTextNode("Wins");
-    var t3 = document.createTextNode("Losses");
-    var t4 = document.createTextNode("Winrate");
-    
-  
+      
     var name1 = document.createTextNode("Jill Stein");
     var win1  = document.createTextNode("1");
     var lose1 = document.createTextNode("2");
@@ -117,22 +131,11 @@ function table() {
     var td4c = document.createElement("TD");
     var td4d = document.createElement("TD");
     
-    document.getElementById("table").appendChild(row0);
     document.getElementById("table").appendChild(row1);
     document.getElementById("table").appendChild(row2);
     document.getElementById("table").appendChild(row3);
     document.getElementById("table").appendChild(row4);
-  
-  	row0.appendChild(th1);
-    row0.appendChild(th2);
-    row0.appendChild(th3);
-    row0.appendChild(th4);
-    
-    th1.appendChild(t1);
-    th2.appendChild(t2);
-    th3.appendChild(t3);
-    th4.appendChild(t4);
-  
+   
     row1.appendChild(td1a);
     row1.appendChild(td1b);
     row1.appendChild(td1c);
@@ -172,4 +175,6 @@ function table() {
     td4b.appendChild(win4);
     td4c.appendChild(lose4);
     td4d.appendChild(winrate4);
+   
+   addNewRow("fuck", 1, 3);
 }
