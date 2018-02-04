@@ -5,26 +5,14 @@ var activeBoard;            //the default game to show rankings for when loading
 var snapshotArr;            //the snapshot as an array, of the leaderboard names
 
 
-//When the page is ready, intialize firebase and load the leaderboard for tictactoe
+//Firebase is already intialized, so load the leaderboard for tictactoe
 $(document).ready(function() {
    console.log("START: $document.ready()");
 
    maxRowsOnScreen = 10;
    table = document.getElementById("table"); //set table to be the table element
    activeBoard = "TTT";
-   
-   // Initialize Firebase
-   var config = {
-   apiKey: "AIzaSyARQqkwmw-yDfR4Fl7eyDSs464kPyDTWpo",
-   authDomain: "tictactoemaster-b46ab.firebaseapp.com",
-   databaseURL: "https://tictactoemaster-b46ab.firebaseio.com",
-   projectId: "tictactoemaster-b46ab",
-   storageBucket: "tictactoemaster-b46ab.appspot.com",
-   messagingSenderId: "1050901435462"
-   };
-   firebase.initializeApp(config);
-   console.log("AFTER: firebase intialization");
-   
+
    getTopPlayersForGame(activeBoard);
 });
 
@@ -83,8 +71,8 @@ function createTable() {
       addNewRow(rank, '','','');
       rank++
    }
-   console.log(snapshotArr[10]);
-   console.log(snapshotArr[10].key);   
+   //console.log(snapshotArr[10]);
+   //onsole.log(snapshotArr[10].key);   
 }
 
 //Adds a new row to the table
