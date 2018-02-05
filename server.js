@@ -102,6 +102,12 @@ io.on('connection',function(socket){
                     // sending to all clients in 'game'
                     io.sockets.in("room-"+socket.player.roomNo).emit('startGame', socket.player);
                 }
+                
+                socket.on('disconnect',function(){
+                    // sending to all clients in 'game'
+                    io.sockets.in("room-"+socket.player.roomNo).emit('playerLeft')
+                });
+                
             }
                 
                 

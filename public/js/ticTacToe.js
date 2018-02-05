@@ -415,10 +415,16 @@ var ticTacState = {
         game.printBoard();
     },
     
+    
+    handleOpponentLeaving()
+    {
+        game.state.start("waitingRoom");
+    },
+    
     /*
         asign functions ot the game object, so they can be called by the client
         technically this is a state object, so the functions in this file are not 
-        automatically assigned to the game object. 
+        automatically assigned to the game object.
      */
     assignFunctions()
     {
@@ -440,5 +446,6 @@ var ticTacState = {
         game.restartMatch = this.restartMatch
         game.askForRematch = this.askForRematch
         game.updateTurnStatus = this.updateTurnStatus
+        game.handleOpponentLeaving = this.handleOpponentLeaving
     }
 };
