@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -14,6 +14,25 @@
         <style>
             h5 {font-size: 15px;}
             h6 {font-size: 15px;}
+
+            /* classes for progress bars */
+            
+            .progress {
+                width: 90%;
+                background: #ddd;
+                height: 40px;
+                margin: 15px;
+            }
+
+            .bar1, .bar2, .bar3, .bar4 {
+                width: 0;
+                background: green;
+                color: #fff;
+                height: 40px;
+                line-height: 40px;
+                padding: 0 5px
+            }
+
         </style>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">      
@@ -34,9 +53,133 @@
         </div>
         <div class="achievement"style="margin-left:25%;margin-bottom:10%">
             <img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px">
-            <!--
-            Insert achievement here
-            -->
-        </div>
+            <div class="w3-container">
+
+                <!-- Table full of achievments displaying titles, progress bars, and descriptions -->
+
+                <h2>Achievements</h2>
+
+                <div class="w3-responsive">
+
+                    
+                    <table id="table" class="w3-table-all w3-hoverable w3-centered w3-large">
+                        <tr>
+                            <th>Challanges</th>
+                            <th>Completion</th>
+                            <th>Description</th>
+
+                        </tr>
+
+                        <tr>
+                            <td>Place down your first piece</td>
+                            <td>
+                                <div class="progress" data-width="100%">
+                                    <div class="bar2"></div>
+                                </div>
+                            </td>
+                            <td>Put down your first Tic Tac Toe peice in a game.</td>
+                        </tr>
+
+                        <tr>
+                            <td>Get a draw in basic Tic Tac Toe</td>
+                            <td>
+                                <div class="progress" data-width="0%">
+                                    <div class="bar2"></div>
+                                </div>
+                            </td>
+                            <td>End a game as a draw in original Tic Tac Toe.</td>
+                        </tr>
+
+                        <tr>
+                            <td>Play an offline match</td>
+                            <td>
+                                <div class="progress" data-width="0%">
+                                    <div class="bar2"></div>
+                                </div>
+                            </td>
+                            <td>Play an offline match of any game mode.</td>
+                        </tr>
+
+                        <tr>
+                            <td>Play an online match</td>
+                            <td>
+                                <div class="progress" data-width="100%">
+                                    <div class="bar2"></div>
+                                </div>
+                            </td>
+                            <td>Play an online multiplayer match of any game mode.</td>
+                        </tr>
+
+                        <tr>
+                            <td>Win a game in each game mode</td>
+                            <td>
+                                <div class="progress" data-width="50%">
+                                    <div class="bar1"></div>
+                                </div>
+                            </td>
+                            <td>Defeat an opponent at Tic Tac Toe in every game mode.</td>
+                        </tr>
+
+                        <tr>
+                            <td>Win a X</td>
+                            <td>
+                                <div class="progress" data-width="100%">
+                                    <div class="bar2"></div>
+                                </div>
+                            </td>
+                            <td>Defeat an opponent while playing X in either original Tic Tac Toe, Ultimate, or 3D.</td>
+                        </tr>
+
+                        <tr>
+                            <td>Win as O</td>
+                            <td>
+                                <div class="progress" data-width="0%">
+                                    <div class="bar2"></div>
+                                </div>
+                            </td>
+                            <td>Defeat an opponent while playing O in either original Tic Tac Toe, Ultimate, or 3D.</td>
+                        </tr>
+
+                        <tr>
+                            <td>Lose a game</td>
+                            <td>
+                                <div class="progress" data-width="100%">
+                                    <div class="bar2"></div>
+                                </div>
+                            </td>
+                            <td>Lose a match in any game mode.</td>
+                        </tr>
+
+                        
+                        
+
+                    </table>
+                </div>
+
+             </div>   
+         </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+        <script>
+            function animateProgressBar(el, width) {
+                el.animate(
+                    { width: width },
+                    {
+                        duration: 2000,
+                        step: function (now, fx) {
+                            if (fx.prop == 'width') {
+                                el.html(Math.round(now * 100) / 100 + '%');
+                            }
+                        }
+                    }
+                );
+            }
+
+
+            $('.progress').each(function () {
+                animateProgressBar($(this).find("div"), $(this).data("width"))
+            });
+        </script>
     </body>
 </html>
