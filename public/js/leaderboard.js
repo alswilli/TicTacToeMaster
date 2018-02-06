@@ -12,9 +12,8 @@ var playerIndex;            //This is the initial index of the person to show on
  * jquery runs before javascript
  */
 $(document).ready(function() {
-
-
-   DEBUG              = true;
+   
+   DEBUG              = false;
    MAX_ROWS_ON_SCREEN = 10;
    activeBoard        = "TTT";
    playerIndex        = 0;
@@ -28,8 +27,7 @@ $(document).ready(function() {
  * Clears the current table and loads the players from the clicked game.
  */
 function switchToLeaderBoard(clickedBoard) {
-   initPlayerIndex = 0;
-   $("#table tbody tr").remove(); 
+   playerIndex = 0;
    getTopPlayersForGame(clickedBoard);
    
    if (clickedBoard !== activeBoard) {
@@ -43,8 +41,9 @@ function switchToLeaderBoard(clickedBoard) {
 /* Shows the top 10 players on the leaderboard
  */
 function toFirstPage() {
+   if (playerIndex == 0) { return; }
+   
    playerIndex = 0;
-   $("#table tbody tr").remove();
    getTopPlayersForGame(activeBoard);
 }
 
@@ -58,7 +57,6 @@ function getPrevPlayers() {
       playerIndex = 0;
    }else {
       if (DEBUG) { console.log("playerIndex:", playerIndex); }
-      $("#table tbody tr").remove();
       getTopPlayersForGame(activeBoard);
    }
 }
@@ -67,16 +65,17 @@ function getPrevPlayers() {
  */
 function getNextPlayers() {
    playerIndex += 10;
-   
-   $("#table tbody tr").remove();
    getTopPlayersForGame(activeBoard);
 }
 
 /* Queries the DB for all the players from the given game, converts the result to an array
- * and then creates the leaderboard table
+ * and then creates the leaderboard table. Apparently the function inside the firebase reference
+ * is a callback function for if the database changes, so $.remove() is moved to here to clear 
+ * the table everytime a new table needs to be created 
  */
 function getTopPlayersForGame(game) {
-      firebase.database().ref().child('leaderboard/'+game).orderByChild('Wins').on('value', function(snapshot) {
+   firebase.database().ref().child('leaderboard/'+game).orderByChild('Wins').on('value', function(snapshot) {
+      $("#table tbody tr").remove();
       snapshotArr = snapshotToArray(snapshot);
       if (DEBUG) { console.log(snapshotArr); }
       createTable();      
@@ -124,15 +123,17 @@ function createTable() {
 }
 
 /* Adds a new row to the table, given the person's name and stats.
- * If the player only has wins, then we set his winrate to 100%.
- * If the name is '', then we set the winrate to '' for the empty row.
+ * If the player has 0 wins and losses, set his winrate to --- 
+ * If the player only has wins, set his winrate to 100%.
+ * If the name is '', set the winrate to '' for the empty row.
  */
 function addNewRow(rank, name, win, lose) {   
    var row = document.createElement("TR");
    
    var winRate = ((win/lose * 100).toFixed(2)) + '%';
-   if ((win != 0) && (lose == 0)) { winRate = "100%"; }
-   if (name == '')                { winRate = '';     }
+   if ( isNaN(win/lose) )           { winRate = "---";  }
+   if ( (win != 0) && (lose == 0) ) { winRate = "100%"; }
+   if ( name == '' )                { winRate = '';     }
    
    row.appendChild( createTD(rank)    );
    row.appendChild( createTD(name)    );
