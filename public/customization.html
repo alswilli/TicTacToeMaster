@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Tic Tac Toe</title>
-    <!-- Include the Phaser API -->
+	<!-- Include the Phaser API -->
+	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="js/customization.js"></script>
 
         
     <link rel = "stylesheet"
@@ -15,20 +18,23 @@
         h5 {font-size: 15px;}
         h6 {font-size: 15px;}
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">      
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
   </head>
   <body>
+		
     <div class="w3-sidebar w3-light-gray w3-bar-block w3-card" style="width:25%">
     	<div class="w3-container w3-blue-gray">
-      	<h2>Username</h2>
-      	<p class="w3-right-align">waaaa</p>
+      	<h2 id="username">Username</h2>
+		  <p class="w3-right-align" id="battleText">waaaa</p>
+		  <p class="w3-right-align" id='cash'>moneyay</p>
     	</div>
-    	<img src="imgs/waluigi.png" alt="TicTacToe" style="width:100%">
-    	<a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='mainMenu.html'">Home Page</a>
-    	<a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='achievements.html'">Achievements</a>
+    	<img src="imgs/waluigi.png" alt="TicTacToe" style="width:100%" class="image">
+    	<a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="homePage">Home Page</a>
+    	<a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="achievements">Achievements</a>
     	<a href="#" class="w3-bar-item w3-blue-gray" >Customization</a>
-    	<a href="#" class="w3-bar-item w3-button w3-hover-blue-gray " onclick="location.href='leaderboard.html'">Leaderboard</a>
-    	<a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='index.html'">Logout</a>
+    	<a href="#" class="w3-bar-item w3-button w3-hover-blue-gray " id="leaderboard">Leaderboard</a>
+    	<a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="logout">Logout</a>
 		</div>
 		<div class="customization"style="margin-left:25%;margin-bottom:10%">
 			<img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px">
@@ -38,10 +44,10 @@
 					<div class="w3-col l3 s6">
 						<div class="w3-container">
 							<div class="w3-display-container">
-								<img id="image1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-								<span id="tag1" class="w3-tag w3-display-topleft">Locked</span>
+								<img id="boardImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<span id="boardLockTag0" class="w3-tag w3-display-topleft">Locked</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="button1" class="w3-button w3-black" onclick="unlock('button1','tag1','image1')">15 points </button>
+									<button id="boardButton0" class="w3-button w3-black" onclick="unlock('boardButton0','boardLockTag0','boardImage0')">15 points </button>
 								</div>
 							</div>
 							<p>Board1</p>
@@ -51,10 +57,10 @@
 					<div class="w3-col l3 s6">
 						<div class="w3-container">
 							<div class="w3-display-container">
-								<img src="imgs/waluigi.png" style="width:100%">
-								<span class="w3-tag w3-display-topleft">Locked</span>
+								<img id="boardImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<span id="boardLockTag1" class="w3-tag w3-display-topleft">Locked</span>
 								<div class="w3-display-middle w3-display-hover">
-										<button class="w3-button w3-black">15 points </button>
+										<button id="boardButton1" class="w3-button w3-black" onclick="unlock('boardButton1','boardLockTag1','boardImage1')">15 points </button>
 								</div>
 							</div>
 							<p>Board2</p>
@@ -64,10 +70,10 @@
 						<div class="w3-col l3 s6">
 							<div class="w3-container">
 								<div class="w3-display-container">
-									<img src="imgs/waluigi.png" style="width:100%">
-									<span class="w3-tag w3-display-topleft">Locked</span>
+									<img id="boardImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+									<span id="boardLockTag2" class="w3-tag w3-display-topleft">Locked</span>
 									<div class="w3-display-middle w3-display-hover">
-										<button class="w3-button w3-black">15 points </button>
+										<button id="boardButton2" class="w3-button w3-black" onclick="unlock('boardButton2','boardLockTag2','boardImage2')">15 points </button>
 									</div>
 								</div>
 								<p>Board3</p>
@@ -75,6 +81,16 @@
 								<!--add 1 in column 3-->
 						</div>
 						<div class="w3-col l3 s6">
+							<div class="w3-container">
+								<div class="w3-display-container">
+									<img id="boardImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+									<span id="boardLockTag3" class="w3-tag w3-display-topleft">Locked</span>
+									<div class="w3-display-middle w3-display-hover">
+										<button id="boardButton3" class="w3-button w3-black" onclick="unlock('boardButton3','boardLockTag3','boardImage3')">15 points </button>
+									</div>
+								</div>
+								<p>Board3</p>
+							</div>
 							<!--add 1 in column 4-->
 						</div>
 					</div>
@@ -85,13 +101,26 @@
 					<div class="w3-col l3 s6">
 						<div class="w3-container">
 							<div class="w3-display-container">
-								<img id="image1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-								<span id="tag1" class="w3-tag w3-display-topleft">Locked</span>
-								<div class="w3-display-middle w3-display-hover">
-									<button id="button1" class="w3-button w3-black" onclick="unlock('button1','tag1','image1')">15 points </button>
-								</div>
+								<img id="pieceImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+									<span id="pieceLockTag0" class="w3-tag w3-display-topleft">Locked</span>
+									<div class="w3-display-middle w3-display-hover">
+										<button id="pieceButton0" class="w3-button w3-black" onclick="unlock('pieceButton0','pieceLockTag0','pieceImage0')">15 points </button>
+									</div>
 							</div>
 							<p>Piece1</p>
+						</div>
+							<!--add 1 in column 1-->
+					</div>
+					<div class="w3-col l3 s6">
+						<div class="w3-container">
+							<div class="w3-display-container">
+								<img id="pieceImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+									<span id="pieceLockTag1" class="w3-tag w3-display-topleft">Locked</span>
+									<div class="w3-display-middle w3-display-hover">
+										<button id="pieceButton1" class="w3-button w3-black" onclick="unlock('pieceButton1','pieceLockTag1','pieceImage1')">15 points </button>
+									</div>
+							</div>
+							<p>Piece2</p>
 						</div>
 							<!--add 1 in column 1-->
 					</div>
@@ -103,34 +132,31 @@
 					<div class="w3-col l3 s6">
 						<div class="w3-container">
 							<div class="w3-display-container">
-								<img id="image1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-								<span id="tag1" class="w3-tag w3-display-topleft">Locked</span>
+								<img id="backgroundImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<span id="backgroundLockTag0" class="w3-tag w3-display-topleft">Locked</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="button1" class="w3-button w3-black" onclick="unlock('button1','tag1','image1')">15 points </button>
+									<button id="backgroundButton0" class="w3-button w3-black" onclick="unlock('backgroundButton0','backgroundLockTag0','backgroundImage0')">15 points </button>
 								</div>
 							</div>
 							<p>background1</p>
 						</div>
 							<!--add 1 in column 1-->
 					</div>
+					<div class="w3-col l3 s6">
+						<div class="w3-container">
+							<div class="w3-display-container">
+								<img id="backgroundImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<span id="backgroundLockTag1" class="w3-tag w3-display-topleft">Locked</span>
+								<div class="w3-display-middle w3-display-hover">
+									<button id="backgroundButton1" class="w3-button w3-black" onclick="unlock('backgroundButton1','backgroundLockTag1','backgroundImage1')">15 points </button>
+								</div>
+							</div>
+							<p>background2</p>
+						</div>
+							<!--add 1 in column 1-->
+					</div>
 				</div>
 				</div>
 			</div>
-			<script>
-				function remove(id) {
-					var removeTarget = document.getElementById(id);
-					removeTarget.style.display = "none";
-				}
-				function removeGrayScale(id) {
-   				var element = document.getElementById(id);
-   				element.classList.remove("w3-grayscale-max");
-				}
-				function unlock(tagId,buttonId,imageId){
-						remove(tagId);
-						remove(buttonId);
-						removeGrayScale(imageId);
-				}
-				
-			</script>
 		</body>
 </html>
