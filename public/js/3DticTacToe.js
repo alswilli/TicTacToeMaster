@@ -47,8 +47,6 @@ var threeDticTacState = {
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
         
-        this.makeBoardCoords()
-        
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         
@@ -633,7 +631,7 @@ var threeDticTacState = {
         return inside;
     },
     
-        
+    
     /*
      asign functions ot the game object, so they can be called by the client
      technically this is a state object, so the functions in this file are not
