@@ -26,6 +26,10 @@ $(document).ready(function() {
     console.log(cashMoney);
     var url = argumentVals[5];
     console.log(url);
+	
+		//gets reference for the user's unlocked items
+		var unlockedRef=firebase.database().ref('/users/' + keyValue+'/unlocked');
+		initializeLocked(unlockedRef);
     
     $( window ).on( "load", function() { 
 
@@ -100,45 +104,87 @@ $(document).ready(function() {
         });
     })
     //create firebase references
- var Auth = firebase.auth();
- var dbRef = firebase.database();
- var auth = null;
+		var Auth = firebase.auth();
+		var dbRef = firebase.database();
+		var auth = null;
 
-//  console.log("name: ", nameOfUser);
-//  console.log("battleText: ", battleText);
-//  console.log("cashMoney: ", cashMoney);
-//  console.log("url: ", url);
- 
-// //Achievements
-// $('#achievements').on('click', function (e) {
-//     e.preventDefault();
+		//  console.log("name: ", nameOfUser);
+		//  console.log("battleText: ", battleText);
+		//  console.log("cashMoney: ", cashMoney);
+		//  console.log("url: ", url);
 
-//     console.log("going to achievements");
-//     console.log("name: ", nameOfUser);
-//     console.log("battleText: ", battleText);
-//     console.log("cashMoney: ", cashMoney);
-//     console.log("url: ", url);
+		// //Achievements
+		// $('#achievements').on('click', function (e) {
+		//     e.preventDefault();
 
-//     window.location.href = "achievements.html" + '#' + keyValue + '#' + nameOfUser + '#' + battleText + '#' + cashMoney + '#' + url;
-// });
+		//     console.log("going to achievements");
+		//     console.log("name: ", nameOfUser);
+		//     console.log("battleText: ", battleText);
+		//     console.log("cashMoney: ", cashMoney);
+		//     console.log("url: ", url);
 
- //Logout
- $('#logout').on('click', function (e) {
-     e.preventDefault();
+		//     window.location.href = "achievements.html" + '#' + keyValue + '#' + nameOfUser + '#' + battleText + '#' + cashMoney + '#' + url;
+		// });
 
-     console.log("loggin out");
+	//Logout
+	$('#logout').on('click', function (e) {
+		 e.preventDefault();
 
-     firebase.auth().signOut()
-                   .then(function(authData) {
-                       console.log("Logged out successfully");
-                       window.location.href = "index.html";
-                       auth = authData;
-                       //$('#messageModalLabel').html(spanText('Success!', ['center', 'success']))
-                         
-                   })
-                   .catch(function(error) {
-                       console.log("Logout Failed!", error);
-                       //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
-                   });
- });
+		 console.log("loggin out");
+
+		 firebase.auth().signOut()
+									 .then(function(authData) {
+											 console.log("Logged out successfully");
+											 window.location.href = "index.html";
+											 auth = authData;
+											 //$('#messageModalLabel').html(spanText('Success!', ['center', 'success']))
+
+									 })
+									 .catch(function(error) {
+											 console.log("Logout Failed!", error);
+											 //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
+									 });
+	});
 })
+//removes elements specidied by id
+function remove(id) {
+	var removeTarget = document.getElementById(id);
+	removeTarget.style.display = "none";
+}
+//removes w3-grayscale class from images
+function removeGrayScale(id) {
+	var element = document.getElementById(id);
+	element.classList.remove("w3-grayscale-max");
+}
+// removes the locktag, button, and image after certain item is purchased
+function unlock(buttonId, tagId, imageId){
+	remove(tagId);
+	remove(buttonId);
+	removeGrayScale(imageId);
+}
+/* Gets the string represntation of what's unlocked(1) and what's locked(0)
+*  from firbase and unlocks the corresponding item for each category
+*/
+function initializeLocked(unlockedRef){
+	unlockedRef.once('value', function(snapshot) {
+			var userUnlocked = snapshot.val();
+			var unlockedBoard = userUnlocked.board;
+			var unlockedPiece = userUnlocked.piece;
+			var unlockedBackground = userUnlocked.background;
+			for (var boardIndex=0; boardIndex<unlockedBoard.length;boardIndex++){
+				if(unlockedBoard.charAt(boardIndex)=="1"){									
+					unlock("boardButton"+boardIndex,"boardLockTag"+boardIndex,"boardImage"+boardIndex);
+				}
+			}
+			for (var pieceIndex=0; pieceIndex<unlockedPiece.length;pieceIndex++){
+				if(unlockedPiece.charAt(pieceIndex)=="1"){									
+					unlock("pieceButton"+pieceIndex,"pieceLockTag"+pieceIndex,"pieceImage"+pieceIndex);
+				}
+			}
+			for (var backgroundIndex=0; backgroundIndex<unlockedBackground.length;backgroundIndex++){
+				if(unlockedBackground.charAt(backgroundIndex)=="1"){									
+					unlock("backgroundButton"+backgroundIndex,"backgroundLockTag"+backgroundIndex,"backgroundImage"+backgroundIndex);
+				}
+			}
+		});
+}
