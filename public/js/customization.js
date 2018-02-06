@@ -169,3 +169,10 @@ function initializeLocked(unlockedRef){
 			}
 		});
 }
+
+function updateAndUnlock(buttonId, tagId, imageId){
+	var itemType=buttonId.substring(0,buttonId.length-1);
+	console.log("itemType: ",itemType);
+	var itemIndex=buttonId.charAt(buttonId.length-1);
+	console.log("itemIndex: ",itemIndex);
+}
