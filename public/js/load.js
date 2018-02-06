@@ -12,7 +12,9 @@ var loadState = {
         game.load.image('logo', 'imgs/phaser.png');
         game.load.image('star', 'imgs/star.png');
         game.load.image('square', 'imgs/square.png');
-        game.load.image('moon', 'imgs/moon.png');   
+        game.load.image('moon', 'imgs/moon.png');
+        game.load.image('board', 'imgs/angledBoard.png');
+        
     },  
     
     /*

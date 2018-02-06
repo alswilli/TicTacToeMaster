@@ -17,11 +17,11 @@ var menuState = {
         gameName.anchor.setTo(0.5, 0.5)
         
         game.optionCount = 0;
-        game.addMenuOption('SinglePlayer', function () {
+        game.addMenuOption('SinglePlayer', 200, function () {
                            game.singleplayer = true
                            game.state.start("ticTac");
                            });
-        game.addMenuOption('Multiplayer', function () {
+        game.addMenuOption('Multiplayer', 200,function () {
                            game.singleplayer = false
                            game.state.start("ticTac");
                            });

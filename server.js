@@ -63,7 +63,7 @@ io.on('connection',function(socket){
                 {
                     id: server.lastPlayderID++,
                     board: [["","",""],["","",""],["","",""]],
-                    roomNo: server.roomno
+                    roomNo: server.roomno,
                 };
             
                 //broadcast messagess ; Socket.emit() sends a message to one specific socket

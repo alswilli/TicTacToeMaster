@@ -9,14 +9,14 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gameDiv')
 //corresponding .js files, i.e loadState is in load.js
 game.state.add('load', loadState)
 game.state.add('menu', menuState)
-game.state.add('ticTac', ticTacState)
+game.state.add('ticTac', threeDticTacState)
 game.state.add('win', winState)
 game.state.add('waitingRoom', waitingRoomState)
 
 game.optionCount = 0;
-game.addMenuOption = function(text, callback) {
+game.addMenuOption = function(text, startY, callback) {
     var optionStyle = { font: '30pt TheMinion', fill: 'white', align: 'left', stroke: 'rgba(0,0,0,0)', srokeThickness: 4};
-    var txt = game.add.text(game.world.centerX, (game.optionCount * 80) + 200, text, optionStyle);
+    var txt = game.add.text(game.world.centerX, (game.optionCount * 80) + startY, text, optionStyle);
     txt.anchor.setTo(0.5);
     txt.stroke = "rgba(0,0,0,0)";
     txt.strokeThickness = 4;
