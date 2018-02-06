@@ -1,3 +1,8 @@
+var unlockedRef;
+var userUnlocked;
+var unlockedBoard;
+var unlockedPiece;
+var unlockedBackground;
 $(document).ready(function() {
 
     // Initialize Firebase
@@ -28,8 +33,8 @@ $(document).ready(function() {
     console.log(url);
 	
 		//gets reference for the user's unlocked items
-		var unlockedRef=firebase.database().ref('/users/' + keyValue+'/unlocked');
-		initializeLocked(unlockedRef);
+		unlockedRef=firebase.database().ref('/users/' + keyValue+'/unlocked');
+		initializeLocked();
     
     $( window ).on( "load", function() { 
 
@@ -165,12 +170,12 @@ function unlock(buttonId, tagId, imageId){
 /* Gets the string represntation of what's unlocked(1) and what's locked(0)
 *  from firbase and unlocks the corresponding item for each category
 */
-function initializeLocked(unlockedRef){
+function initializeLocked(){
 	unlockedRef.once('value', function(snapshot) {
-			var userUnlocked = snapshot.val();
-			var unlockedBoard = userUnlocked.board;
-			var unlockedPiece = userUnlocked.piece;
-			var unlockedBackground = userUnlocked.background;
+			userUnlocked = snapshot.val();
+			unlockedBoard = userUnlocked.board;
+			unlockedPiece = userUnlocked.piece;
+			unlockedBackground = userUnlocked.background;
 			for (var boardIndex=0; boardIndex<unlockedBoard.length;boardIndex++){
 				if(unlockedBoard.charAt(boardIndex)=="1"){									
 					unlock("boardButton"+boardIndex,"boardLockTag"+boardIndex,"boardImage"+boardIndex);
@@ -188,10 +193,40 @@ function initializeLocked(unlockedRef){
 			}
 		});
 }
-
+function replaceAtIndex(string,index){
+	var newString ="";
+	for(var i=0;i<string.length;i++){
+		if(i==index) newString+="1";
+		else newString+=string.charAt(i);
+	}
+	return newString;
+}
 function updateAndUnlock(buttonId, tagId, imageId){
 	var itemType=buttonId.substring(0,buttonId.length-1);
-	console.log("itemType: ",itemType);
 	var itemIndex=buttonId.charAt(buttonId.length-1);
-	console.log("itemIndex: ",itemIndex);
+	console.log("swap index: ",itemIndex);
+	if(itemType=="boardButton"){
+		console.log("initial board unlocked status: ",unlockedBoard);
+		unlockedBoard=replaceAtIndex(unlockedBoard,itemIndex);
+		var boardRef=unlockedRef.child('board');
+		boardRef.set(
+      unlockedBoard
+    );
+		console.log("new board unlock status: ",unlockedBoard);
+	}else if (itemType=="pieceButton"){
+		unlockedPiece=replaceAtIndex(unlockedPiece,itemIndex);
+		var pieceRef=unlockedRef.child('piece');
+		pieceRef.set(
+      unlockedPiece
+    );
+	}else if (itemType=="backgroundButton"){
+		unlockedBackground=replaceAtIndex(unlockedBackground,itemIndex);
+		var backgroundRef=unlockedRef.child('background');
+		backgroundRef.set(
+      unlockedBackground
+    );
+	}else{
+		console.log("buttonId error: incorrectId");
+	}
+	unlock(buttonId,tagId,imageId);
 }
