@@ -3,6 +3,9 @@
     <head>
       <meta charset="UTF-8" />
       <title>Tic Tac Toe</title>
+      <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+      <script src="js/leaderboards.js"></script>
       <!-- Include the Phaser API -->
   
       <link rel = "stylesheet"
@@ -11,37 +14,30 @@
          
       <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
       <style>
-        h2 {text-align: center;}
+        h2 {font-size: 50px; text-align: center;}
         h5 {font-size: 15px;}
         h6 {font-size: 15px;}   
       </style>
 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-      
-      <script type="text/javascript">
-         var activeBoard = "board1"
-         function switchToLeaderBoard(clickedBoard) {
-           if (clickedBoard !== activeBoard) {
-              document.getElementById(clickedBoard).classList.add('w3-blue')
-              document.getElementById(activeBoard).classList.toggle('w3-blue')
-              activeBoard = clickedBoard
-           } 
-         }
-      </script>
+      <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
+      <script type="text/javascript" src="js/leaderboard.js"></script>
     </head>
     
     <body>
       <div class="w3-sidebar w3-light-gray w3-bar-block w3-card" style="width:25%">
         <div class="w3-container w3-blue-gray">
-          <h2>Username</h2>
-          <p class="w3-right-align">waaaa</p>
+          <h2 id="username">Username</h2>
+          <p class="w3-right-align" id="battleText">waaaa</p>
+          <p class="w3-right-align" id='cash'>moneyay</p>
         </div>
-        <img src="imgs/waluigi.png" alt="TicTacToe" style="width:100%">
-          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='mainMenu.html'">Home Page</a>
-          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='achievements.html'">Achievements</a>
-          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='customization.html'">Customization</a>
+        <img src="imgs/waluigi.png" alt="TicTacToe" style="width:100%" class="image">
+          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="homePage">Home Page</a>
+          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="achievements">Achievements</a>
+          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="customization">Customization</a>
           <a href="#" class="w3-bar-item w3-blue-gray ">Leaderboard</a>
-          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" onclick="location.href='index.html'">Logout</a>
+          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="logout">Logout</a>
     </div>
     <div class="leaderboard"style="margin-left:25%;margin-bottom:10%">
       <img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px">
@@ -51,51 +47,37 @@
         <h2>Leaderboard</h2>
         
         <div class="w3-bar w3-black w3-center w3-large">
-          <a id="board1" href="#" onClick="switchToLeaderBoard('board1')" 
+          <a id="TTT" href="#" onClick="switchToLeaderBoard('TTT')" 
              style="width:25%" class="w3-bar-item w3-button w3-padding-16 w3-mobile w3-blue">Tic Tac Toe</a>
-          <a id="board2" href="#" onClick="switchToLeaderBoard('board2')" 
+          <a id="3DT" href="#" onClick="switchToLeaderBoard('3DT')" 
              style="width:25%" class="w3-bar-item w3-button w3-padding-16 w3-mobile">3D Tic Tac Toe</a>
-          <a id="board3" href="#" onClick="switchToLeaderBoard('board3')"  
+          <a id="OAC" href="#" onClick="switchToLeaderBoard('OAC')"  
              style="width:25%" class="w3-bar-item w3-button w3-padding-16 w3-mobile">Order and Chaos</a>
-          <a id="board4" href="#" onClick="switchToLeaderBoard('board4')"
+          <a id="ULT" href="#" onClick="switchToLeaderBoard('ULT')"
              style="width:25%" class="w3-bar-item w3-button w3-padding-16 w3-mobile">Ultimate Tic Tac Toe</a>
         </div>
         
         <div class="w3-responsive">
-          <table class="w3-table-all w3-hoverable w3-centered w3-large">
-            <tr>
-              <th>Player Name</th>
-              <th>Wins</th>
-              <th>Losses</th>
-              <th>Winrate</th>
-            </tr>
-            <tr>
-              <td>Jill Stein</td>
-              <td>1</td>
-              <td>2</td>
-              <td>33.33%</td>
-            </tr>
-            <tr>
-              <td>Evelyn </td>
-              <td>2</td>
-              <td>4</td>
-              <td>50.00%</td>
-            </tr>
-            <tr>
-              <td>OpenGLuva </td>
-              <td>1</td>
-              <td>7</td>
-              <td>0.14%</td>
-            </tr>
+          <table id="table" class="w3-table-all w3-hoverable w3-centered w3-large">
+            <thead>
               <tr>
-              <td>Ugandan Warrior</td>
-              <td>10</td>
-              <td>0</td>
-              <td>100.00%</td>
-            </tr>
+                <th>Rank</th>
+                <th>Player Name</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Winrate</th>
+              </tr>
+            </thead>
+            <tbody id="table_body">
+            </tbody>
           </table>
         </div>
-                
+         
+        <div class="w3-bar w3-black">
+          <button class="w3-button w3-green w3-left">&laquo; Previous 10</button>
+          <button class="w3-button w3-green w3-right">Next 10 &raquo;</button>
+        </div>
+         
       </div>            
             
     </div>
