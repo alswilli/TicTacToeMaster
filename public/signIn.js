@@ -74,7 +74,7 @@ $(document).ready(function(){
                                         firebase.storage().ref(img).getDownloadURL().then(function(url) {
                                         //$('.image').attr('src', url);
                                         urlVal = url;
-                                        window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal;
+                                        window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';
                                         console.log("hola");
                                         })
                                 // window.location.href = "mainMenu.html" + '#&&' + text + '&&' + htmlId;

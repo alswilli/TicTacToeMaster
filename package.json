@@ -4,6 +4,7 @@
   "description": "become a tic tac toe master!",
   "main": "server.js",
   "dependencies": {
+    "epress": "0.0.1-security",
     "express": "^4.16.2",
     "socket.io": "^2.0.4"
   },
