@@ -28,7 +28,7 @@ nameOfUser = argumentVals[2];
 
 var dbRefObject = firebase.database().ref('/users/' + keyValue + '/username/');
                 dbRefObject.set(
-                    username
+                    nameOfUser
                 );
 
 console.log(nameOfUser);
@@ -51,6 +51,7 @@ console.log(cashMoney);
 url = argumentVals[5];
 console.log(url);
 imageName = argumentVals[6];
+console.log(imageName);
 
 if (imageName != 'null')
 {
@@ -60,7 +61,7 @@ if (imageName != 'null')
                 );
 }
 
-console.log(imageName);
+// console.log(imageName);
 
 $( window ).on( "load", function() { 
 
