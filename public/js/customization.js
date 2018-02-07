@@ -1,8 +1,9 @@
-var unlockedRef;
-var userUnlocked;
-var unlockedBoard;
-var unlockedPiece;
-var unlockedBackground;
+var unlockedRef; //The firebase reference to the unlocked section of each user
+var userUnlocked; //The object that stores each item's unlock status
+//The string that contains unlocked status consists of 0's(locked) and 1's(unlocked)
+var unlockedBoard; //String repsensentation of the unlocked status of board design
+var unlockedPiece; //String repsensentation of the unlocked status of piece design
+var unlockedBackground; //String repsensentation of the unlocked status of background design
 $(document).ready(function() {
 
     // Initialize Firebase
@@ -151,41 +152,49 @@ $(document).ready(function() {
 									 });
 	});
 })
+
 //removes elements specidied by id
 function remove(id) {
 	var removeTarget = document.getElementById(id);
 	removeTarget.style.display = "none";
 }
+
 //removes w3-grayscale class from images
 function removeGrayScale(id) {
 	var element = document.getElementById(id);
 	element.classList.remove("w3-grayscale-max");
 }
-// removes the locktag, button, and image after certain item is purchased
+
+// removes the locktag, button, and grayscale class to show specified item is unlocked
 function unlock(buttonId, tagId, imageId){
 	remove(tagId);
 	remove(buttonId);
 	removeGrayScale(imageId);
 }
-/* Gets the string represntation of what's unlocked(1) and what's locked(0)
-*  from firbase and unlocks the corresponding item for each category
+
+/* 
+Gets the string represntation of what's unlocked(1) and what's locked(0) from firbase and unlocks the corresponding item for each category (board design, piece design, and background design)
 */
 function initializeLocked(){
 	unlockedRef.once('value', function(snapshot) {
+		//gets the reference for each data to read
 			userUnlocked = snapshot.val();
 			unlockedBoard = userUnlocked.board;
 			unlockedPiece = userUnlocked.piece;
 			unlockedBackground = userUnlocked.background;
+		//unlock unlocked items for board design
 			for (var boardIndex=0; boardIndex<unlockedBoard.length;boardIndex++){
 				if(unlockedBoard.charAt(boardIndex)=="1"){									
-					unlock("boardButton"+boardIndex,"boardLockTag"+boardIndex,"boardImage"+boardIndex);
+				unlock("boardButton"+boardIndex,"boardLockTag"+boardIndex,"boardImage"+boardIndex);
 				}
 			}
+		//unlock unlocked items for piece design
 			for (var pieceIndex=0; pieceIndex<unlockedPiece.length;pieceIndex++){
 				if(unlockedPiece.charAt(pieceIndex)=="1"){									
 					unlock("pieceButton"+pieceIndex,"pieceLockTag"+pieceIndex,"pieceImage"+pieceIndex);
 				}
 			}
+		//unlock unlocked items for background design
 			for (var backgroundIndex=0; backgroundIndex<unlockedBackground.length;backgroundIndex++){
 				if(unlockedBackground.charAt(backgroundIndex)=="1"){									
 					unlock("backgroundButton"+backgroundIndex,"backgroundLockTag"+backgroundIndex,"backgroundImage"+backgroundIndex);
@@ -193,38 +202,50 @@ function initializeLocked(){
 			}
 		});
 }
+
+//takes in a string and change a character specified by the index
 function replaceAtIndex(string,index){
 	var newString ="";
+	//loops through the string, replacing the character at index by 1 while keeping the rest
 	for(var i=0;i<string.length;i++){
 		if(i==index) newString+="1";
 		else newString+=string.charAt(i);
 	}
 	return newString;
 }
+
+//when an item is purchased
 function updateAndUnlock(buttonId, tagId, imageId){
-	var itemType=buttonId.substring(0,buttonId.length-1);
-	var itemIndex=buttonId.charAt(buttonId.length-1);
-	console.log("swap index: ",itemIndex);
+	//splits buttonID to identify which category of design the item belongs to and the item's index number
+	var itemType=buttonId.substring(0,buttonId.length-1); //gets category
+	var itemIndex=buttonId.charAt(buttonId.length-1); //gets item index
+	//console.log("swap index: ",itemIndex);
 	if(itemType=="boardButton"){
-		console.log("initial board unlocked status: ",unlockedBoard);
+		//console.log("initial board unlocked status: ",unlockedBoard);
 		unlockedBoard=replaceAtIndex(unlockedBoard,itemIndex);
-		var boardRef=unlockedRef.child('board');
+		//gets the reference to the child node storing the string that repsents board unlock status
+		var boardRef=unlockedRef.child('board'); 
+		//replaces the onld string with the new one
 		boardRef.set(
       unlockedBoard
     );
-		console.log("new board unlock status: ",unlockedBoard);
+		//console.log("new board unlock status: ",unlockedBoard);
 	}else if (itemType=="pieceButton"){
+		//console.log("initial piece unlocked status: ",unlockedPiece);
 		unlockedPiece=replaceAtIndex(unlockedPiece,itemIndex);
 		var pieceRef=unlockedRef.child('piece');
 		pieceRef.set(
       unlockedPiece
     );
+		//console.log("new piece unlock status: ",unlockedPiece);
 	}else if (itemType=="backgroundButton"){
+		//console.log("initial background unlocked status: ",unlockedBackground);
 		unlockedBackground=replaceAtIndex(unlockedBackground,itemIndex);
 		var backgroundRef=unlockedRef.child('background');
 		backgroundRef.set(
       unlockedBackground
     );
+		//console.log("new background unlock status: ",unlockedBackground);
 	}else{
 		console.log("buttonId error: incorrectId");
 	}
