@@ -11,6 +11,48 @@ $(document).ready(function() {
     };
     firebase.initializeApp(config);
 
+    //get a specific user's key
+    var keyValue = window.location.hash.substring(1)
+
+    //get data from that specific user
+    var userSecQ;
+
+
+    /*LOOKUP USER, find a user with the given keyvalue, then do something with the data */
+    firebase.database().ref('/users/' + keyValue + '/challenges/').once('value').then(function (snapshot) {
+        userSecQ = (snapshot.val().secQ);
+        console.log("foundUser:", userSecQ);
+
+    });
+
+
+
+
+    var bar1 = document.getElementById('bar1');
+    bar1.setAttribute('data-width', '50%');
+
+    
+
+    // function from https://jsfiddle.net/hibbard_eu/pxnZZ/
+    function animateProgressBar(el, width) {
+        el.animate(
+            { width: width },
+            {
+                duration: 2000,
+                step: function (now, fx) {
+                    if (fx.prop == 'width') {
+                        el.html(Math.round(now * 100) / 100 + '%');
+                    }
+                }
+            }
+        );
+    }
+    $('.progress').each(function () {
+        animateProgressBar($(this).find("div"), $(this).data("width"))
+    });
+
+
+
     console.log("In achievements");
 
     var argumentVals = window.location.hash.split('&&');
