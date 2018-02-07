@@ -11,7 +11,7 @@ const winState = {
         */
         game.endingBoard.forEach(function(element) {
             if(element.key != 'text')
-                ticTacState.addSprite(element.x, element.y, element.key);
+                game.addSprite(element.x, element.y, element.key);
         });
     
         var message
@@ -52,12 +52,12 @@ const winState = {
         winMessage.anchor.setTo(0.5, 0.5)
 
         // explain how to reStart the game, we will add more options when we have more games
-        game.optionCount = 3.6;
-        game.addMenuOption('Play Again', function () {
+        game.optionCount = 0;
+        game.addMenuOption('Play Again',  400, function () {
                            game.singleplayer = true
                            game.state.start("ticTac");
                            });
-        game.addMenuOption('Return to TicTacToe Menu', function () {
+        game.addMenuOption('Return to TicTacToe Menu', 400, function () {
                            game.singleplayer = false
                            game.state.start("menu");
                            });

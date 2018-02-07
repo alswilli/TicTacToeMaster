@@ -78,9 +78,20 @@ $( window ).on( "load", function() {
 
         console.log("going to tictactoe original");
 
-        window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&original' + '&&null' ;
         //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
+    });
+               
+   //Tic Tac Toe Original
+   $('#3dtictactoe').on('click', function (e) {
+          e.preventDefault();
+          
+          console.log("going to 3d tictactoe");
+          
+          window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url  + '&&3d' + '&&null' ;
+          //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
+                              
     });
 
     //Edit Profile
