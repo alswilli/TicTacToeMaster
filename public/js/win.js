@@ -11,15 +11,38 @@ const winState = {
         */
         game.endingBoard.forEach(function(element) {
             if(element.key != 'text')
-                ticTacState.addSprite(element.x, element.y, element.key);
+                game.addSprite(element.x, element.y, element.key);
         });
     
         var message
         //display that the game ended in a draw or display the winner
         if(game.isDraw)
-            message = "Draw ..."
+        {
+            message = "Draw... Both receive 25 gold coins." //add sound and or animation here later for getting the money
+            game.cash = game.cash + 25;
+            console.log("Current cash amount: ", game.cash);
+        }
         else
-            message = game.winner + ' wins!'
+        {
+            message = game.winner + ' wins! ' + game.winner + ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+            if (game.singleplayer == true)
+            {
+                game.cash = game.cash + 50;
+                console.log("Current cash amount: ", game.cash);
+            }
+            else //not working yet, game.player is null?
+            {
+                console.log("Yeah");
+                console.log(game.player);
+                console.log(game.winner);
+                if (game.player == game.winner)
+                {
+                    game.cash = game.cash + 50;
+                    console.log("Current cash amount: ", game.cash);
+                }   
+            }
+        }
+                    
         
         // display win message
         const winMessage = game.add.text(
@@ -29,14 +52,15 @@ const winState = {
         winMessage.anchor.setTo(0.5, 0.5)
 
         // explain how to reStart the game, we will add more options when we have more games
-        const startGameText = game.add.text(
-            game.world.centerX, 250, 'click to play again',
-            { font: '20px Arial', fill: '#ffffff' }
-        )
-        startGameText.anchor.setTo(0.5, 0.5)
-
-        //restart game on click
-        game.input.onDown.add(this.startGame, this)
+        game.optionCount = 0;
+        game.addMenuOption('Play Again',  400, function () {
+                           game.singleplayer = true
+                           game.state.start("ticTac");
+                           });
+        game.addMenuOption('Return to TicTacToe Menu', 400, function () {
+                           game.singleplayer = false
+                           game.state.start("menu");
+                           });
     },
   
     /*

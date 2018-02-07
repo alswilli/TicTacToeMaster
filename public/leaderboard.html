@@ -33,6 +33,7 @@
           <p class="w3-right-align" id='cash'>moneyay</p>
         </div>
         <img src="imgs/waluigi.png" alt="TicTacToe" style="width:100%" class="image">
+          <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="editProfile">Edit Profile</a>
           <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="homePage">Home Page</a>
           <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="achievements">Achievements</a>
           <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="customization">Customization</a>
@@ -42,7 +43,7 @@
     <div class="leaderboard"style="margin-left:25%;margin-bottom:10%">
       <img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px">
       
-      <div class="w3-container">
+      <div class="w3-container w3-border-green">
         
         <h2>Leaderboard</h2>
         
@@ -58,7 +59,7 @@
         </div>
         
         <div class="w3-responsive">
-          <table id="table" class="w3-table-all w3-hoverable w3-centered w3-large">
+          <table id="table" class="w3-table-all w3-hoverable w3-centered w3-large w3-border-black">
             <thead>
               <tr>
                 <th>Rank</th>
@@ -74,8 +75,9 @@
         </div>
          
         <div class="w3-bar w3-black">
-          <button class="w3-button w3-green w3-left">&laquo; Previous 10</button>
-          <button class="w3-button w3-green w3-right">Next 10 &raquo;</button>
+          <button class="w3-button w3-green w3-left" onclick="toFirstPage()">First Page</button>
+          <button class="w3-button w3-green w3-right" onclick="getNextPlayers()">Next Page &raquo;</button>
+          <button class="w3-button w3-teal w3-text-white w3-right" onclick="getPrevPlayers()">&laquo; Previous Page</button>
         </div>
          
       </div>            

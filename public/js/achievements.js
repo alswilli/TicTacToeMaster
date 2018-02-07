@@ -78,6 +78,25 @@ $(document).ready(function() {
         document.getElementById('cash').innerHTML = '$' + cashMoney;
         $('.image').attr('src', url);
 
+        //Edit Profile
+        $('#editProfile').on('click', function (e) {
+            e.preventDefault();
+
+            console.log("going to achievements");
+            console.log("name: ", nameOfUser);
+            console.log("battleText: ", battleText);
+            console.log("cashMoney: ", cashMoney);
+            console.log("url: ", url);
+
+            // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
+            // console.log("arguments: ", argumentData);
+
+            window.location.href = "editProfile.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
+            
+        });
+
+
         //Home Page
         $('#homePage').on('click', function (e) {
             e.preventDefault();
@@ -91,7 +110,7 @@ $(document).ready(function() {
             // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
             // console.log("arguments: ", argumentData);
 
-            window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url;
+            window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
             //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
         });
@@ -106,7 +125,7 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            window.location.href = "customization.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url;
+            window.location.href = "customization.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
         });
 
         //Leaderboard
@@ -119,7 +138,7 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            window.location.href = "leaderboard.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url;
+            window.location.href = "leaderboard.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
         });
     
     })

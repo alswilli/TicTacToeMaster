@@ -1,3 +1,5 @@
+
+
 /*
  The actual meat of the game, game state contains all the logic for the tictactoe
  game.
@@ -141,6 +143,7 @@ var ticTacState = {
         var turn = game.isXTurn ? "x" : "o"
         if(game.singleplayer)
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
+        // Below is for multiplayer
         else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
         else
