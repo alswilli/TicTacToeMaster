@@ -46,6 +46,7 @@ game.username = nameOfUser;
 game.battleText = battleText;
 game.cash = parseInt(cashMoney);
 game.url = url;
+game.gametype = gametype;
 
 //add all the different states to the game, these states are defined in all the 
 //corresponding .js files, i.e loadState is in load.js
