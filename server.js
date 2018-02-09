@@ -47,7 +47,7 @@ io.on('connection',function(socket){
       
      
       
-      socket.on('makeNewPlayer',function(){
+      socket.on('makeNewPlayer',function(data){
             //create new player
                 //Increase roomno if 2 clients are present in a room.
                 if(io.nsps['/'].adapter.rooms["room-"+server.roomno] && io.nsps['/'].adapter.rooms["room-"+server.roomno].length >= server.roomSize)
@@ -64,19 +64,20 @@ io.on('connection',function(socket){
                     id: server.lastPlayderID++,
                     board: [["","",""],["","",""],["","",""]],
                     roomNo: server.roomno,
+                    username: data.name,
+                    gametype: data.gametype
                 };
-            
+                
+                console.log("welcome: " + socket.player.username + " to " + socket.player.gametype)
                 //broadcast messagess ; Socket.emit() sends a message to one specific socket
                 //Here, we send to the newly connected client a message labeled 'allplayers',
                 //and as a second argument, the output of Client.getAllPlayers()
                 socket.emit('confirmPlayer',socket.player);
-
                 
-                
-                socket.on('click',function(board, x, y){
-                    console.log('server received click '+board);
-                    socket.player.board = board
-                    io.sockets.in("room-"+socket.player.roomNo).emit('switchTurn',socket.player, x, y);
+                socket.on('click',function(data){
+                    console.log('server received click '+data.board);
+                    socket.player.board = data.board
+                    io.sockets.in("room-"+socket.player.roomNo).emit('switchTurn',socket.player,data);
                           
                 });
                 
@@ -98,9 +99,15 @@ io.on('connection',function(socket){
                 //Increase roomno if 2 clients are present in a room.
                 if(io.nsps['/'].adapter.rooms["room-"+socket.player.roomNo].length >= server.roomSize)
                 {
+                    socket.player.challenger = io.nsps['/'].adapter.rooms["room-"+server.roomno].challenger
                     console.log("start the game, roomNo " +socket.player.roomNo)
                     // sending to all clients in 'game'
                     io.sockets.in("room-"+socket.player.roomNo).emit('startGame', socket.player);
+                }
+                //challenger is fist person in the room
+                else
+                {
+                    io.nsps['/'].adapter.rooms["room-"+server.roomno].challenger = socket.player.username
                 }
                 
                 socket.on('disconnect',function(){
@@ -110,8 +117,6 @@ io.on('connection',function(socket){
                 
             }
                 
-                
-            
         );
       }
 );

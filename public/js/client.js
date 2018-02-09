@@ -2,14 +2,14 @@ var Client = {};
 Client.socket = io.connect();
 
 /*functions that can be called directly form the game to communicate with the server*/
-Client.makeNewPlayer = function(){
+Client.makeNewPlayer = function(data){
     console.log("making new player!")
-    Client.socket.emit('makeNewPlayer');
+    Client.socket.emit('makeNewPlayer', data);
 };
 
-Client.sendClick = function(board, x, y){
+Client.sendClick = function(data){
     console.log("Client received sendCClick, now Sending click to server")
-    Client.socket.emit('click',board,x, y);
+    Client.socket.emit('click',data);
 };
 
 Client.askForRematch = function(roomNo){
@@ -20,7 +20,7 @@ Client.askForRematch = function(roomNo){
 /*Callbacks that are called when the server sends a signal with the given name*/
 Client.socket.on('startGame',function(data){
                  console.log("tell them to start!");
-                 game.startMatch(data.id);
+                 game.startMatch(data);
                  });
 
 Client.socket.on('confirmPlayer',function(data){
@@ -28,10 +28,10 @@ Client.socket.on('confirmPlayer',function(data){
     game.assignRoom(data.room);
  });
 
-Client.socket.on('switchTurn',function(data, x, y){
+Client.socket.on('switchTurn',function(data, coordInfo){
      console.log("sending message to game to switch turn");
      game.updateBoard(data.id, data.board);
-     game.synchronizeTurn(data.id, x, y);
+     game.synchronizeTurn(data.id, coordInfo);
 });
 
 Client.socket.on('restartGame',function(data) {

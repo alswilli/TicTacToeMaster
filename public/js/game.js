@@ -33,6 +33,7 @@ url = argumentVals[5];
 console.log(url);
 gametype = argumentVals[6]
 
+
 /*
 create the actual game object, 1st and 2nd args are dimensions 
 third arg is rendering context, can be Phaser.CANVAS, Phaser.WEBGL, or Phaser.AUTO
@@ -47,6 +48,8 @@ game.battleText = battleText;
 game.cash = parseInt(cashMoney);
 game.url = url;
 game.gametype = gametype;
+
+console.log("In Game Page "+ game.username);
 
 //add all the different states to the game, these states are defined in all the 
 //corresponding .js files, i.e loadState is in load.js
