@@ -14,12 +14,12 @@ var waitingRoomState = {
         gameName.anchor.setTo(0.5, 0.5)
         
         game.optionCount = 0;
-        game.addMenuOption('Search For Another', function () {
+        game.addMenuOption('Search For Another', 200, function () {
            game.singleplayer = false
            game.state.start("ticTac");
         });
         
-        game.addMenuOption('Main Menu', function () {
+        game.addMenuOption('Main Menu', 200, function () {
            game.state.start("menu");
         });
         

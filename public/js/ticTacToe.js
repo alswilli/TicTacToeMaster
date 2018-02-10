@@ -51,13 +51,15 @@ var ticTacState = {
         //if this is the first play against an opponent, create a new player on the server
         if(typeof game.firstPlay === 'undefined')
         {
-            Client.makeNewPlayer();
+            
+            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype});
             console.log("firstPlay!")
             game.firstPlay = false
             game.waiting = true
         }
         else
         {
+            console.log("ask for rematch")
             game.askForRematch()
         }
         
@@ -147,20 +149,20 @@ var ticTacState = {
         else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
         else
-            game.turnStatusText.setText("Opponent's turn")
+            game.turnStatusText.setText(game.opponent + "'s turn")
     },
     
     /*
         Make sure only one player is waiting at a time for the opponent
      */
-    synchronizeTurn(id, x, y)
+    synchronizeTurn(id, coordInfo)
     {
         //if the id received is this player, that means this player just moved, so they should be waiting now
         if(game.id === id)
             game.waiting = true
         else
             game.waiting = false
-        if(game.isOver(x, y))
+        if(game.isOver(coordInfo.x, coordInfo.y))
             game.displayWinner()
         game.switchTurn()
     },
@@ -248,7 +250,17 @@ var ticTacState = {
      switch the the winState, indicating who the winner is
      */
     displayWinner() {
-        game.winner = game.isXTurn ? 'x' : 'o'
+        var winningPiece = game.isXTurn ? 'x' : 'o'
+        if(game.singleplayer)
+            game.winner = winningPiece
+        else
+        {
+            if(game.player === winningPiece)
+                game.winner = game.username
+            else
+                game.winner = game.opponent
+        }
+
         
         game.saveBoard()
         
@@ -313,14 +325,17 @@ var ticTacState = {
     /*
         Start an initial match between two players
      */
-    startMatch(id){
+    startMatch(data){
         //assign a player to be O, this will be the second player to join a match
-        if(game.id === id)
+        if(game.id === data.id)
         {
             game.waiting = true
             game.player = "o"
             game.playerPieceText.setText("You are O")
-            game.turnStatusText.setText("Opponent's turn")
+            game.opponent = data.challenger
+            game.turnStatusText.setText(game.opponent + "'s turn")
+            
+            
         }
         else
         {
@@ -328,8 +343,10 @@ var ticTacState = {
             console.log("no longer waiting!")
             game.player = "x"
             game.playerPieceText.setText("You are X")
+            game.opponent = data.username
             game.turnStatusText.setText("Your Turn")
         }
+        console.log("you are challenged by " + game.opponent)
         
     },
     
@@ -343,7 +360,7 @@ var ticTacState = {
             game.waiting = true
             game.player = "o"
             game.playerPieceText.setText("You are O")
-            game.turnStatusText.setText("Opponent's turn")
+            game.turnStatusText.setText(game.opponent + "'s turn")
         }
         else if(game.player === "o")
         {
@@ -411,7 +428,8 @@ var ticTacState = {
         {
             game.waiting = true;
             //send updated board to the server so the opponent's board is updated too
-            Client.sendClick(game.board, indexX, indexY);
+            var data = {board:game.board, x:indexX, y:indexY};
+            Client.sendClick(data);
         }
         
         //for debugging
@@ -421,6 +439,7 @@ var ticTacState = {
     
     handleOpponentLeaving()
     {
+        console.log("opponent left")
         game.state.start("waitingRoom");
     },
     

@@ -60,25 +60,26 @@ var threeDticTacState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
-            //if this is the first play against an opponent, create a new player on the server
-            if(typeof game.firstPlay === 'undefined')
-            {
-                Client.makeNewPlayer();
-                console.log("firstPlay!")
-                game.firstPlay = false
-                game.waiting = true
-            }
-            else
-            {
-                game.askForRematch()
-            }
+        //if this is the first play against an opponent, create a new player on the server
+        if(typeof game.firstPlay === 'undefined')
+        {
+            Client.makeNewPlayer();
+            console.log("firstPlay!")
+            game.firstPlay = false
+            game.waiting = true
+        }
+        else
+        {
+            game.askForRematch()
+        }
         
     },
     
     /*
-     returns nxn 2D array
+     returns nxn 3D array
      */
-    makeBoardAsArray(n) {
+    makeBoardAsArray(n)
+    {
         board = [];
         for (var i=0; i < n; i++)
         {
@@ -104,7 +105,7 @@ var threeDticTacState = {
     
     /*
      creates the board on screen with clickable squares, game.n, game.board, and
-     game.startingCX and Y must be defined before calling game function
+     game.startingX and Y must be defined before calling game function
      */
     makeBoardOnScreen(){
         //  Here we'll create a new Group
@@ -121,10 +122,6 @@ var threeDticTacState = {
             board.boardNum = i
             //make have placePiece be called when a square is clicked
             board.events.onInputDown.add(game.placePiece, game)
-            
-            //initialize 2D array boad to be empty strings
-            //game.board[i] = "";
-            
         }
     },
     
@@ -229,7 +226,8 @@ var threeDticTacState = {
      adds a sprite to the screen and returns a reference to it, scales image down
      to half its size, we can change game later
      */
-    addSpriteWithWidth(x, y, name, width, height) {
+    addSpriteWithWidth(x, y, name, width, height)
+    {
         var sprite = game.add.sprite(x, y, name);
         //sprite.scale.setTo(0.5, 0.5);
         sprite.width = width
