@@ -1,9 +1,11 @@
+var userRef; //The firebase reference to the specific user
 var unlockedRef; //The firebase reference to the unlocked section of each user
 var userUnlocked; //The object that stores each item's unlock status
 //The string that contains unlocked status consists of 0's(locked) and 1's(unlocked)
 var unlockedBoard; //String repsensentation of the unlocked status of board design
 var unlockedPiece; //String repsensentation of the unlocked status of piece design
 var unlockedBackground; //String repsensentation of the unlocked status of background design
+var selectedList; //String representation of what is slected for each customization category
 $(document).ready(function() {
 
     // Initialize Firebase
@@ -32,10 +34,12 @@ $(document).ready(function() {
     console.log(cashMoney);
     var url = argumentVals[5];
     console.log(url);
-	
+		
+		userRef = firebase.database().ref('/users/' + keyValue);
 		//gets reference for the user's unlocked items
-		unlockedRef=firebase.database().ref('/users/' + keyValue+'/unlocked');
+		unlockedRef=userRef.child('unlocked');
 		initializeLocked();
+		initializeSelected();
     
     $( window ).on( "load", function() { 
 
@@ -153,7 +157,55 @@ $(document).ready(function() {
 	});
 })
 
-//removes elements specidied by id
+/*function checkAlreadySelected(buttonId){
+	var itemIndex=buttonId.charAt(buttonId.length-1);
+	userRef.once('value', function(snapshot) {
+		selectedList= snapshot.val().selected;
+		if (buttonId.startsWith("board")){
+			console.log("compared "+selectedList.charAt(0)+" with "+itemIndex);
+			console.log("so the result is: ",selectedList.charAt(0)==itemIndex)
+			return selectedList.charAt(0)==itemIndex;
+		}else if(buttonId.startsWith("piece")){
+			return selectedList.charAt(1)==itemIndex;
+		}else if(buttonId.startsWith("backgorund")){
+			return selectedList.charAt(2)==itemIndex;
+		}else{
+			console.log("buttonId error: incorrectId");
+		}
+	});
+}*/
+function changeSelection(buttonId){
+	var itemIndex=buttonId.charAt(buttonId.length-1);
+	var selectedRef=userRef.child('selected');
+	if (buttonId.startsWith("board")){
+		var currentSelected= selectedList.charAt(0);
+		remove("boardSelectedTag"+currentSelected);
+		selectedList=replaceAtIndex(selectedList,0,itemIndex);
+		appear("boardSelectedTag"+itemIndex);
+	}else if(buttonId.startsWith("piece")){
+		var currentSelected= selectedList.charAt(1);
+		remove("pieceSelectedTag"+currentSelected);
+		selectedList=replaceAtIndex(selectedList,1,itemIndex);
+		appear("pieceSelectedTag"+itemIndex);
+	}else if(buttonId.startsWith("background")){
+		var currentSelected= selectedList.charAt(2);
+		remove("backgroundSelectedTag"+currentSelected);
+		selectedList=replaceAtIndex(selectedList,2,itemIndex);
+		appear("backgroundSelectedTag"+itemIndex);
+	}else{
+		console.log("buttonId error: incorrectId");
+	}
+	selectedRef.set(
+  	selectedList
+  );
+}
+//makes elecment specified by id appear
+function appear(id) {
+	var targetElement = document.getElementById(id);
+	targetElement.style.display = "block";
+}
+
+//makes element specified by id disappear
 function remove(id) {
 	var removeTarget = document.getElementById(id);
 	removeTarget.style.display = "none";
@@ -170,6 +222,10 @@ function unlock(buttonId, tagId, imageId){
 	remove(tagId);
 	remove(buttonId);
 	removeGrayScale(imageId);
+	document.getElementById(imageId).addEventListener("click", function(){
+    console.log("selected: ",imageId);
+		changeSelection(buttonId);
+	});
 }
 
 /* 
@@ -202,13 +258,21 @@ function initializeLocked(){
 			}
 		});
 }
+function initializeSelected(){
+	userRef.once('value', function(snapshot) {
+		selectedList= snapshot.val().selected;
+		appear("boardSelectedTag"+selectedList.charAt(0));
+		appear("pieceSelectedTag"+selectedList.charAt(1));
+		appear("backgroundSelectedTag"+selectedList.charAt(2));
+	});
+}
 
 //takes in a string and change a character specified by the index
-function replaceAtIndex(string,index){
+function replaceAtIndex(string,index,char){
 	var newString ="";
 	//loops through the string, replacing the character at index by 1 while keeping the rest
 	for(var i=0;i<string.length;i++){
-		if(i==index) newString+="1";
+		if(i==index) newString+=char;
 		else newString+=string.charAt(i);
 	}
 	return newString;
@@ -216,13 +280,12 @@ function replaceAtIndex(string,index){
 
 //when an item is purchased
 function updateAndUnlock(buttonId, tagId, imageId){
-	//splits buttonID to identify which category of design the item belongs to and the item's index number
-	var itemType=buttonId.substring(0,buttonId.length-1); //gets category
-	var itemIndex=buttonId.charAt(buttonId.length-1); //gets item index
+	//gets item's index number for swapping out character
+	var itemIndex=buttonId.charAt(buttonId.length-1);
 	//console.log("swap index: ",itemIndex);
-	if(itemType=="boardButton"){
+	if(buttonId.startsWith("board")){
 		//console.log("initial board unlocked status: ",unlockedBoard);
-		unlockedBoard=replaceAtIndex(unlockedBoard,itemIndex);
+		unlockedBoard=replaceAtIndex(unlockedBoard,itemIndex,"1");
 		//gets the reference to the child node storing the string that repsents board unlock status
 		var boardRef=unlockedRef.child('board'); 
 		//replaces the onld string with the new one
@@ -230,17 +293,17 @@ function updateAndUnlock(buttonId, tagId, imageId){
       unlockedBoard
     );
 		//console.log("new board unlock status: ",unlockedBoard);
-	}else if (itemType=="pieceButton"){
+	}else if (buttonId.startsWith("piece")){
 		//console.log("initial piece unlocked status: ",unlockedPiece);
-		unlockedPiece=replaceAtIndex(unlockedPiece,itemIndex);
+		unlockedPiece=replaceAtIndex(unlockedPiece,itemIndex,"1");
 		var pieceRef=unlockedRef.child('piece');
 		pieceRef.set(
       unlockedPiece
     );
 		//console.log("new piece unlock status: ",unlockedPiece);
-	}else if (itemType=="backgroundButton"){
+	}else if (buttonId.startsWith("background")){
 		//console.log("initial background unlocked status: ",unlockedBackground);
-		unlockedBackground=replaceAtIndex(unlockedBackground,itemIndex);
+		unlockedBackground=replaceAtIndex(unlockedBackground,itemIndex,"1");
 		var backgroundRef=unlockedRef.child('background');
 		backgroundRef.set(
       unlockedBackground
