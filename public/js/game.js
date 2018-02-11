@@ -21,9 +21,9 @@ var gametype;
 var argumentVals = window.location.hash.split('&&');
 console.log(argumentVals);
 
-keyValue = argumentVals[1]; 
+/*keyValue = argumentVals[1];
 console.log(keyValue);
-nameOfUser = argumentVals[2];
+nameOfUser = localStorage.getItem("username")//argumentVals[2];
 console.log(nameOfUser);
 battleText = argumentVals[3];
 console.log(battleText);
@@ -31,7 +31,14 @@ cashMoney = argumentVals[4];
 console.log(cashMoney);
 url = argumentVals[5];
 console.log(url);
-gametype = argumentVals[6]
+gametype = argumentVals[6]*/
+gametype = localStorage.getItem("gameType");
+nameOfUser = localStorage.getItem("username");
+keyValue = localStorage.getItem("userKey");
+nameOfUser = localStorage.getItem("username");
+battleText = localStorage.getItem("battleText");
+cashMoney = localStorage.getItem("cash");
+url = localStorage.getItem("picURL");
 
 
 /*
@@ -55,6 +62,8 @@ console.log("In Game Page "+ game.username);
 //corresponding .js files, i.e loadState is in load.js
 game.state.add('load', loadState)
 game.state.add('menu', menuState)
+
+game.firstPlay = true
 
 game.state.add('win', winState)
 game.state.add('waitingRoom', waitingRoomState)

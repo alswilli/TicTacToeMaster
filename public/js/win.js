@@ -38,7 +38,7 @@ const winState = {
                 console.log(game.player);
                 console.log(game.winner);
                 //*****Here is where we check if someboday won in multiplayer*****//
-                if (game.username == game.winner)
+                if (game.username === game.winner)
                 {
                     //game.userkey can be used to update firebase shtuff
                     game.cash = game.cash + 50;
@@ -75,7 +75,8 @@ const winState = {
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Return to TicTacToe Menu', 400, function () {
-                           //game.singleplayer = false
+                           game.firstPlay = true
+                           Client.notifyQuit()
                            game.state.start("menu");
                            });
     },

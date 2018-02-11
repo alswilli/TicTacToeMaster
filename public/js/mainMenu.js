@@ -18,41 +18,48 @@ var nameOfUser;
 var battleText;
 var cashMoney;
 var url;
+                  
+keyValue = localStorage.getItem("userKey");
+nameOfUser = localStorage.getItem("username");
+battleText = localStorage.getItem("battleText");
+cashMoney = localStorage.getItem("cash");
+url = localStorage.getItem("picURL");
 
-var argumentVals = window.location.hash.split('&&');
-console.log(argumentVals);
+//var argumentVals = window.location.hash.split('&&');
+//console.log(argumentVals);
 
-keyValue = argumentVals[1]; 
+/*keyValue = argumentVals[1];
 console.log(keyValue);
-nameOfUser = argumentVals[2];
+nameOfUser = argumentVals[2];*/
 
 var dbRefObject = firebase.database().ref('/users/' + keyValue + '/username/');
                 dbRefObject.set(
                     nameOfUser
                 );
 
-console.log(nameOfUser);
-battleText = argumentVals[3];
+/*console.log(nameOfUser);
+battleText = argumentVals[3];*/
 
 dbRefObject = firebase.database().ref('/users/' + keyValue + '/battleText/');
                 dbRefObject.set(
                     battleText
                 );
 
-console.log(battleText);
-cashMoney = argumentVals[4];
+/*console.log(battleText);
+cashMoney = argumentVals[4];*/
 
 var dbRefObject = firebase.database().ref('/users/' + keyValue + '/cash/');
             dbRefObject.set(
                 cashMoney
             );
 
-console.log(cashMoney);
+/*console.log(cashMoney);
 url = argumentVals[5];
 console.log(url);
 imageName = argumentVals[6];
-console.log(imageName);
-
+console.log(imageName);*/
+                
+imageName = localStorage.getItem("imageName")
 if (imageName != 'null')
 {
     dbRefObject = firebase.database().ref('/users/' + keyValue + '/image/');
@@ -77,8 +84,8 @@ $( window ).on( "load", function() {
         e.preventDefault();
 
         console.log("going to tictactoe original");
-
-        window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&original' + '&&null' ;
+        localStorage.setItem("gameType", "original")
+        window.location.href = "game.html";
         //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
     });
@@ -88,8 +95,8 @@ $( window ).on( "load", function() {
           e.preventDefault();
           
           console.log("going to 3d tictactoe");
-          
-          window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url  + '&&3d' + '&&null' ;
+          localStorage.setItem("gameType", "3d")
+          window.location.href = "game.html";
           //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
                               
     });

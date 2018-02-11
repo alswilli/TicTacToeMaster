@@ -1,5 +1,9 @@
 var Client = {};
+
 Client.socket = io.connect();
+
+//Client.socket = io.connect();
+
 
 /*functions that can be called directly form the game to communicate with the server*/
 Client.makeNewPlayer = function(data){
@@ -8,7 +12,7 @@ Client.makeNewPlayer = function(data){
 };
 
 Client.sendClick = function(data){
-    console.log("Client received sendCClick, now Sending click to server")
+    console.log("Client received sendClick from " + data.id +", now Sending click to server")
     Client.socket.emit('click',data);
 };
 
@@ -17,10 +21,15 @@ Client.askForRematch = function(roomNo){
     Client.socket.emit('askForRematch', roomNo);
 };
 
+Client.notifyQuit = function(){
+    console.log("Client received notifyQuit, now Sending request to server")
+    Client.socket.emit('playerQuit');
+};
 /*Callbacks that are called when the server sends a signal with the given name*/
 Client.socket.on('startGame',function(data){
                  console.log("tell them to start!");
                  game.startMatch(data);
+                 Client.socket.emit('markRoomFull');
                  });
 
 Client.socket.on('confirmPlayer',function(data){
@@ -30,7 +39,7 @@ Client.socket.on('confirmPlayer',function(data){
 
 Client.socket.on('switchTurn',function(data, coordInfo){
      console.log("sending message to game to switch turn");
-     game.updateBoard(data.id, data.board);
+     game.updateBoard(data.board, data.id, coordInfo);
      game.synchronizeTurn(data.id, coordInfo);
 });
 
