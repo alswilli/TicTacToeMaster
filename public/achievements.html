@@ -11,6 +11,7 @@
             href = "css/mainMenuStyle.css" />
          
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
         <style>
             h5 {font-size: 15px;}
             h6 {font-size: 15px;}
@@ -24,7 +25,7 @@
                 margin: 15px;
             }
 
-            .bar1, .bar2, .bar3, .bar4 {
+            .challengePiece, .challengeDraw, .challengeOffline, .challengeOnline, .challengeMode, .challengeX, .challengeO, .challengeLose {
                 width: 0;
                 background: green;
                 color: #fff;
@@ -78,8 +79,8 @@
                         <tr>
                             <td>Place down your first piece</td>
                             <td>
-                                <div class="progress" data-width="100%">
-                                    <div class="bar2"></div>
+                                <div class="progress" id="challengePiece" data-width="0%">
+                                    <div class="challengePiece" ></div>
                                 </div>
                             </td>
                             <td>Put down your first Tic Tac Toe peice in a game.</td>
@@ -88,8 +89,8 @@
                         <tr>
                             <td>Get a draw in basic Tic Tac Toe</td>
                             <td>
-                                <div class="progress" data-width="0%">
-                                    <div class="bar2"></div>
+                                <div class="progress" id="challengeDraw" data-width="0%">
+                                    <div class="challengeDraw"></div>
                                 </div>
                             </td>
                             <td>End a game as a draw in original Tic Tac Toe.</td>
@@ -98,8 +99,8 @@
                         <tr>
                             <td>Play an offline match</td>
                             <td>
-                                <div class="progress" data-width="0%">
-                                    <div class="bar2"></div>
+                                <div class="progress" id="challengeOffline" data-width="0%">
+                                    <div class="challengeOffline"></div>
                                 </div>
                             </td>
                             <td>Play an offline match of any game mode.</td>
@@ -108,8 +109,8 @@
                         <tr>
                             <td>Play an online match</td>
                             <td>
-                                <div class="progress" data-width="100%">
-                                    <div class="bar2"></div>
+                                <div class="progress" id="challengeOnline" data-width="0%">
+                                    <div class="challengeOnline"></div>
                                 </div>
                             </td>
                             <td>Play an online multiplayer match of any game mode.</td>
@@ -118,8 +119,8 @@
                         <tr>
                             <td>Win a game in each game mode</td>
                             <td>
-                                <div class="progress" data-width="50%">
-                                    <div class="bar1"></div>
+                                <div class="progress" id="challengeMode" data-width="0%">
+                                    <div class="challengeMode"></div>
                                 </div>
                             </td>
                             <td>Defeat an opponent at Tic Tac Toe in every game mode.</td>
@@ -128,8 +129,8 @@
                         <tr>
                             <td>Win a X</td>
                             <td>
-                                <div class="progress" data-width="100%">
-                                    <div class="bar2"></div>
+                                <div class="progress" id="challengeX" data-width="0%">
+                                    <div class="challengeX"></div>
                                 </div>
                             </td>
                             <td>Defeat an opponent while playing X in either original Tic Tac Toe, Ultimate, or 3D.</td>
@@ -138,8 +139,8 @@
                         <tr>
                             <td>Win as O</td>
                             <td>
-                                <div class="progress" data-width="0%">
-                                    <div class="bar2"></div>
+                                <div class="progress" id="challengeO" data-width="0%">
+                                    <div class="challengeO"></div>
                                 </div>
                             </td>
                             <td>Defeat an opponent while playing O in either original Tic Tac Toe, Ultimate, or 3D.</td>
@@ -148,8 +149,8 @@
                         <tr>
                             <td>Lose a game</td>
                             <td>
-                                <div class="progress" data-width="100%">
-                                    <div class="bar2"></div>
+                                <div class="progress" id="challengeLose" data-width="0%">
+                                    <div class="challengeLose"></div>
                                 </div>
                             </td>
                             <td>Lose a match in any game mode.</td>
@@ -163,28 +164,5 @@
 
              </div>   
          </div>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
-        <script>
-            function animateProgressBar(el, width) {
-                el.animate(
-                    { width: width },
-                    {
-                        duration: 2000,
-                        step: function (now, fx) {
-                            if (fx.prop == 'width') {
-                                el.html(Math.round(now * 100) / 100 + '%');
-                            }
-                        }
-                    }
-                );
-            }
-
-
-            $('.progress').each(function () {
-                animateProgressBar($(this).find("div"), $(this).data("width"))
-            });
-        </script>
     </body>
 </html>
