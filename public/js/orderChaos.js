@@ -449,22 +449,20 @@ var orderChaosState = {
         if(game.id === data.id)
         {
             game.waiting = true
-            console.log("no longer waiting!")
             game.player = "chaos"
             game.playerPieceText.setText("You are Chaos")
-            game.opponent = data.username
-            
-            
+            game.opponent = data.challenger
+            game.turnStatusText.setText(game.opponent + "'s turn")
+
         }
         else
         {
             game.waiting = false
-            
-            game.turnStatusText.setText("Your Turn")
+            console.log("no longer waiting!")
             game.player = "order"
             game.playerPieceText.setText("You are Order")
-            game.opponent = data.challenger
-            game.turnStatusText.setText(game.opponent + "'s turn")
+            game.opponent = data.username
+            game.turnStatusText.setText("Your Turn")
         }
         console.log("you are challenged by " + game.opponent)
         
