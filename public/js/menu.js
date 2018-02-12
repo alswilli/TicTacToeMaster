@@ -18,10 +18,16 @@ var menuState = {
         called to initialize this state
     */
     create() {
-        
+        var title
+        if(game.gametype == "original")
+            title = 'Tic Tac Toe'
+        else if(game.gametype == "3d")
+            title = '3D Tic Tac Toe'
+        else if(game.gametype == "orderChaos")
+            title = 'Order and Chaos'
         // display game name
         const gameName = game.add.text(
-            game.world.centerX, 100, 'Tic Tac Toe',
+            game.world.centerX, 100, title,
             { font: '50px Arial', fill: '#ffffff' }
         )
         //setting anchor centers the text on its x, y coordinates 

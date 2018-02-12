@@ -13,23 +13,13 @@ $(document).ready(function() {
 
     console.log("In leaderboards");
 
-    var argumentVals = window.location.hash.split('&&');
-    console.log(argumentVals);
-    
-    var keyValue = argumentVals[1]; 
-    console.log(keyValue);
-    var nameOfUser = argumentVals[2];
-    console.log(nameOfUser);
-    var battleText = argumentVals[3];
-    console.log(battleText);
-    var cashMoney = argumentVals[4];
-    console.log(cashMoney);
-    var url = argumentVals[5];
-    console.log(url);
+    var keyValue = localStorage.getItem("userkey");
+    var nameOfUser = localStorage.getItem("username");
+    var battleText = localStorage.getItem("battleText");
+    var cashMoney = localStorage.getItem("cash");
+    var url = localStorage.getItem("picURL");
     
     $( window ).on( "load", function() { 
-
-        console.log("Poooooooop!!");
 
         document.getElementById('username').innerHTML = nameOfUser;
         document.getElementById('battleText').innerHTML = battleText;
@@ -46,12 +36,8 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
-            // console.log("arguments: ", argumentData);
-
-            window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
-            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
-            
+            window.location.href = "mainMenu.html"
+            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;   
         });
 
         //Edit Profile
@@ -64,14 +50,9 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
-            // console.log("arguments: ", argumentData);
-
-            window.location.href = "editProfile.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
-            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
-            
+            window.location.href = "editProfile.html"
+            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;    
         });
-
 
         //Achievements
         $('#achievements').on('click', function (e) {
@@ -83,7 +64,7 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            window.location.href = "achievements.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+            window.location.href = "achievements.html"
         });
 
         //Customization
@@ -96,49 +77,30 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            window.location.href = "customization.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+            window.location.href = "customization.html"
         });
     })
     //create firebase references
- var Auth = firebase.auth();
- var dbRef = firebase.database();
- var auth = null;
+    var Auth = firebase.auth();
+    var dbRef = firebase.database();
+    var auth = null;
 
-//  console.log("name: ", nameOfUser);
-//  console.log("battleText: ", battleText);
-//  console.log("cashMoney: ", cashMoney);
-//  console.log("url: ", url);
- 
-// //Achievements
-// $('#achievements').on('click', function (e) {
-//     e.preventDefault();
+    //Logout
+    $('#logout').on('click', function (e) {
+        e.preventDefault();
 
-//     console.log("going to achievements");
-//     console.log("name: ", nameOfUser);
-//     console.log("battleText: ", battleText);
-//     console.log("cashMoney: ", cashMoney);
-//     console.log("url: ", url);
+        console.log("loggin out");
 
-//     window.location.href = "achievements.html" + '#' + keyValue + '#' + nameOfUser + '#' + battleText + '#' + cashMoney + '#' + url;
-// });
-
- //Logout
- $('#logout').on('click', function (e) {
-     e.preventDefault();
-
-     console.log("loggin out");
-
-     firebase.auth().signOut()
-                   .then(function(authData) {
-                       console.log("Logged out successfully");
-                       window.location.href = "index.html";
-                       auth = authData;
-                       //$('#messageModalLabel').html(spanText('Success!', ['center', 'success']))
-                         
-                   })
-                   .catch(function(error) {
-                       console.log("Logout Failed!", error);
-                       //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
-                   });
- });
+        firebase.auth().signOut()
+        .then(function(authData) {
+            console.log("Logged out successfully");
+            window.location.href = "index.html";
+            auth = authData;
+            //$('#messageModalLabel').html(spanText('Success!', ['center', 'success']))
+        })
+        .catch(function(error) {
+            console.log("Logout Failed!", error);
+            //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
+        });
+    });
 })
