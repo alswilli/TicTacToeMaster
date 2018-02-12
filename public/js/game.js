@@ -56,7 +56,7 @@ game.cash = parseInt(cashMoney);
 game.url = url;
 game.gametype = gametype;
 
-console.log("In Game Page "+ game.username);
+console.log("In Game Page "+ game.gametype);
 
 //add all the different states to the game, these states are defined in all the 
 //corresponding .js files, i.e loadState is in load.js

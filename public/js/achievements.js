@@ -54,9 +54,6 @@ $(document).ready(function () {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
-            // console.log("arguments: ", argumentData);
-
             window.location.href = "editProfile.html"
             //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             

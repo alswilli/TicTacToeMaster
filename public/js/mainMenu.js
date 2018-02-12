@@ -78,13 +78,8 @@ $( window ).on( "load", function() {
         e.preventDefault();
 
         console.log("going to tictactoe original");
-<<<<<<< HEAD
-
-        window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&original';
-=======
         localStorage.setItem("gameType", "original")
         window.location.href = "game.html";
->>>>>>> 333784fbfdcf1653c46f2ba8dee8497fc2d481f3
         //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
     });
@@ -94,13 +89,8 @@ $( window ).on( "load", function() {
           e.preventDefault();
           
           console.log("going to 3d tictactoe");
-<<<<<<< HEAD
-          
-          window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url  + '&&3d';
-=======
           localStorage.setItem("gameType", "3d")
           window.location.href = "game.html";
->>>>>>> 333784fbfdcf1653c46f2ba8dee8497fc2d481f3
           //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
                               
     });
@@ -110,9 +100,9 @@ $( window ).on( "load", function() {
         e.preventDefault();
     
         console.log("going to ordar and chaos");
-    
-        window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url  + '&&orderChaos';
-        //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
+        localStorage.setItem("gameType", "orderChaos")
+        window.location.href = "game.html";
+        //window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url  + '&&orderChaos';
                         
 });
 

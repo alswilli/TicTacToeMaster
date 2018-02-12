@@ -27,13 +27,14 @@ const winState = {
         }
         else
         {
-<<<<<<< HEAD
-            message = 'x' + ' wins! ' + 'x' + ' receives 50 gold coins!' //add sound and or animation here later for getting the money
-            game.winner = 'x';
-=======
-            message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
-            submessage = game.winner + ' receives 50 gold coins!'
->>>>>>> 333784fbfdcf1653c46f2ba8dee8497fc2d481f3
+            if (game.gametype == "orderChaos"){
+                message = 'x' + ' wins! ' + 'x' + ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+                game.winner = 'x';
+            }
+            else {
+                message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+                submessage = game.winner + ' receives 50 gold coins!'
+            }
             if (game.singleplayer == true)
             {
                 game.cash = game.cash + 50;
