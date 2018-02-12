@@ -13,46 +13,47 @@ firebase.initializeApp(config);
 
 console.log("In Home Page");
 
-var keyValue;
-var nameOfUser;
-var battleText;
-var cashMoney;
-var url;
+var keyValue = localStorage.getItem("userKey");
+var nameOfUser = localStorage.getItem("username");
+var battleText = localStorage.getItem("battleText");
+var cashMoney = localStorage.getItem("cash");
+var url = localStorage.getItem("picURL");
 
-var argumentVals = window.location.hash.split('&&');
-console.log(argumentVals);
+//var argumentVals = window.location.hash.split('&&');
+//console.log(argumentVals);
 
-keyValue = argumentVals[1]; 
+/*keyValue = argumentVals[1];
 console.log(keyValue);
-nameOfUser = argumentVals[2];
+nameOfUser = argumentVals[2];*/
 
 var dbRefObject = firebase.database().ref('/users/' + keyValue + '/username/');
                 dbRefObject.set(
                     nameOfUser
                 );
 
-console.log(nameOfUser);
-battleText = argumentVals[3];
+/*console.log(nameOfUser);
+battleText = argumentVals[3];*/
 
 dbRefObject = firebase.database().ref('/users/' + keyValue + '/battleText/');
                 dbRefObject.set(
                     battleText
                 );
 
-console.log(battleText);
-cashMoney = argumentVals[4];
+/*console.log(battleText);
+cashMoney = argumentVals[4];*/
 
 var dbRefObject = firebase.database().ref('/users/' + keyValue + '/cash/');
             dbRefObject.set(
                 cashMoney
             );
 
-console.log(cashMoney);
+/*console.log(cashMoney);
 url = argumentVals[5];
 console.log(url);
 imageName = argumentVals[6];
-console.log(imageName);
-
+console.log(imageName);*/
+                
+imageName = localStorage.getItem("imageName")
 if (imageName != 'null')
 {
     dbRefObject = firebase.database().ref('/users/' + keyValue + '/image/');
@@ -77,8 +78,13 @@ $( window ).on( "load", function() {
         e.preventDefault();
 
         console.log("going to tictactoe original");
+<<<<<<< HEAD
 
         window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&original';
+=======
+        localStorage.setItem("gameType", "original")
+        window.location.href = "game.html";
+>>>>>>> 333784fbfdcf1653c46f2ba8dee8497fc2d481f3
         //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
     });
@@ -88,8 +94,13 @@ $( window ).on( "load", function() {
           e.preventDefault();
           
           console.log("going to 3d tictactoe");
+<<<<<<< HEAD
           
           window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url  + '&&3d';
+=======
+          localStorage.setItem("gameType", "3d")
+          window.location.href = "game.html";
+>>>>>>> 333784fbfdcf1653c46f2ba8dee8497fc2d481f3
           //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
                               
     });
@@ -118,7 +129,7 @@ $( window ).on( "load", function() {
         // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
         // console.log("arguments: ", argumentData);
 
-        window.location.href = "editProfile.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "editProfile.html"
         //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
     });
@@ -136,7 +147,7 @@ $( window ).on( "load", function() {
         // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
         // console.log("arguments: ", argumentData);
 
-        window.location.href = "achievements.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "achievements.html"
         //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
     });
@@ -151,7 +162,7 @@ $( window ).on( "load", function() {
         console.log("cashMoney: ", cashMoney);
         console.log("url: ", url);
 
-        window.location.href = "customization.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "customization.html"
     });
 
     //Leaderboard
@@ -164,7 +175,7 @@ $( window ).on( "load", function() {
         console.log("cashMoney: ", cashMoney);
         console.log("url: ", url);
 
-        window.location.href = "leaderboard.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "leaderboard.html" 
     });
 })
 

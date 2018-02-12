@@ -15,6 +15,7 @@ const winState = {
         });
     
         var message
+        var submessage = ""
         //display that the game ended in a draw or display the winner
         if(game.isDraw && game.gametype == "orderChaos")
         {
@@ -26,8 +27,13 @@ const winState = {
         }
         else
         {
+<<<<<<< HEAD
             message = 'x' + ' wins! ' + 'x' + ' receives 50 gold coins!' //add sound and or animation here later for getting the money
             game.winner = 'x';
+=======
+            message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+            submessage = game.winner + ' receives 50 gold coins!'
+>>>>>>> 333784fbfdcf1653c46f2ba8dee8497fc2d481f3
             if (game.singleplayer == true)
             {
                 game.cash = game.cash + 50;
@@ -38,11 +44,17 @@ const winState = {
                 console.log("Yeah");
                 console.log(game.player);
                 console.log(game.winner);
-                if (game.player == game.winner)
+                //*****Here is where we check if someboday won in multiplayer*****//
+                if (game.username === game.winner)
                 {
+                    //game.userkey can be used to update firebase shtuff
                     game.cash = game.cash + 50;
                     console.log("Current cash amount: ", game.cash);
-                }   
+                }
+                else
+                {
+                    console.log("You lose");
+                }
             }
         }
                     
@@ -50,18 +62,28 @@ const winState = {
         // display win message
         const winMessage = game.add.text(
             game.world.centerX, 200, message,
-            { font: '50px Arial', fill: '#ffffff' }
+            { font: '35px Arial', fill: '#ffffff' }
         )
         winMessage.anchor.setTo(0.5, 0.5)
+        //make sure everythiong fits on screen by displaying seoncd line of message at lower y coordinate
+        if(submessage != "")
+        {
+            const subWinMessage = game.add.text(
+                    game.world.centerX, 250, submessage,
+                    { font: '35px Arial', fill: '#ffffff' }
+            )
+            subWinMessage.anchor.setTo(0.5, 0.5)
+        }
 
         // explain how to reStart the game, we will add more options when we have more games
         game.optionCount = 0;
         game.addMenuOption('Play Again',  400, function () {
-                           game.singleplayer = true
+                           //game.singleplayer = true
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Return to TicTacToe Menu', 400, function () {
-                           game.singleplayer = false
+                           game.firstPlay = true
+                           Client.notifyQuit()
                            game.state.start("menu");
                            });
     },

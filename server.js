@@ -31,6 +31,11 @@ server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
 server.roomno = 1;
 server.roomSize = 2;
 
+var roomsNo = {}
+initGameRoom("original")
+initGameRoom("3d")
+
+
 
 /*
  -listen to connections from clients and define callbacks to process the messages sent through the sockets
@@ -47,86 +52,142 @@ io.on('connection',function(socket){
       
      
       
-      socket.on('makeNewPlayer',function(){
+      socket.on('makeNewPlayer',function(data){
             //create new player
                 //Increase roomno if 2 clients are present in a room.
-                if(io.nsps['/'].adapter.rooms["room-"+server.roomno] && io.nsps['/'].adapter.rooms["room-"+server.roomno].length >= server.roomSize)
+                var roomName = getRoomName(data)
+                if(needNewRoom(data.gametype))
+                //(io.nsps['/'].adapter.rooms[roomName] && io.nsps['/'].adapter.rooms[roomName].length >= server.roomSize)
                 {
-                    server.roomno++;
+                    roomsNo[data.gametype].num++
+                    roomName = getRoomName(data)
                 }
-                socket.join("room-"+server.roomno);
+                roomsNo[data.gametype].total++
+                console.log("there are now " + roomsNo[data.gametype].total + " players")
+                socket.join(roomName);
+                
+                
                 
                 //Send this event to everyone in the room. Fore debugging
-                io.sockets.in("room-"+server.roomno).emit('connectToRoom', "You are in room no. "+server.roomno);
+                //io.sockets.in("room-"+data.gametype+server.roomno).emit('connectToRoom', "You are in room no. "+server.roomno);
                 
                 socket.player =
                 {
                     id: server.lastPlayderID++,
                     board: [["","",""],["","",""],["","",""]],
                     roomNo: server.roomno,
+                    username: data.name,
+                    gametype: data.gametype,
+                    roomName: roomName,
+                    inFullRoom: false,
                 };
-            
+                
+                io.nsps['/'].adapter.rooms[socket.player.roomName].full = false
+                
+                console.log("welcome: " + socket.player.username + " to " + socket.player.roomName)
                 //broadcast messagess ; Socket.emit() sends a message to one specific socket
                 //Here, we send to the newly connected client a message labeled 'allplayers',
                 //and as a second argument, the output of Client.getAllPlayers()
                 socket.emit('confirmPlayer',socket.player);
-
                 
-                
-                socket.on('click',function(board, x, y){
-                    console.log('server received click '+board);
-                    socket.player.board = board
-                    io.sockets.in("room-"+socket.player.roomNo).emit('switchTurn',socket.player, x, y);
+                socket.on('click',function(data){
+                    console.log('server received click '+data.board);
+                    if(JSON.stringify(data.board) === JSON.stringify(socket.player.lastboard))
+                          {
+                          console.log('wut')
+                          return
+                          }
+                    socket.player.lastboard = data.board
+                    socket.player.board = data.board
+                    io.sockets.in(socket.player.roomName).emit('switchTurn',socket.player,data);
                           
                 });
                 
                 //keep track of if both players in a room want a rematch or not
-                io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch = 0;
+                io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch = 0;
                 socket.on('askForRematch',function(board, x, y)
                 {
                           //increment number of people ready for a rematch
-                    io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch++
-                    if(io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch >= server.roomSize)
+                    io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch++
+                    if(io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch >= server.roomSize)
                     {
                         // sending to all clients in 'game'
-                        io.sockets.in("room-"+socket.player.roomNo).emit('restartGame', socket.player);
-                        io.nsps['/'].adapter.rooms["room-"+server.roomno].readyForRematch = 0;
+                        io.sockets.in(socket.player.roomName).emit('restartGame', socket.player);
+                        io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch = 0;
                     }
                     
                 });
                 
                 //Increase roomno if 2 clients are present in a room.
-                if(io.nsps['/'].adapter.rooms["room-"+socket.player.roomNo].length >= server.roomSize)
+                if(io.nsps['/'].adapter.rooms[socket.player.roomName].length >= server.roomSize)
                 {
-                    console.log("start the game, roomNo " +socket.player.roomNo)
+                
+                    socket.player.challenger = io.nsps['/'].adapter.rooms[socket.player.roomName].challenger
+                    console.log("start the game, " +socket.player.roomName)
                     // sending to all clients in 'game'
-                    io.sockets.in("room-"+socket.player.roomNo).emit('startGame', socket.player);
+                    io.sockets.in(socket.player.roomName).emit('startGame', socket.player);
+                }
+                //challenger is first person in the room
+                else
+                {
+                    io.nsps['/'].adapter.rooms[socket.player.roomName].challenger = socket.player.username
                 }
                 
                 socket.on('disconnect',function(){
                     // sending to all clients in 'game'
-                    io.sockets.in("room-"+socket.player.roomNo).emit('playerLeft')
+                    io.sockets.in(socket.player.roomName).emit('playerLeft')
                 });
+                
+                socket.on('disconnect',function(){
+                          // sending to all clients in 'game'
+                          io.sockets.in(socket.player.roomName).emit('playerLeft')
+                          updateRoomStatus(socket.player)
+                });
+                
+                socket.on('playerQuit',function(){
+                          // sending to all clients in 'game' room, including sender
+                          socket.to(socket.player.roomName).emit('playerLeft')
+                          updateRoomStatus(socket.player)
+                });
+                
+                socket.on('markRoomFull',function(){
+                          socket.player.inFullRoom = true
+                });
+                
                 
             }
                 
-                
-            
         );
       }
 );
 
-function getAllPlayers(){
-    var players = [];
-    //io.sockets.connected is a Socket.io internal array of the sockets currently connected to the server
-    Object.keys(io.sockets.connected).forEach(function(socketID){
-        var player = io.sockets.connected[socketID].player;
-        if(player) {
-            players.push(player);
-        }
-    });
-    return players;
+function initGameRoom(gametype)
+{
+    roomsNo[gametype] = Object()
+    roomsNo[gametype].num = 0
+    roomsNo[gametype].total = 0
 }
+
+function needNewRoom(gametype)
+{
+    return roomsNo[gametype].total % server.roomSize === 0
+}
+function getRoomName(data)
+{
+    return "room-"+data.gametype+roomsNo[data.gametype].num//server.roomno
+}
+
+function updateRoomStatus(data)
+{
+    console.log(data.roomName)
+    console.log(roomsNo[data.gametype].total)
+    if(!data.inFullRoom)
+    {
+        roomsNo[data.gametype].total++
+    }
+     console.log(roomsNo[data.gametype].total)
+}
+
 
 function randomInt (low, high) {
     return Math.floor(Math.random() * (high - low) + low);

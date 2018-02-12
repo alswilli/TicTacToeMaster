@@ -64,9 +64,27 @@ $('#btn-submit').on('click', function (e) {
             battleText: $('#battleText').val(), //get battle text
             secQ: secQ,
             secQAnswer: $('#secQAnswer').val(),
-            cash: 0
+            cash: 0,
+            selected: "000"
     
     
+        };
+
+        var achievements = {
+            draw: '0%',
+            lose: '0%',
+            mode: '0%',
+            o: '0%',
+            offline: '0%',
+            online: '0%',
+            piece: '0%',
+            x: '0%'
+        };
+
+        var customization = {
+            background: "1000",
+            board: "1000",
+            piece: "1000"
         };
         
         if (data.email != '' && data.password != '') {
@@ -91,6 +109,11 @@ $('#btn-submit').on('click', function (e) {
               .catch(function (error) {
                   console.log("Error creating user:", error);
               });
+
+                  usersRef.child(user.uid).child("challenges").set(achievements);
+
+                  usersRef.child(user.uid).child("unlocked").set(customization);
+                    
               });
             }
     }   

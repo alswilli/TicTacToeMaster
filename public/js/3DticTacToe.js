@@ -60,25 +60,26 @@ var threeDticTacState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
-            //if this is the first play against an opponent, create a new player on the server
-            if(typeof game.firstPlay === 'undefined')
-            {
-                Client.makeNewPlayer();
-                console.log("firstPlay!")
-                game.firstPlay = false
-                game.waiting = true
-            }
-            else
-            {
-                game.askForRematch()
-            }
+        //if this is the first play against an opponent, create a new player on the server
+        if(game.firstPlay === true)
+        {
+            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype});
+            console.log("firstPlay!")
+            game.firstPlay = false
+            game.waiting = true
+        }
+        else
+        {
+            game.askForRematch()
+        }
         
     },
     
     /*
-     returns nxn 2D array
+     returns nxn 3D array
      */
-    makeBoardAsArray(n) {
+    makeBoardAsArray(n)
+    {
         board = [];
         for (var i=0; i < n; i++)
         {
@@ -104,7 +105,7 @@ var threeDticTacState = {
     
     /*
      creates the board on screen with clickable squares, game.n, game.board, and
-     game.startingCX and Y must be defined before calling game function
+     game.startingX and Y must be defined before calling game function
      */
     makeBoardOnScreen(){
         //  Here we'll create a new Group
@@ -121,10 +122,6 @@ var threeDticTacState = {
             board.boardNum = i
             //make have placePiece be called when a square is clicked
             board.events.onInputDown.add(game.placePiece, game)
-            
-            //initialize 2D array boad to be empty strings
-            //game.board[i] = "";
-            
         }
     },
     
@@ -193,20 +190,20 @@ var threeDticTacState = {
         else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
         else
-            game.turnStatusText.setText("Opponent's turn")
+            game.turnStatusText.setText(game.opponent + "'s turn")
     },
     
     /*
      Make sure only one player is waiting at a time for the opponent
      */
-    synchronizeTurn(id, x, y)
+    synchronizeTurn(id, coordInfo)
     {
         //if the id received is this player, that means this player just moved, so they should be waiting now
         if(game.id === id)
             game.waiting = true
         else
             game.waiting = false
-        if(game.isOver(x, y))
+        if(game.isOver(coordInfo.boardNum, coordInfo.x, coordInfo.y))
             game.displayWinner()
         game.switchTurn()
     },
@@ -229,7 +226,8 @@ var threeDticTacState = {
      adds a sprite to the screen and returns a reference to it, scales image down
      to half its size, we can change game later
      */
-    addSpriteWithWidth(x, y, name, width, height) {
+    addSpriteWithWidth(x, y, name, width, height)
+    {
         var sprite = game.add.sprite(x, y, name);
         //sprite.scale.setTo(0.5, 0.5);
         sprite.width = width
@@ -543,7 +541,17 @@ var threeDticTacState = {
      switch the the winState, indicating who the winner is
      */
     displayWinner() {
-        game.winner = game.isXTurn ? 'x' : 'o'
+        var winningPiece = game.isXTurn ? 'x' : 'o'
+        if(game.singleplayer)
+            game.winner = winningPiece
+        else
+        {
+            if(game.player === winningPiece)
+                game.winner = game.username
+            else
+                game.winner = game.opponent
+        }
+        
         
         game.saveBoard()
         
@@ -567,33 +575,45 @@ var threeDticTacState = {
     /*
      Update the board, given a 2D array of the board. Used to update boards between two players
      */
-    updateBoard(id, board)
+    updateBoard(board, id, coordInfo)
     {
         if(game.state.current==="win")
             return
+        if(game.id === id)
+            return
             //updated the game board
-            game.board = board
-            console.log(board)
+        game.board = board
+        console.log(board)
+        
+        var boardNum = coordInfo.boardNum
+        var row = coordInfo.x
+        var col = coordInfo.y
             
-            //rub out pieces, so we don't draw multiple on top of each other
-            for(var i in game.placedPieces) {
-                game.placedPieces[i].kill();
-                game.placedPieces.splice(i, 1);
-            }
-        //draw the pieces on the screen
-        for(var i=0; i < game.n; i++) {
-            for (var j=0; j < game.n; j ++) {
-                
-                var x = game.startingX + i*game.squareSize;
-                var y = game.startingY + j * game.squareSize;
-                if(game.board[j][i] === "x"){
-                    game.addSprite(x, y, 'star');
-                }
-                if(game.board[j][i] === "o"){
-                    game.addSprite(x, y, 'moon');
-                }
-            }
+            
+        if(game.isXTurn)
+        {
+            var coords = game.convertIndexesToCoords(boardNum, row, col)
+            game.addSprite(coords[0], coords[1], 'X');
         }
+        else
+        {
+            var coords = game.convertIndexesToCoords(boardNum, row, col)
+            game.addSprite(coords[0], coords[1], 'O');
+        }
+    },
+    
+    convertIndexesToCoords(boardNum, indexX, indexY)
+    {
+        var adjustmentY = game.startingY + (boardNum * (game.boardHeight + game.boardOffset))
+        //convert the indexes to actual coordinates on the screen
+        var sheared = game.convertToShearCoords(indexX * game.pieceWidth, indexY * game.pieceHeight)
+        //get width of images to adjust placements
+        var width = game.cache.getImage('X').width
+        //adjust the x and y values to where they should appear on the screen
+        var worldX = game.startingX + sheared[1] - width/2
+        var worldY = sheared[0] + adjustmentY
+        console.log(worldX + ", " + worldY)
+        return[worldX, worldY]
     },
     
     
@@ -609,14 +629,17 @@ var threeDticTacState = {
     /*
      Start an initial match between two players
      */
-    startMatch(id){
+    startMatch(data){
         //assign a player to be O, this will be the second player to join a match
-        if(game.id === id)
+        if(game.id === data.id)
         {
             game.waiting = true
             game.player = "o"
             game.playerPieceText.setText("You are O")
-            game.turnStatusText.setText("Opponent's turn")
+            game.opponent = data.challenger
+            game.turnStatusText.setText(game.opponent + "'s turn")
+            
+            
         }
         else
         {
@@ -624,8 +647,10 @@ var threeDticTacState = {
             console.log("no longer waiting!")
             game.player = "x"
             game.playerPieceText.setText("You are X")
+            game.opponent = data.username
             game.turnStatusText.setText("Your Turn")
         }
+        console.log("you are challenged by " + game.opponent)
         
     },
     
@@ -639,7 +664,7 @@ var threeDticTacState = {
             game.waiting = true
             game.player = "o"
             game.playerPieceText.setText("You are O")
-            game.turnStatusText.setText("Opponent's turn")
+            game.turnStatusText.setText(game.opponent + "'s turn")
         }
         else if(game.player === "o")
         {
@@ -707,7 +732,8 @@ var threeDticTacState = {
         {
             game.waiting = true;
             //send updated board to the server so the opponent's board is updated too
-            Client.sendClick(game.board, indexX, indexY);
+            var data = {board:game.board, boardNum:boardNum, x:indexX, y:indexY};
+            Client.sendClick(data);
         }
         
         //for debugging
@@ -756,6 +782,7 @@ var threeDticTacState = {
         console.log(result[0])
         var row = Math.floor(y)
         var col = Math.floor(result[0][0])
+        
         
         return [row, col]
 
@@ -817,5 +844,6 @@ var threeDticTacState = {
         game.markSetInvalid = this.markSetInvalid
         game.checkIfOver3D = this.checkIfOver3D
         game.checkMainDiagonals3D = this.checkMainDiagonals3D
+        game.convertIndexesToCoords = this.convertIndexesToCoords
     }
 };

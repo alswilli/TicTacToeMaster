@@ -13,19 +13,11 @@ $(document).ready(function() {
 
     console.log("In leaderboards");
 
-    var argumentVals = window.location.hash.split('&&');
-    console.log(argumentVals);
-    
-    var keyValue = argumentVals[1]; 
-    console.log(keyValue);
-    var nameOfUser = argumentVals[2];
-    console.log(nameOfUser);
-    var battleText = argumentVals[3];
-    console.log(battleText);
-    var cashMoney = argumentVals[4];
-    console.log(cashMoney);
-    var url = argumentVals[5];
-    console.log(url);
+  var keyValue = localStorage.getItem("userKey");
+  var nameOfUser = localStorage.getItem("username");
+  var battleText = localStorage.getItem("battleText");
+  var cashMoney = localStorage.getItem("cash");
+  var url = localStorage.getItem("picURL");
     
     $( window ).on( "load", function() { 
 
@@ -49,7 +41,7 @@ $(document).ready(function() {
             // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
             // console.log("arguments: ", argumentData);
 
-            window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+            window.location.href = "mainMenu.html"
             //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
         });
@@ -67,7 +59,7 @@ $(document).ready(function() {
             // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
             // console.log("arguments: ", argumentData);
 
-            window.location.href = "editProfile.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+            window.location.href = "editProfile.html"
             //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
         });
@@ -83,7 +75,7 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            window.location.href = "achievements.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+            window.location.href = "achievements.html"
         });
 
         //Customization
@@ -96,7 +88,7 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
 
-            window.location.href = "customization.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+            window.location.href = "customization.html"
         });
     })
     //create firebase references
