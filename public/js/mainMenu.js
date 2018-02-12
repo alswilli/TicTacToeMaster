@@ -13,17 +13,11 @@ firebase.initializeApp(config);
 
 console.log("In Home Page");
 
-var keyValue;
-var nameOfUser;
-var battleText;
-var cashMoney;
-var url;
-                  
-keyValue = localStorage.getItem("userKey");
-nameOfUser = localStorage.getItem("username");
-battleText = localStorage.getItem("battleText");
-cashMoney = localStorage.getItem("cash");
-url = localStorage.getItem("picURL");
+var keyValue = localStorage.getItem("userKey");
+var nameOfUser = localStorage.getItem("username");
+var battleText = localStorage.getItem("battleText");
+var cashMoney = localStorage.getItem("cash");
+var url = localStorage.getItem("picURL");
 
 //var argumentVals = window.location.hash.split('&&');
 //console.log(argumentVals);
@@ -114,7 +108,7 @@ $( window ).on( "load", function() {
         // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
         // console.log("arguments: ", argumentData);
 
-        window.location.href = "editProfile.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "editProfile.html"
         //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
     });
@@ -132,7 +126,7 @@ $( window ).on( "load", function() {
         // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
         // console.log("arguments: ", argumentData);
 
-        window.location.href = "achievements.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "achievements.html"
         //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
             
     });
@@ -147,7 +141,7 @@ $( window ).on( "load", function() {
         console.log("cashMoney: ", cashMoney);
         console.log("url: ", url);
 
-        window.location.href = "customization.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "customization.html"
     });
 
     //Leaderboard
@@ -160,7 +154,7 @@ $( window ).on( "load", function() {
         console.log("cashMoney: ", cashMoney);
         console.log("url: ", url);
 
-        window.location.href = "leaderboard.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+        window.location.href = "leaderboard.html" 
     });
 })
 

@@ -13,25 +13,11 @@ $(document).ready(function() {
     
     console.log("In Home Page");
     
-    var keyValue;
-    var nameOfUser;
-    var battleText;
-    var cashMoney;
-    var url;
-    
-    var argumentVals = window.location.hash.split('&&');
-    console.log(argumentVals);
-    
-    keyValue = argumentVals[1]; 
-    console.log(keyValue);
-    nameOfUser = argumentVals[2];
-    console.log(nameOfUser);
-    battleText = argumentVals[3];
-    console.log(battleText);
-    cashMoney = argumentVals[4];
-    console.log(cashMoney);
-    url = argumentVals[5];
-    console.log(url);
+                  var keyValue = localStorage.getItem("userKey");
+                  var nameOfUser = localStorage.getItem("username");
+                  var battleText = localStorage.getItem("battleText");
+                  var cashMoney = localStorage.getItem("cash");
+                  var url = localStorage.getItem("picURL");
     
     $( window ).on( "load", function() { 
     
@@ -55,7 +41,7 @@ $(document).ready(function() {
             // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
             // console.log("arguments: ", argumentData);
     
-            window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
+            window.location.href = "mainMenu.html" /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';*/
             //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
                 
         });
