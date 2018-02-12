@@ -28,7 +28,7 @@ var ticTacState = {
         //the top left coordinate to place the whole board at, we will make game
         //not hardcoded in the furture to center the board, but I believe we need jQuery
         //to get window size and I didn't feel like learning that right now
-       game.startingX = 400 - ((game.cache.getImage('square').width* game.n) / 2)
+        game.startingX = 400 - ((game.cache.getImage('square').width* game.n) / 2)
         game.startingY = 115
         //intialize waiting status to false, update accordingly later if multiplayer
         game.waiting = false

@@ -34,7 +34,7 @@ console.log(url);
 gametype = argumentVals[6]*/
 gametype = localStorage.getItem("gameType");
 nameOfUser = localStorage.getItem("username");
-keyValue = localStorage.getItem("userKey");
+keyValue = localStorage.getItem("userkey");
 nameOfUser = localStorage.getItem("username");
 battleText = localStorage.getItem("battleText");
 cashMoney = localStorage.getItem("cash");

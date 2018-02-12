@@ -1,7 +1,6 @@
 var Client = {};
 
 Client.socket = io.connect();
-
 //Client.socket = io.connect();
 
 

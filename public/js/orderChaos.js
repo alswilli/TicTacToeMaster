@@ -60,9 +60,9 @@ var orderChaosState = {
         if(game.singleplayer)
             return
         //if this is the first play against an opponent, create a new player on the server
-        if(typeof game.firstPlay === 'undefined')
+        if(typeof game.firstPlay)
         {
-            Client.makeNewPlayer();
+            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype});
             console.log("firstPlay!")
             game.firstPlay = false
             game.waiting = true
@@ -140,12 +140,12 @@ var orderChaosState = {
                 if (j == 0) {
                     game.pickPieceBoard[i][j] = square;
                     var pieceImg = game.addSprite(square.x, square.y, 'star');
-                    game.placedPieces.push(pieceImg);
+                    //game.placedPieces.push(pieceImg);
                 }
                 if (j == 1) {
                     game.pickPieceBoard[i][j] = square;
                     var pieceImg = game.addSprite(square.x, square.y, 'moon');
-                    game.placedPieces.push(pieceImg);
+                    //game.placedPieces.push(pieceImg);
                     square.alpha = 0.4; 
                 }
             }
@@ -218,9 +218,9 @@ var orderChaosState = {
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
         game.turns++
-        var turn = game.isXTurn ? "x" : "o"
+        var turn = game.isXTurn ? "chaos" : "order"
         if(game.singleplayer)
-            game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
+            game.turnStatusText.setText("Current Turn: " + turn)
         // Below is for multiplayer
         else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
@@ -231,14 +231,14 @@ var orderChaosState = {
     /*
         Make sure only one player is waiting at a time for the opponent
      */
-    synchronizeTurn(id, x, y)
+    synchronizeTurn(id, coordInfo)
     {
         //if the id received is this player, that means this player just moved, so they should be waiting now
         if(game.id === id)
             game.waiting = true
         else
             game.waiting = false
-        if(game.isOver(x, y))
+        if(game.isOver(coordInfo.x, coordInfo.y))
             game.displayWinner()
         game.switchTurn()
     },
@@ -352,7 +352,16 @@ var orderChaosState = {
      switch the the winState, indicating who the winner is
      */
     displayWinner() {
-        // game.winner = game.isXTurn ? 'x' : 'o'
+        var winningPiece = game.isDraw ? 'chaos' : 'order'
+        if(game.singleplayer)
+            game.winner = winningPiece
+        else
+        {
+            if(game.player === winningPiece)
+                game.winner = game.username
+            else
+                game.winner = game.opponent
+        }
         
         game.saveBoard()
         
@@ -375,19 +384,37 @@ var orderChaosState = {
     /*
         Update the board, given a 2D array of the board. Used to update boards between two players
      */
-    updateBoard(id, board)
+    updateBoard(board, id, coordInfo)
     {
         if(game.state.current==="win")
             return
-        //updated the game board
-        game.board = board
-        console.log(board)
-        
-        //rub out pieces, so we don't draw multiple on top of each other
-        for(var i in game.placedPieces) {
-            game.placedPieces[i].kill();
-            game.placedPieces.splice(i, 1);
-        }
+        /*if(game.id === id)
+         return
+         //updated the game board
+         game.board = board
+         console.log(board)
+         
+         var row = coordInfo.x
+         var col = coordInfo.y
+         
+         if(game.isXTurn)
+         {
+         var coords = game.convertIndexesToCoords(row, col)
+         game.addSprite(coords[0], coords[1], 'star');
+         }
+         else
+         {
+         var coords = game.convertIndexesToCoords(row, col)
+         game.addSprite(coords[0], coords[1], 'moon');
+         }
+         return*/
+            game.board = board
+            //rub out pieces, so we don't draw multiple on top of each other
+            for(var i in game.placedPieces)
+            {
+                game.placedPieces[i].kill();
+                game.placedPieces.splice(i, 1);
+            }
         //draw the pieces on the screen
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {
@@ -417,23 +444,28 @@ var orderChaosState = {
     /*
         Start an initial match between two players
      */
-    startMatch(id){
+    startMatch(data){
         //assign a player to be O, this will be the second player to join a match
-        if(game.id === id)
+        if(game.id === data.id)
         {
             game.waiting = true
-            game.player = "o"
-            game.playerPieceText.setText("You are O")
-            game.turnStatusText.setText("Opponent's turn")
+            game.player = "order"
+            game.playerPieceText.setText("You are Order")
+            game.opponent = data.challenger
+            game.turnStatusText.setText(game.opponent + "'s turn")
+            
+            
         }
         else
         {
             game.waiting = false
             console.log("no longer waiting!")
-            game.player = "x"
-            game.playerPieceText.setText("You are X")
+            game.player = "chaos"
+            game.playerPieceText.setText("You are Chaos")
+            game.opponent = data.username
             game.turnStatusText.setText("Your Turn")
         }
+        console.log("you are challenged by " + game.opponent)
         
     },
     
@@ -442,19 +474,19 @@ var orderChaosState = {
      */
     restartMatch(){
        console.log("REMATCH BITCH")
-        if(game.player === "x")
+        if(game.player === "chaos")
         {
             game.waiting = true
-            game.player = "o"
-            game.playerPieceText.setText("You are O")
+            game.player = "Order"
+            game.playerPieceText.setText("You are Order")
             game.turnStatusText.setText("Opponent's turn")
         }
-        else if(game.player === "o")
+        else if(game.player === "order")
         {
             game.waiting = false
             console.log("no longer waiting!")
-            game.player = "x"
-            game.playerPieceText.setText("You are X")
+            game.player = "chaos"
+            game.playerPieceText.setText("You are Chaos")
             game.turnStatusText.setText("Your Turn")
         }
         
@@ -522,7 +554,8 @@ var orderChaosState = {
         {
             game.waiting = true;
             //send updated board to the server so the opponent's board is updated too
-            Client.sendClick(game.board, indexX, indexY);
+            var data = {board:game.board, x:indexX, y:indexY,id:game.id};
+            Client.sendClick(data);
         }
         
         //for debugging
