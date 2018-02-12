@@ -20,7 +20,7 @@ $(document).ready(function () {
     
     console.log("In achievements");
 
-    var keyValue = localStorage.getItem("userKey");
+    var keyValue = localStorage.getItem("userkey");
     var nameOfUser = localStorage.getItem("username");
     var battleText = localStorage.getItem("battleText");
     var cashMoney = localStorage.getItem("cash");

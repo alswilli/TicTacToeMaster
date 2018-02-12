@@ -47,6 +47,7 @@
 							<div class="w3-display-container">
 								<img id="boardImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="boardLockTag0" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="boardSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
 									<button id="boardButton0" class="w3-button w3-black" onclick="updateAndUnlock('boardButton0','boardLockTag0','boardImage0')">15 points </button>
 								</div>
@@ -60,6 +61,7 @@
 							<div class="w3-display-container">
 								<img id="boardImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="boardLockTag1" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="boardSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
 										<button id="boardButton1" class="w3-button w3-black" onclick="updateAndUnlock('boardButton1','boardLockTag1','boardImage1')">15 points </button>
 								</div>
@@ -73,6 +75,7 @@
 								<div class="w3-display-container">
 									<img id="boardImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 									<span id="boardLockTag2" class="w3-tag w3-display-topleft">Locked</span>
+									<span id="boardSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 									<div class="w3-display-middle w3-display-hover">
 										<button id="boardButton2" class="w3-button w3-black" onclick="updateAndUnlock('boardButton2','boardLockTag2','boardImage2')">15 points </button>
 									</div>
@@ -86,11 +89,12 @@
 								<div class="w3-display-container">
 									<img id="boardImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 									<span id="boardLockTag3" class="w3-tag w3-display-topleft">Locked</span>
+									<span id="boardSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 									<div class="w3-display-middle w3-display-hover">
 										<button id="boardButton3" class="w3-button w3-black" onclick="updateAndUnlock('boardButton3','boardLockTag3','boardImage3')">15 points </button>
 									</div>
 								</div>
-								<p>Board3</p>
+								<p>Board4</p>
 							</div>
 							<!--add 1 in column 4-->
 						</div>
@@ -103,7 +107,8 @@
 						<div class="w3-container">
 							<div class="w3-display-container">
 								<img id="pieceImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-									<span id="pieceLockTag0" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="pieceLockTag0" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="pieceSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 									<div class="w3-display-middle w3-display-hover">
 										<button id="pieceButton0" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton0','pieceLockTag0','pieceImage0')">15 points </button>
 									</div>
@@ -116,14 +121,43 @@
 						<div class="w3-container">
 							<div class="w3-display-container">
 								<img id="pieceImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-									<span id="pieceLockTag1" class="w3-tag w3-display-topleft">Locked</span>
-									<div class="w3-display-middle w3-display-hover">
-										<button id="pieceButton1" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton1','pieceLockTag1','pieceImage1')">15 points </button>
-									</div>
+								<span id="pieceLockTag1" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="pieceSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+								<div class="w3-display-middle w3-display-hover">
+									<button id="pieceButton1" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton1','pieceLockTag1','pieceImage1')">15 points </button>
+								</div>
 							</div>
 							<p>Piece2</p>
 						</div>
 							<!--add 1 in column 1-->
+					</div>
+					<div class="w3-col l3 s6">
+						<div class="w3-container">
+							<div class="w3-display-container">
+								<img id="pieceImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<span id="pieceLockTag2" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="pieceSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+								<div class="w3-display-middle w3-display-hover">
+									<button id="pieceButton2" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton2','pieceLockTag2','pieceImage2')">15 points </button>
+								</div>
+							</div>
+							<p>Piece3</p>
+						</div>
+							<!--add 1 in column 2-->
+					</div>
+					<div class="w3-col l3 s6">
+						<div class="w3-container">
+							<div class="w3-display-container">
+								<img id="pieceImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<span id="pieceLockTag3" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="pieceSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+								<div class="w3-display-middle w3-display-hover">
+									<button id="pieceButton3" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton3','pieceLockTag3','pieceImage3')">15 points </button>
+								</div>
+							</div>
+							<p>Piece4</p>
+						</div>
+							<!--add 1 in column 2-->
 					</div>
 				</div>
 			</div>
@@ -135,6 +169,7 @@
 							<div class="w3-display-container">
 								<img id="backgroundImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="backgroundLockTag0" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="backgroundSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
 									<button id="backgroundButton0" class="w3-button w3-black" onclick="updateAndUnlock('backgroundButton0','backgroundLockTag0','backgroundImage0')">15 points </button>
 								</div>
@@ -148,13 +183,42 @@
 							<div class="w3-display-container">
 								<img id="backgroundImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="backgroundLockTag1" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="backgroundSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
 									<button id="backgroundButton1" class="w3-button w3-black" onclick="updateAndUnlock('backgroundButton1','backgroundLockTag1','backgroundImage1')">15 points </button>
 								</div>
 							</div>
 							<p>background2</p>
 						</div>
-							<!--add 1 in column 1-->
+							<!--add 1 in column 2-->
+					</div>
+					<div class="w3-col l3 s6">
+						<div class="w3-container">
+							<div class="w3-display-container">
+								<img id="backgroundImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<span id="backgroundLockTag2" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="backgroundSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+								<div class="w3-display-middle w3-display-hover">
+									<button id="backgroundButton2" class="w3-button w3-black" onclick="updateAndUnlock('backgroundButton2','backgroundLockTag2','backgroundImage2')">15 points </button>
+								</div>
+							</div>
+							<p>background2</p>
+						</div>
+							<!--add 1 in column 2-->
+					</div>
+					<div class="w3-col l3 s6">
+						<div class="w3-container">
+							<div class="w3-display-container">
+								<img id="backgroundImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<span id="backgroundLockTag3" class="w3-tag w3-display-topleft">Locked</span>
+								<span id="backgroundSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+								<div class="w3-display-middle w3-display-hover">
+									<button id="backgroundButton3" class="w3-button w3-black" onclick="updateAndUnlock('backgroundButton3','backgroundLockTag3','backgroundImage3')">15 points </button>
+								</div>
+							</div>
+							<p>background2</p>
+						</div>
+							<!--add 1 in column 2-->
 					</div>
 				</div>
 				</div>
