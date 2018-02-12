@@ -56,7 +56,7 @@ game.cash = parseInt(cashMoney);
 game.url = url;
 game.gametype = gametype;
 
-console.log("In Game Page "+ game.username);
+console.log("In Game Page "+ game.gametype);
 
 //add all the different states to the game, these states are defined in all the 
 //corresponding .js files, i.e loadState is in load.js
@@ -71,8 +71,10 @@ if(gametype == "original")
     game.state.add('ticTac', ticTacState)
 else if(gametype == "3d")
     game.state.add('ticTac', threeDticTacState)
+else if(gametype == "orderChaos")
+    game.state.add('ticTac', orderChaosState)
 else
-    console.log("unkown gametype")
+    console.log("unknown gametype")
 
 game.optionCount = 0;
 game.addMenuOption = function(text, startY, callback) {

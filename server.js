@@ -34,6 +34,7 @@ server.roomSize = 2;
 var roomsNo = {}
 initGameRoom("original")
 initGameRoom("3d")
+initGameRoom("orderChaos")
 
 
 

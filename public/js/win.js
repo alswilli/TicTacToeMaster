@@ -17,22 +17,26 @@ const winState = {
         var message
         var submessage = ""
         //display that the game ended in a draw or display the winner
-        if(game.isDraw)
+        if(game.isDraw && game.gametype != "orderChaos")
         {
-            message = "Draw... Both receive 25 gold coins." //add sound and or animation here later for getting the money
+            console.log("Hiya")
+            message = 'Draw, both players' + ' receive 25 gold coins!' //add sound and or animation here later for getting the money
+            //game.winner = 'o';
             game.cash = game.cash + 25;
             console.log("Current cash amount: ", game.cash);
         }
         else
         {
+            
             message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
             submessage = game.winner + ' receives 50 gold coins!'
+            
             if (game.singleplayer == true)
             {
                 game.cash = game.cash + 50;
                 console.log("Current cash amount: ", game.cash);
             }
-            else //not working yet, game.player is null?
+            else 
             {
                 console.log("Yeah");
                 console.log(game.player);
