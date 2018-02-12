@@ -59,8 +59,10 @@ if(gametype == "original")
     game.state.add('ticTac', ticTacState)
 else if(gametype == "3d")
     game.state.add('ticTac', threeDticTacState)
+else if(gametype == "orderChaos")
+    game.state.add('ticTac', orderChaosState)
 else
-    console.log("unkown gametype")
+    console.log("unknown gametype")
 
 game.optionCount = 0;
 game.addMenuOption = function(text, startY, callback) {
