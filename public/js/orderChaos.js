@@ -218,7 +218,7 @@ var orderChaosState = {
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
         game.turns++
-        var turn = game.isXTurn ? "chaos" : "order"
+        var turn = game.isXTurn ?  "order" : "chaos"
         if(game.singleplayer)
             game.turnStatusText.setText("Current Turn: " + turn)
         // Below is for multiplayer
