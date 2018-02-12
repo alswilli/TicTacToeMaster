@@ -157,48 +157,17 @@ $(document).ready(function() {
 	});
 })
 
-/*function checkAlreadySelected(buttonId){
-	var itemIndex=buttonId.charAt(buttonId.length-1);
-	userRef.once('value', function(snapshot) {
-		selectedList= snapshot.val().selected;
-		if (buttonId.startsWith("board")){
-			console.log("compared "+selectedList.charAt(0)+" with "+itemIndex);
-			console.log("so the result is: ",selectedList.charAt(0)==itemIndex)
-			return selectedList.charAt(0)==itemIndex;
-		}else if(buttonId.startsWith("piece")){
-			return selectedList.charAt(1)==itemIndex;
-		}else if(buttonId.startsWith("backgorund")){
-			return selectedList.charAt(2)==itemIndex;
-		}else{
-			console.log("buttonId error: incorrectId");
-		}
-	});
-}*/
-function changeSelection(buttonId){
-	var itemIndex=buttonId.charAt(buttonId.length-1);
-	var selectedRef=userRef.child('selected');
-	if (buttonId.startsWith("board")){
-		var currentSelected= selectedList.charAt(0);
-		remove("boardSelectedTag"+currentSelected);
-		selectedList=replaceAtIndex(selectedList,0,itemIndex);
-		appear("boardSelectedTag"+itemIndex);
-	}else if(buttonId.startsWith("piece")){
-		var currentSelected= selectedList.charAt(1);
-		remove("pieceSelectedTag"+currentSelected);
-		selectedList=replaceAtIndex(selectedList,1,itemIndex);
-		appear("pieceSelectedTag"+itemIndex);
-	}else if(buttonId.startsWith("background")){
-		var currentSelected= selectedList.charAt(2);
-		remove("backgroundSelectedTag"+currentSelected);
-		selectedList=replaceAtIndex(selectedList,2,itemIndex);
-		appear("backgroundSelectedTag"+itemIndex);
-	}else{
-		console.log("buttonId error: incorrectId");
+//takes in a string and change a character specified by the index
+function replaceAtIndex(string,index,char){
+	var newString ="";
+	//loops through the string, replacing the character at index by 1 while keeping the rest
+	for(var i=0;i<string.length;i++){
+		if(i==index) newString+=char;
+		else newString+=string.charAt(i);
 	}
-	selectedRef.set(
-  	selectedList
-  );
+	return newString;
 }
+
 //makes elecment specified by id appear
 function appear(id) {
 	var targetElement = document.getElementById(id);
@@ -213,8 +182,8 @@ function remove(id) {
 
 //removes w3-grayscale class from images
 function removeGrayScale(id) {
-	var element = document.getElementById(id);
-	element.classList.remove("w3-grayscale-max");
+	var targetElement = document.getElementById(id);
+	targetElement.classList.remove("w3-grayscale-max");
 }
 
 // removes the locktag, button, and grayscale class to show specified item is unlocked
@@ -238,6 +207,7 @@ function initializeLocked(){
 			unlockedBoard = userUnlocked.board;
 			unlockedPiece = userUnlocked.piece;
 			unlockedBackground = userUnlocked.background;
+		
 		//unlock unlocked items for board design
 			for (var boardIndex=0; boardIndex<unlockedBoard.length;boardIndex++){
 				if(unlockedBoard.charAt(boardIndex)=="1"){									
@@ -258,6 +228,7 @@ function initializeLocked(){
 			}
 		});
 }
+//Reads the string respresentaion of what's unlocked and makes the selected tag of the corresponding customization to appear
 function initializeSelected(){
 	userRef.once('value', function(snapshot) {
 		selectedList= snapshot.val().selected;
@@ -267,28 +238,19 @@ function initializeSelected(){
 	});
 }
 
-//takes in a string and change a character specified by the index
-function replaceAtIndex(string,index,char){
-	var newString ="";
-	//loops through the string, replacing the character at index by 1 while keeping the rest
-	for(var i=0;i<string.length;i++){
-		if(i==index) newString+=char;
-		else newString+=string.charAt(i);
-	}
-	return newString;
-}
-
 //when an item is purchased
 function updateAndUnlock(buttonId, tagId, imageId){
 	//gets item's index number for swapping out character
 	var itemIndex=buttonId.charAt(buttonId.length-1);
 	//console.log("swap index: ",itemIndex);
+	
 	if(buttonId.startsWith("board")){
 		//console.log("initial board unlocked status: ",unlockedBoard);
 		unlockedBoard=replaceAtIndex(unlockedBoard,itemIndex,"1");
+		
 		//gets the reference to the child node storing the string that repsents board unlock status
 		var boardRef=unlockedRef.child('board'); 
-		//replaces the onld string with the new one
+		//replaces the onld string with the new one in firbase
 		boardRef.set(
       unlockedBoard
     );
@@ -313,4 +275,44 @@ function updateAndUnlock(buttonId, tagId, imageId){
 		console.log("buttonId error: incorrectId");
 	}
 	unlock(buttonId,tagId,imageId);
+}
+
+/*
+Whenever a user selects a customization, writes to firebase to update the selected customiation. Moves the selected tag to the new selected customization
+*/
+function changeSelection(buttonId){
+	 //represents the selected sutomization
+	var itemIndex=buttonId.charAt(buttonId.length-1);
+	
+	//reference for string respresentation of what's selected of each category
+	var selectedRef=userRef.child('selected'); 
+	
+	//Uses the tsrating word of the buttonId to identify which catergory the selected customization belongs
+	if (buttonId.startsWith("board")){
+		//Gets what is currently selected in the category to remove the selected tag
+		var currentSelected= selectedList.charAt(0);
+		remove("boardSelectedTag"+currentSelected);
+		
+		//updates the string represenation of selected customization locally
+		selectedList=replaceAtIndex(selectedList,0,itemIndex);
+		
+		//makes the selected tag of the newly selected customization appear
+		appear("boardSelectedTag"+itemIndex);
+	}else if(buttonId.startsWith("piece")){
+		var currentSelected= selectedList.charAt(1);
+		remove("pieceSelectedTag"+currentSelected);
+		selectedList=replaceAtIndex(selectedList,1,itemIndex);
+		appear("pieceSelectedTag"+itemIndex);
+	}else if(buttonId.startsWith("background")){
+		var currentSelected= selectedList.charAt(2);
+		remove("backgroundSelectedTag"+currentSelected);
+		selectedList=replaceAtIndex(selectedList,2,itemIndex);
+		appear("backgroundSelectedTag"+itemIndex);
+	}else{
+		console.log("buttonId error: incorrectId");
+	}
+	//updates the change to firebase
+	selectedRef.set(
+  	selectedList
+  );
 }
