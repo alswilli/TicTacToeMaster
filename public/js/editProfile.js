@@ -138,7 +138,7 @@ $(document).ready(function() {
                 var newBattleText = $('#battleTextNew').val(); //get battleText
                 // var newBattleText = document.getElementById('battleTextNew').innerHTML
                 console.log("New battleText: ", newBattleText);
-
+                
                 // var dbRefObject = firebase.database().ref('/users/' + keyValue + '/username/');
                 // dbRefObject.set(
                 //     newUsername
@@ -155,7 +155,10 @@ $(document).ready(function() {
                 firebase.storage().ref(name).getDownloadURL().then(function(url) {
                     //$('.image').attr('src', url);
                     newUrlVal = url;
-                    window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + newUserName + '&&' + newBattleText + '&&' + cashMoney + '&&' + newUrlVal + '&&' + newImageName;
+                    localStorage.setItem("username", newUserName)
+                    localStorage.setItem("battleText", newBattlerText)
+                    localStorage.setItem("picURL", newUrl)
+                    window.location.href = "mainMenu.html"
                     console.log("hola");
                     })
 
