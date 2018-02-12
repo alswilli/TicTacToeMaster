@@ -273,7 +273,9 @@ var orderChaosState = {
         //create Sets for each direction. Since a Set has unique entries, if there
         //is only one entry and it is not an empty string, that entry is the winner
         var horizontal = new Set()
+        var horizontalExt = new Set()
         var vertical = new Set()
+        var verticalExt = new Set()
         
         var posDiagonal = new Set()
         var posDiagonalLow = new Set()
@@ -287,7 +289,9 @@ var orderChaosState = {
         for (var y=0; y < game.n-1; y++){
             //check the possible horizontal and vertical wins for the given placement
             horizontal.add(game.board[row][y])
+            horizontalExt.add(game.board[row][y+1])
             vertical.add(game.board[y][col])
+            verticalExt.add(game.board[y+1][col])
         }
 
         for (var z=0; z < game.n-1; z++){
@@ -307,13 +311,13 @@ var orderChaosState = {
         //if all entries in a row or column are the same, then the game is over
         //we don't need to check that the only entry is not a blank string, since
         //these Sets will include the piece that was just placed, which cannot possibly be blank
-        if(horizontal.size === 1 && !horizontal.has("")) // size === 2 or 3 eans that the set contains characters and spaces and other bad characters 
+        if((horizontal.size === 1 && !horizontal.has("")) || (horizontalExt.size === 1 && !horizontalExt.has(""))) // size === 2 or 3 eans that the set contains characters and spaces and other bad characters 
         {
             console.log("horz")
             gameOver = true
             game.isDraw = false
         }
-        else if(vertical.size === 1 && !vertical.has(""))
+        else if((vertical.size === 1 && !vertical.has("")) || (verticalExt.size === 1 && !verticalExt.has("")))
         {
             console.log("vert")
             gameOver = true
