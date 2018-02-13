@@ -13,11 +13,11 @@ $(document).ready(function() {
     
     console.log("In Home Page");
     
-    var keyValue = localStorage.getItem("userkey");
-    var nameOfUser = localStorage.getItem("username");
-    var battleText = localStorage.getItem("battleText");
-    var cashMoney = localStorage.getItem("cash");
-    var url = localStorage.getItem("picURL");
+    var keyValue = sessionStorage.getItem("userkey");
+    var nameOfUser = sessionStorage.getItem("username");
+    var battleText = sessionStorage.getItem("battleText");
+    var cashMoney = sessionStorage.getItem("cash");
+    var url = sessionStorage.getItem("picURL");
     
     $( window ).on( "load", function() { 
     
@@ -142,9 +142,9 @@ $(document).ready(function() {
 
                 firebase.storage().ref(name).getDownloadURL().then(function(url) {
                     newUrlVal = url;
-                    localStorage.setItem("username", newUserName)
-                    localStorage.setItem("battleText", newBattlerText)
-                    localStorage.setItem("picURL", newUrl)
+                    sessionStorage.setItem("username", newUserName)
+                    sessionStorage.setItem("battleText", newBattlerText)
+                    sessionStorage.setItem("picURL", newUrl)
                     window.location.href = "mainMenu.html"
                     console.log("hola");
                     })

@@ -13,11 +13,11 @@ $(document).ready(function() {
 
     console.log("In Home Page");
 
-    var keyValue = localStorage.getItem("userkey");
-    var nameOfUser = localStorage.getItem("username");
-    var battleText = localStorage.getItem("battleText");
-    var cashMoney = localStorage.getItem("cash");
-    var url = localStorage.getItem("picURL");
+    var keyValue = sessionStorage.getItem("userkey");
+    var nameOfUser = sessionStorage.getItem("username");
+    var battleText = sessionStorage.getItem("battleText");
+    var cashMoney = sessionStorage.getItem("cash");
+    var url = sessionStorage.getItem("picURL");
 
     //var argumentVals = window.location.hash.split('&&');
     //console.log(argumentVals);
@@ -53,7 +53,7 @@ $(document).ready(function() {
     imageName = argumentVals[6];
     console.log(imageName);*/
                     
-    imageName = localStorage.getItem("imageName")
+    imageName = sessionStorage.getItem("imageName")
     if (imageName != 'null')
     {
         dbRefObject = firebase.database().ref('/users/' + keyValue + '/image/');
@@ -76,7 +76,7 @@ $(document).ready(function() {
             e.preventDefault();
 
             console.log("going to tictactoe original");
-            localStorage.setItem("gameType", "original")
+            sessionStorage.setItem("gameType", "original")
             window.location.href = "game.html";
             //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;         
         });
@@ -86,7 +86,7 @@ $(document).ready(function() {
             e.preventDefault();
             
             console.log("going to 3d tictactoe");
-            localStorage.setItem("gameType", "3d")
+            sessionStorage.setItem("gameType", "3d")
             window.location.href = "game.html";
             //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;                         
         });
@@ -96,7 +96,7 @@ $(document).ready(function() {
             e.preventDefault();
         
             console.log("going to ordar and chaos");
-            localStorage.setItem("gameType", "orderChaos")
+            sessionStorage.setItem("gameType", "orderChaos")
             window.location.href = "game.html";
             //window.location.href = "game.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url  + '&&orderChaos';                   
         });

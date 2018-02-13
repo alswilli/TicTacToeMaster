@@ -133,6 +133,7 @@ io.on('connection',function(socket){
                 else
                 {
                     io.nsps['/'].adapter.rooms[socket.player.roomName].challenger = socket.player.username
+                    console.log(socket.player.roomName + "challenger is " +socket.player.username)
                 }
                 
                 socket.on('disconnect',function(){

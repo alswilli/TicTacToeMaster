@@ -20,11 +20,11 @@ $(document).ready(function () {
     
     console.log("In achievements");
 
-    var keyValue = localStorage.getItem("userkey");
-    var nameOfUser = localStorage.getItem("username");
-    var battleText = localStorage.getItem("battleText");
-    var cashMoney = localStorage.getItem("cash");
-    var url = localStorage.getItem("picURL");
+    var keyValue = sessionStorage.getItem("userkey");
+    var nameOfUser = sessionStorage.getItem("username");
+    var battleText = sessionStorage.getItem("battleText");
+    var cashMoney = sessionStorage.getItem("cash");
+    var url = sessionStorage.getItem("picURL");
     
 
     challengesRef = firebase.database().ref('/users/' + keyValue + '/challenges');

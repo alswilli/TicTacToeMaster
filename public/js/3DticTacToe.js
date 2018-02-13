@@ -651,6 +651,8 @@ var threeDticTacState = {
             game.turnStatusText.setText("Your Turn")
         }
         console.log("you are challenged by " + game.opponent)
+        console.log(data.challenger)
+        console.log(data.username)
         
     },
     
