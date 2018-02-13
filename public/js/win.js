@@ -74,7 +74,7 @@ const winState = {
                 }
             }
         }
-        localStorage.setItem("cash", game.cash)
+        sessionStorage.setItem("cash", game.cash)
         
         // display win message
         const winMessage = game.add.text(
