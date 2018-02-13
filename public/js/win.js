@@ -35,22 +35,42 @@ const winState = {
             {
                 game.cash = game.cash + 50;
                 console.log("Current cash amount: ", game.cash);
+                console.log("game.player:", game.player);
+                console.log("game.userkey", game.userkey);
+                console.log("game.username", game.username);
             }
             else 
             {
                 console.log("Yeah");
                 console.log(game.player);
                 console.log(game.winner);
+
                 //*****Here is where we check if someboday won in multiplayer*****//
-                if (game.username === game.winner)
-                {
+                if (game.username === game.winner) {
                     //game.userkey can be used to update firebase shtuff
+
                     game.cash = game.cash + 50;
+                    //console.log("I AM TILTED.");
                     console.log("Current cash amount: ", game.cash);
-                }
-                else
-                {
-                    console.log("You lose");
+                    console.log("winner");
+                    console.log("game.player:", game.player);
+                    console.log("game.userkey:", game.userkey);
+                    if (game.userkey != null) {
+                       updateScore(game.userkey, "Wins");
+                    }else {
+                       console("USER IS NULL: Not updating score");  
+                    }
+                   
+                S}else {
+                    console.log("loser");
+                    console.log("game.player:", game.player);
+                    console.log("game.userkey:", game.userkey);
+                    if (game.userkey != null) {
+                       updateScore(game.userkey, "Losses");
+                    }else {
+                       console("USER IS NULL: Not updating score");
+                    }
+
                 }
             }
         }
@@ -91,4 +111,23 @@ const winState = {
     startGame () {
         game.state.start('ticTac')
     }
+}
+
+/* Takes a userkey and a string- "Losses" or "Wins" as the result.
+ * Uses the userkey to lookup the username, then uses the username to update
+ * the count of either Losses or Wins
+ */
+function updateScore(userkey, result) {
+   
+   firebase.database().ref('users/'+userkey+'/username').on('value', function(snapshot) {      
+      var username = snapshot.val();
+      console.log("username: ", username);
+      
+      firebase.database().ref('leaderboard/TTT/'+username+'/'+result).once('value').then(function(snapshot2) {
+         var resultCount = snapshot2.val() + 1;
+         console.log(result,resultCount);        
+         
+         firebase.database().ref().child('leaderboard/TTT/'+username).update({ [result]: resultCount});
+      });
+  });
 }

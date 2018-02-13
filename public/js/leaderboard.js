@@ -130,7 +130,7 @@ function createTable() {
 function addNewRow(rank, name, win, lose) {
     var row = document.createElement("TR");
     
-    var winRate = ((win/lose * 100).toFixed(2)) + '%';
+    var winRate = ((win/(win+lose) * 100).toFixed(2)) + '%';
     if ( isNaN(win/lose) )           { winRate = "---";  }
     if ( (win != 0) && (lose == 0) ) { winRate = "100%"; }
     if ( name == '' )                { winRate = '';     }
