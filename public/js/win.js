@@ -61,7 +61,7 @@ const winState = {
                        console("USER IS NULL: Not updating score");  
                     }
                    
-                S}else {
+                }else {
                     console.log("loser");
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);

@@ -225,7 +225,7 @@ var orderChaosState = {
         else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
         else
-            game.turnStatusText.setText("Opponent's turn")
+            game.turnStatusText.setText(game.opponent + "'s turn")
     },
     
     /*
@@ -478,7 +478,7 @@ var orderChaosState = {
             game.waiting = true
             game.player = "Order"
             game.playerPieceText.setText("You are Order")
-            game.turnStatusText.setText("Opponent's turn")
+            game.turnStatusText.setText(game.opponent + "'s turn")
         }
         else if(game.player === "order")
         {
