@@ -21,9 +21,9 @@ var gametype;
 var argumentVals = window.location.hash.split('&&');
 console.log(argumentVals);
 
-keyValue = argumentVals[1]; 
+/*keyValue = argumentVals[1];
 console.log(keyValue);
-nameOfUser = argumentVals[2];
+nameOfUser = localStorage.getItem("username")//argumentVals[2];
 console.log(nameOfUser);
 battleText = argumentVals[3];
 console.log(battleText);
@@ -31,7 +31,15 @@ cashMoney = argumentVals[4];
 console.log(cashMoney);
 url = argumentVals[5];
 console.log(url);
-gametype = argumentVals[6]
+gametype = argumentVals[6]*/
+gametype = localStorage.getItem("gameType");
+nameOfUser = localStorage.getItem("username");
+keyValue = localStorage.getItem("userkey");
+nameOfUser = localStorage.getItem("username");
+battleText = localStorage.getItem("battleText");
+cashMoney = localStorage.getItem("cash");
+url = localStorage.getItem("picURL");
+
 
 /*
 create the actual game object, 1st and 2nd args are dimensions 
@@ -48,10 +56,14 @@ game.cash = parseInt(cashMoney);
 game.url = url;
 game.gametype = gametype;
 
+console.log("In Game Page "+ game.gametype);
+
 //add all the different states to the game, these states are defined in all the 
 //corresponding .js files, i.e loadState is in load.js
 game.state.add('load', loadState)
 game.state.add('menu', menuState)
+
+game.firstPlay = true
 
 game.state.add('win', winState)
 game.state.add('waitingRoom', waitingRoomState)
@@ -59,8 +71,10 @@ if(gametype == "original")
     game.state.add('ticTac', ticTacState)
 else if(gametype == "3d")
     game.state.add('ticTac', threeDticTacState)
+else if(gametype == "orderChaos")
+    game.state.add('ticTac', orderChaosState)
 else
-    console.log("unkown gametype")
+    console.log("unknown gametype")
 
 game.optionCount = 0;
 game.addMenuOption = function(text, startY, callback) {

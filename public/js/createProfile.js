@@ -31,7 +31,6 @@ $('#btn-submit').on('click', function (e) {
     if(file === undefined)
     {
         alert("Image file invalid, please enter a valid image!");
-        console.log("penios");
         //break;
     }
     else{
@@ -64,14 +63,29 @@ $('#btn-submit').on('click', function (e) {
             battleText: $('#battleText').val(), //get battle text
             secQ: secQ,
             secQAnswer: $('#secQAnswer').val(),
-            cash: 0
-    
-    
+            cash: 0,
+            selected: "000"
+        };
+
+        var achievements = {
+            draw: '0%',
+            lose: '0%',
+            mode: '0%',
+            o: '0%',
+            offline: '0%',
+            online: '0%',
+            piece: '0%',
+            x: '0%'
+        };
+
+        var customization = {
+            background: "1000",
+            board: "1000",
+            piece: "1000"
         };
         
         if (data.email != '' && data.password != '') {
-                //create the user
-    
+            //create the user
             firebase.auth()
               .createUserWithEmailAndPassword(data.email, data.password)
               .then(function (user) {
@@ -91,6 +105,11 @@ $('#btn-submit').on('click', function (e) {
               .catch(function (error) {
                   console.log("Error creating user:", error);
               });
+
+                  usersRef.child(user.uid).child("challenges").set(achievements);
+
+                  usersRef.child(user.uid).child("unlocked").set(customization);
+                    
               });
             }
     }   
@@ -104,93 +123,7 @@ $(function(){
     });
 });
 
-// // Listen for form submit
-// document.getElementById("userInputForm").addEventListener('submit', submitUserData);
-
-// //Submit email
-// function submitUserData(event){
-//     console.log("Hiya");
-//     //alert("Email verified: Password Token sent!")
-//     event.preventDefault();
-
-//     const storageRef = firebase.storage().ref();
-
-//     const file = document.querySelector('#profile_image').files[0];
-
-//     var imageName;
-
-//     const name = (+new Date()) + '-' +file.name;
-//     const metadata = {
-//         contentType: file.type
-//     };
-//     const task = storageRef.child(name).put(file, metadata);
-//     imageName = name;
-//     console.log(imageUrl);
-    
-//     task.then((snapshot) => {
-//         const url = snapshot.downloadURL;
-//         console.log(name);
-//         console.log(imageName);
-//     }).catch((error) => {
-//         console.error(error);
-//     });
-
-//     // console.log(image);
-//     var username = getInputVal('username');
-//     console.log(username);
-//     var email = getInputVal('email');
-//     console.log(email);
-//     var password = getInputVal('password');
-//     console.log(password);
-//     var battleText = getInputVal('battleText');
-//     console.log(battleText);
-//     var e = document.getElementById("secQ");
-//     var secQ = e.options[e.selectedIndex].text; 
-//     console.log(secQ);
-//     var secQAnswer = getInputVal('secQAnswer');
-//     console.log(secQAnswer);
-
-//     // const preUsers = document.getElementById('users');
-//     // var dbRefObject = firebase.database().ref().child('users');
-//     // //dbRefObject.add
-//     // dbRefObject.update({
-//     //             image: image,
-//     //             username: username,
-//     //             email: email,
-//     //             password: password,
-//     //             battleText: battleText,
-//     //             //seQ: secQ,
-//     //             secQAnswer: secQAnswer
-//     //         });
-//     //var uid = uid;
-
-
-//     var postData = {
-//                 image: imageName,
-//                 //imageUrl: imageUrl,
-//                 username: username,
-//                 email: email,
-//                 //uid: uid,
-//                 password: password,
-//                 battleText: battleText,
-//                 seQ: secQ,
-//                 secQAnswer: secQAnswer
-//             };
-    
-//     var newPostKey = firebase.database().ref().child('users').push().key;
-
-//     var updates = {};
-//     updates['/users/' + newPostKey] = postData;
-//     //updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-
-//     firebase.database().ref().update(updates);
-// }
-
 function getInputVal(id){
-    // if(id == 'profile_image')
-    // {
-    //     document.getElementById(id).src;
-    // }
     return document.getElementById(id).value;
 }
 

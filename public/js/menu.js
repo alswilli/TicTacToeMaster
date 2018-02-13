@@ -22,7 +22,9 @@ var menuState = {
         if(game.gametype == "original")
             title = 'Tic Tac Toe'
         else if(game.gametype == "3d")
-             title = '3D Tic Tac Toe'
+            title = '3D Tic Tac Toe'
+        else if(game.gametype == "orderChaos")
+            title = 'Order and Chaos'
         // display game name
         const gameName = game.add.text(
             game.world.centerX, 100, title,

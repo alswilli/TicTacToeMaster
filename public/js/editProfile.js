@@ -13,25 +13,11 @@ $(document).ready(function() {
     
     console.log("In Home Page");
     
-    var keyValue;
-    var nameOfUser;
-    var battleText;
-    var cashMoney;
-    var url;
-    
-    var argumentVals = window.location.hash.split('&&');
-    console.log(argumentVals);
-    
-    keyValue = argumentVals[1]; 
-    console.log(keyValue);
-    nameOfUser = argumentVals[2];
-    console.log(nameOfUser);
-    battleText = argumentVals[3];
-    console.log(battleText);
-    cashMoney = argumentVals[4];
-    console.log(cashMoney);
-    url = argumentVals[5];
-    console.log(url);
+    var keyValue = localStorage.getItem("userkey");
+    var nameOfUser = localStorage.getItem("username");
+    var battleText = localStorage.getItem("battleText");
+    var cashMoney = localStorage.getItem("cash");
+    var url = localStorage.getItem("picURL");
     
     $( window ).on( "load", function() { 
     
@@ -52,12 +38,8 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
     
-            // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
-            // console.log("arguments: ", argumentData);
-    
-            window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
-            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
-                
+            window.location.href = "mainMenu.html" /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';*/
+            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;        
         });
     
         //Achievements
@@ -70,12 +52,8 @@ $(document).ready(function() {
             console.log("cashMoney: ", cashMoney);
             console.log("url: ", url);
     
-            // var argumentData = [keyValue, nameOfUser, battleText, cashMoney, urlVar];
-            // console.log("arguments: ", argumentData);
-    
             window.location.href = "achievements.html" + '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + url + '&&null';
-            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;
-                
+            //window.location.href = "achievements.html?key="+keyValue+"&username="+nameOfUser+"&battleText="+battleText+"&cashMoney="+cashMoney+"&url="+url;        
         });
     
         //Customization
@@ -123,8 +101,6 @@ $(document).ready(function() {
             console.log("file: ", file);
     
             var imageName;
-    
-            // const name = (+new Date()) + '-' +file.name;
 
             firebase.database().ref('/users/' + keyValue).once('value').then(function(snapshot) {
                 newImageName = (snapshot.val().image);
@@ -136,7 +112,6 @@ $(document).ready(function() {
                     contentType: file.type
                 };
                 const task = firebase.storage().ref().child(name).put(file, metadata);
-                //imageName = name;
             
                 task.then((snapshot) => {
                     const url = snapshot.downloadURL;
@@ -147,12 +122,10 @@ $(document).ready(function() {
                 });
 
                 var newUserName = $('#usernameNew').val(); //get username
-                // var newUserName = document.getElementById('usernameNew').innerHTML
                 console.log("New username: ", newUserName);
                 var newBattleText = $('#battleTextNew').val(); //get battleText
-                // var newBattleText = document.getElementById('battleTextNew').innerHTML
                 console.log("New battleText: ", newBattleText);
-
+                
                 // var dbRefObject = firebase.database().ref('/users/' + keyValue + '/username/');
                 // dbRefObject.set(
                 //     newUsername
@@ -166,10 +139,13 @@ $(document).ready(function() {
                 //     newImageName
                 // );
 
+
                 firebase.storage().ref(name).getDownloadURL().then(function(url) {
-                    //$('.image').attr('src', url);
                     newUrlVal = url;
-                    window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + newUserName + '&&' + newBattleText + '&&' + cashMoney + '&&' + newUrlVal + '&&' + newImageName;
+                    localStorage.setItem("username", newUserName)
+                    localStorage.setItem("battleText", newBattlerText)
+                    localStorage.setItem("picURL", newUrl)
+                    window.location.href = "mainMenu.html"
                     console.log("hola");
                     })
 
@@ -192,24 +168,6 @@ $(document).ready(function() {
      var dbRef = firebase.database();
      var auth = null;
     
-    //  console.log("name: ", nameOfUser);
-    //  console.log("battleText: ", battleText);
-    //  console.log("cashMoney: ", cashMoney);
-    //  console.log("url: ", url);
-     
-    // //Achievements
-    // $('#achievements').on('click', function (e) {
-    //     e.preventDefault();
-    
-    //     console.log("going to achievements");
-    //     console.log("name: ", nameOfUser);
-    //     console.log("battleText: ", battleText);
-    //     console.log("cashMoney: ", cashMoney);
-    //     console.log("url: ", url);
-    
-    //     window.location.href = "achievements.html" + '#' + keyValue + '#' + nameOfUser + '#' + battleText + '#' + cashMoney + '#' + url;
-    // });
-    
      //Logout
      $('#logout').on('click', function (e) {
          e.preventDefault();
@@ -217,17 +175,17 @@ $(document).ready(function() {
          console.log("loggin out");
     
          firebase.auth().signOut()
-                       .then(function(authData) {
-                           console.log("Logged out successfully");
-                           window.location.href = "index.html";
-                           auth = authData;
-                           //$('#messageModalLabel').html(spanText('Success!', ['center', 'success']))
+        .then(function(authData) {
+            console.log("Logged out successfully");
+            window.location.href = "index.html";
+            auth = authData;
+            //$('#messageModalLabel').html(spanText('Success!', ['center', 'success']))
                              
-                       })
-                       .catch(function(error) {
-                           console.log("Logout Failed!", error);
-                           //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
-                       });
-     });
+        })
+        .catch(function(error) {
+            console.log("Logout Failed!", error);
+            //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
+        });
+    });
     
-    })
+})
