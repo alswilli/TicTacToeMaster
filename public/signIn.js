@@ -56,12 +56,12 @@ $(document).ready(function(){
                                                  
                     firebase.storage().ref(img).getDownloadURL().then(function(url) {
                         urlVal = url;
-                        localStorage.setItem("username", nameOfUser)
-                        localStorage.setItem("userkey", keyValue)
-                        localStorage.setItem("battleText", battleText)
-                        localStorage.setItem("cash", cashMoney)
-                        localStorage.setItem("picURL", urlVal)
-                        localStorage.setItem("imageName", null)
+                        sessionStorage.setItem("username", nameOfUser)
+                        sessionStorage.setItem("userkey", keyValue)
+                        sessionStorage.setItem("battleText", battleText)
+                        sessionStorage.setItem("cash", cashMoney)
+                        sessionStorage.setItem("picURL", urlVal)
+                        sessionStorage.setItem("imageName", null)
                         window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
                         console.log("hola");
                     })

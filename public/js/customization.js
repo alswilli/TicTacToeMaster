@@ -6,7 +6,6 @@ var unlockedBoard; //String repsensentation of the unlocked status of board desi
 var unlockedPiece; //String repsensentation of the unlocked status of piece design
 var unlockedBackground; //String repsensentation of the unlocked status of background design
 var selectedList; //String representation of what is slected for each customization category
-var cashMoney; //Stores current cash
 $(document).ready(function() {
     // Initialize Firebase
     var config = {
@@ -21,13 +20,12 @@ $(document).ready(function() {
                   
     console.log("In customization");
     
-    var keyValue = localStorage.getItem("userkey");
-    var nameOfUser = localStorage.getItem("username");
-    var battleText = localStorage.getItem("battleText");
-   	cashMoney = localStorage.getItem("cash");
-    var url = localStorage.getItem("picURL");
-		console.log(localStorage);
-    
+    var keyValue = sessionStorage.getItem("userkey");
+    var nameOfUser = sessionStorage.getItem("username");
+    var battleText = sessionStorage.getItem("battleText");
+    var cashMoney = sessionStorage.getItem("cash");
+    var url = sessionStorage.getItem("picURL");
+    console.log(sessionStorage);
     userRef = firebase.database().ref('/users/' + keyValue);
 		//gets reference for the user's unlocked items
 		unlockedRef=userRef.child('unlocked');
@@ -205,20 +203,21 @@ function initializeSelected(){
 }
 
 /*
- Handles the interaction with cash amount of player. Checks if the player has enough cash for item. If yes, unlocks item and updates cash to local sotrage and firbase
+ Handles the interaction with cash amount of player. Checks if the player has enough cash for item. If yes, unlocks item and updates cash to session sotrage and firbase
 */
 function unlockVerification(buttonId, tagId, imageId){
 	var itemCost =document.getElementById(buttonId).innerHTML.substring(1);
 	//for some reason I can't parseInt at the same time so I did it seperately
 	itemCost=parseInt(itemCost);
+	var cashMoney = sessionStorage.getItem("cash");
 	console.log(cashMoney+" - "+itemCost);
 	
 	if(cashMoney>=itemCost){
 		updateAndUnlock(buttonId, tagId, imageId)
 		
 		cashMoney=cashMoney-itemCost;
-		localStorage.setItem("cash",cashMoney);//updates cash to local storage
-		console.log(localStorage);
+		sessionStorage.setItem("cash",cashMoney);//updates cash to session storage
+		console.log(sessionStorage);
 		
 		document.getElementById('cash').innerHTML = '$' + cashMoney;
 		//gets reference to cash of user in firebase

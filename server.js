@@ -34,6 +34,7 @@ server.roomSize = 2;
 var roomsNo = {}
 initGameRoom("original")
 initGameRoom("3d")
+initGameRoom("orderChaos")
 
 
 
@@ -82,7 +83,7 @@ io.on('connection',function(socket){
                     inFullRoom: false,
                 };
                 
-                io.nsps['/'].adapter.rooms[socket.player.roomName].full = false
+                //io.nsps['/'].adapter.rooms[socket.player.roomName].full = false
                 
                 console.log("welcome: " + socket.player.username + " to " + socket.player.roomName)
                 //broadcast messagess ; Socket.emit() sends a message to one specific socket
@@ -90,7 +91,8 @@ io.on('connection',function(socket){
                 //and as a second argument, the output of Client.getAllPlayers()
                 socket.emit('confirmPlayer',socket.player);
                 
-                socket.on('click',function(data){
+                socket.on('click',function(data)
+                {
                     console.log('server received click '+data.board);
                     if(JSON.stringify(data.board) === JSON.stringify(socket.player.lastboard))
                           {
@@ -131,6 +133,7 @@ io.on('connection',function(socket){
                 else
                 {
                     io.nsps['/'].adapter.rooms[socket.player.roomName].challenger = socket.player.username
+                    console.log(socket.player.roomName + "challenger is " +socket.player.username)
                 }
                 
                 socket.on('disconnect',function(){

@@ -32,15 +32,15 @@ console.log(cashMoney);
 url = argumentVals[5];
 console.log(url);
 gametype = argumentVals[6]*/
-gametype = localStorage.getItem("gameType");
-nameOfUser = localStorage.getItem("username");
-keyValue = localStorage.getItem("userkey");
-nameOfUser = localStorage.getItem("username");
-battleText = localStorage.getItem("battleText");
-cashMoney = localStorage.getItem("cash");
-url = localStorage.getItem("picURL");
+gametype = sessionStorage.getItem("gameType");
+nameOfUser = sessionStorage.getItem("username");
+keyValue = sessionStorage.getItem("userkey");
+nameOfUser = sessionStorage.getItem("username");
+battleText = sessionStorage.getItem("battleText");
+cashMoney = sessionStorage.getItem("cash");
+url = sessionStorage.getItem("picURL");
 
-
+console.log(nameOfUser)
 /*
 create the actual game object, 1st and 2nd args are dimensions 
 third arg is rendering context, can be Phaser.CANVAS, Phaser.WEBGL, or Phaser.AUTO

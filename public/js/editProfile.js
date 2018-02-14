@@ -13,11 +13,11 @@ $(document).ready(function() {
     
     console.log("In Home Page");
     
-    var keyValue = localStorage.getItem("userkey");
-    var nameOfUser = localStorage.getItem("username");
-    var battleText = localStorage.getItem("battleText");
-    var cashMoney = localStorage.getItem("cash");
-    var url = localStorage.getItem("picURL");
+    var keyValue = sessionStorage.getItem("userkey");
+    var nameOfUser = sessionStorage.getItem("username");
+    var battleText = sessionStorage.getItem("battleText");
+    var cashMoney = sessionStorage.getItem("cash");
+    var url = sessionStorage.getItem("picURL");
     
     $( window ).on( "load", function() { 
     
@@ -125,10 +125,27 @@ $(document).ready(function() {
                 console.log("New username: ", newUserName);
                 var newBattleText = $('#battleTextNew').val(); //get battleText
                 console.log("New battleText: ", newBattleText);
+                
+                // var dbRefObject = firebase.database().ref('/users/' + keyValue + '/username/');
+                // dbRefObject.set(
+                //     newUsername
+                // );
+                // dbRefObject = firebase.database().ref('/users/' + keyValue + '/battleText/');
+                // dbRefObject.set(
+                //     newBattleText
+                // );
+                // dbRefObject = firebase.database().ref('/users/' + keyValue + '/image/');
+                // dbRefObject.set(
+                //     newImageName
+                // );
+
 
                 firebase.storage().ref(name).getDownloadURL().then(function(url) {
                     newUrlVal = url;
-                    window.location.href = "mainMenu.html" + '#&&' + keyValue + '&&' + newUserName + '&&' + newBattleText + '&&' + cashMoney + '&&' + newUrlVal + '&&' + newImageName;
+                    sessionStorage.setItem("username", newUserName)
+                    sessionStorage.setItem("battleText", newBattlerText)
+                    sessionStorage.setItem("picURL", newUrl)
+                    window.location.href = "mainMenu.html"
                     console.log("hola");
                     })
 
