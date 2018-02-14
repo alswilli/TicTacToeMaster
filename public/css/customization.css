@@ -1,0 +1,27 @@
+/* The Modal (background) */
+#insufficientCash {
+	display: none; 
+	position: fixed; 
+	z-index: 1; 
+	padding-top: 25%; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.insufficientCash-content{
+	position: relative;
+	background-color: white;
+	margin: auto;
+	padding: 20px;
+	width: 50%;
+	height: auto;
+}
+.insufficientCash-content header{
+	font-weight: bold;
+	font-size: 18px;
+}

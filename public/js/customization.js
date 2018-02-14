@@ -6,6 +6,7 @@ var unlockedBoard; //String repsensentation of the unlocked status of board desi
 var unlockedPiece; //String repsensentation of the unlocked status of piece design
 var unlockedBackground; //String repsensentation of the unlocked status of background design
 var selectedList; //String representation of what is slected for each customization category
+var cashMoney; //Stores current cash
 $(document).ready(function() {
     // Initialize Firebase
     var config = {
@@ -23,8 +24,9 @@ $(document).ready(function() {
     var keyValue = localStorage.getItem("userkey");
     var nameOfUser = localStorage.getItem("username");
     var battleText = localStorage.getItem("battleText");
-    var cashMoney = localStorage.getItem("cash");
+   	cashMoney = localStorage.getItem("cash");
     var url = localStorage.getItem("picURL");
+		console.log(localStorage);
     
     userRef = firebase.database().ref('/users/' + keyValue);
 		//gets reference for the user's unlocked items
@@ -202,38 +204,66 @@ function initializeSelected(){
 	});
 }
 
-//when an item is purchased
+/*
+ Handles the interaction with cash amount of player. Checks if the player has enough cash for item. If yes, unlocks item and updates cash to local sotrage and firbase
+*/
+function unlockVerification(buttonId, tagId, imageId){
+	var itemCost =document.getElementById(buttonId).innerHTML.substring(1);
+	//for some reason I can't parseInt at the same time so I did it seperately
+	itemCost=parseInt(itemCost);
+	console.log(cashMoney+" - "+itemCost);
+	
+	if(cashMoney>=itemCost){
+		updateAndUnlock(buttonId, tagId, imageId)
+		
+		cashMoney=cashMoney-itemCost;
+		localStorage.setItem("cash",cashMoney);//updates cash to local storage
+		console.log(localStorage);
+		
+		document.getElementById('cash').innerHTML = '$' + cashMoney;
+		//gets reference to cash of user in firebase
+		var cashRef=userRef.child("cash"); 
+		cashRef.set(cashMoney); //updates cash to firebase;
+	}else{
+		console.log("you're poor, get some money");
+		
+		//shows a popup box to tell user he/she doesn't have enough money
+		var popUp = document.getElementById('insufficientCash');
+		popUp.style.display = "block";
+	}
+}
+
+//updates to firebase after an item is unlocked and calls to to the unlock function
 function updateAndUnlock(buttonId, tagId, imageId){
 	//gets item's index number for swapping out character
 	var itemIndex=buttonId.charAt(buttonId.length-1);
 	//console.log("swap index: ",itemIndex);
-	
 	if(buttonId.startsWith("board")){
 		//console.log("initial board unlocked status: ",unlockedBoard);
 		unlockedBoard=replaceAtIndex(unlockedBoard,itemIndex,"1");
-		
+
 		//gets the reference to the child node storing the string that repsents board unlock status
 		var boardRef=unlockedRef.child('board'); 
 		//replaces the onld string with the new one in firbase
 		boardRef.set(
-      unlockedBoard
-    );
+			unlockedBoard
+		);
 		//console.log("new board unlock status: ",unlockedBoard);
 	}else if (buttonId.startsWith("piece")){
 		//console.log("initial piece unlocked status: ",unlockedPiece);
 		unlockedPiece=replaceAtIndex(unlockedPiece,itemIndex,"1");
 		var pieceRef=unlockedRef.child('piece');
 		pieceRef.set(
-      unlockedPiece
-    );
+			unlockedPiece
+		);
 		//console.log("new piece unlock status: ",unlockedPiece);
 	}else if (buttonId.startsWith("background")){
 		//console.log("initial background unlocked status: ",unlockedBackground);
 		unlockedBackground=replaceAtIndex(unlockedBackground,itemIndex,"1");
 		var backgroundRef=unlockedRef.child('background');
 		backgroundRef.set(
-      unlockedBackground
-    );
+			unlockedBackground
+		);
 		//console.log("new background unlock status: ",unlockedBackground);
 	}else{
 		console.log("buttonId error: incorrectId");

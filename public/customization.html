@@ -3,17 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <title>Tic Tac Toe</title>
-	<!-- Include the Phaser API -->
-	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script src="js/customization.js"></script>
-
-        
+		<!-- Include the Phaser API -->
+		<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script src="js/customization.js"></script>
     <link rel = "stylesheet"
           type = "text/css"
-          href = "css/mainMenuStyle.css" />
-         
+          href = "css/mainMenuStyle.css" />    
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" type="text/css" href="css/customization.css">
     <style>
         h5 {font-size: 15px;}
         h6 {font-size: 15px;}
@@ -39,6 +37,13 @@
 		</div>
 		<div class="customization"style="margin-left:25%;margin-bottom:10%">
 			<img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px">
+			<div id="insufficientCash"> 
+				<div class="insufficientCash-content">
+					<header>Insufficient Cash</header>
+					<p>Win more games and complete achievements to get more cash.</p>
+					<button id="closePopUp" class="w3-button w3-blue-gray" onclick="remove('insufficientCash')"> close </button>
+				</div>
+			</div>
 			<div class="boardDesign w3-container">
 				<h2>Board Design</h2>
 				<div class="w3-row">
@@ -49,7 +54,7 @@
 								<span id="boardLockTag0" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="boardSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="boardButton0" class="w3-button w3-black" onclick="updateAndUnlock('boardButton0','boardLockTag0','boardImage0')">15 points </button>
+									<button id="boardButton0" class="w3-button w3-black" onclick="unlockVerification('boardButton0','boardLockTag0','boardImage0')">$0 </button>
 								</div>
 							</div>
 							<p>Board1</p>
@@ -63,7 +68,7 @@
 								<span id="boardLockTag1" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="boardSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-										<button id="boardButton1" class="w3-button w3-black" onclick="updateAndUnlock('boardButton1','boardLockTag1','boardImage1')">15 points </button>
+										<button id="boardButton1" class="w3-button w3-black" onclick="unlockVerification('boardButton1','boardLockTag1','boardImage1')">$25 </button>
 								</div>
 							</div>
 							<p>Board2</p>
@@ -77,7 +82,7 @@
 									<span id="boardLockTag2" class="w3-tag w3-display-topleft">Locked</span>
 									<span id="boardSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 									<div class="w3-display-middle w3-display-hover">
-										<button id="boardButton2" class="w3-button w3-black" onclick="updateAndUnlock('boardButton2','boardLockTag2','boardImage2')">15 points </button>
+										<button id="boardButton2" class="w3-button w3-black" onclick="unlockVerification('boardButton2','boardLockTag2','boardImage2')">$50 </button>
 									</div>
 								</div>
 								<p>Board3</p>
@@ -91,7 +96,7 @@
 									<span id="boardLockTag3" class="w3-tag w3-display-topleft">Locked</span>
 									<span id="boardSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 									<div class="w3-display-middle w3-display-hover">
-										<button id="boardButton3" class="w3-button w3-black" onclick="updateAndUnlock('boardButton3','boardLockTag3','boardImage3')">15 points </button>
+										<button id="boardButton3" class="w3-button w3-black" onclick="unlockVerification('boardButton3','boardLockTag3','boardImage3')">$100 </button>
 									</div>
 								</div>
 								<p>Board4</p>
@@ -110,7 +115,7 @@
 								<span id="pieceLockTag0" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="pieceSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 									<div class="w3-display-middle w3-display-hover">
-										<button id="pieceButton0" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton0','pieceLockTag0','pieceImage0')">15 points </button>
+										<button id="pieceButton0" class="w3-button w3-black" onclick="unlockVerification('pieceButton0','pieceLockTag0','pieceImage0')">$0 </button>
 									</div>
 							</div>
 							<p>Piece1</p>
@@ -124,7 +129,7 @@
 								<span id="pieceLockTag1" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="pieceSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="pieceButton1" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton1','pieceLockTag1','pieceImage1')">15 points </button>
+									<button id="pieceButton1" class="w3-button w3-black" onclick="unlockVerification('pieceButton1','pieceLockTag1','pieceImage1')">$25 </button>
 								</div>
 							</div>
 							<p>Piece2</p>
@@ -138,7 +143,7 @@
 								<span id="pieceLockTag2" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="pieceSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="pieceButton2" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton2','pieceLockTag2','pieceImage2')">15 points </button>
+									<button id="pieceButton2" class="w3-button w3-black" onclick="unlockVerification('pieceButton2','pieceLockTag2','pieceImage2')">$50 </button>
 								</div>
 							</div>
 							<p>Piece3</p>
@@ -152,7 +157,7 @@
 								<span id="pieceLockTag3" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="pieceSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="pieceButton3" class="w3-button w3-black" onclick="updateAndUnlock('pieceButton3','pieceLockTag3','pieceImage3')">15 points </button>
+									<button id="pieceButton3" class="w3-button w3-black" onclick="unlockVerification('pieceButton3','pieceLockTag3','pieceImage3')">$100 </button>
 								</div>
 							</div>
 							<p>Piece4</p>
@@ -171,7 +176,7 @@
 								<span id="backgroundLockTag0" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="backgroundSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="backgroundButton0" class="w3-button w3-black" onclick="updateAndUnlock('backgroundButton0','backgroundLockTag0','backgroundImage0')">15 points </button>
+									<button id="backgroundButton0" class="w3-button w3-black" onclick="unlockVerification('backgroundButton0','backgroundLockTag0','backgroundImage0')">$0 </button>
 								</div>
 							</div>
 							<p>background1</p>
@@ -185,7 +190,7 @@
 								<span id="backgroundLockTag1" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="backgroundSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="backgroundButton1" class="w3-button w3-black" onclick="updateAndUnlock('backgroundButton1','backgroundLockTag1','backgroundImage1')">15 points </button>
+									<button id="backgroundButton1" class="w3-button w3-black" onclick="unlockVerification('backgroundButton1','backgroundLockTag1','backgroundImage1')">$25 </button>
 								</div>
 							</div>
 							<p>background2</p>
@@ -199,7 +204,7 @@
 								<span id="backgroundLockTag2" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="backgroundSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="backgroundButton2" class="w3-button w3-black" onclick="updateAndUnlock('backgroundButton2','backgroundLockTag2','backgroundImage2')">15 points </button>
+									<button id="backgroundButton2" class="w3-button w3-black" onclick="unlockVerification('backgroundButton2','backgroundLockTag2','backgroundImage2')">$50 </button>
 								</div>
 							</div>
 							<p>background2</p>
@@ -213,7 +218,7 @@
 								<span id="backgroundLockTag3" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="backgroundSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
-									<button id="backgroundButton3" class="w3-button w3-black" onclick="updateAndUnlock('backgroundButton3','backgroundLockTag3','backgroundImage3')">15 points </button>
+									<button id="backgroundButton3" class="w3-button w3-black" onclick="unlockVerification('backgroundButton3','backgroundLockTag3','backgroundImage3')">$100 </button>
 								</div>
 							</div>
 							<p>background2</p>
