@@ -68,7 +68,7 @@ const winState = {
                     if (game.userkey != null) {
                        updateScore(game.userkey, "Losses");
                     }else {
-                       console("USER IS NULL: Not updating score");
+                       console.log("USER IS NULL: Not updating score");
                     }
 
                 }
@@ -118,16 +118,26 @@ const winState = {
  * the count of either Losses or Wins
  */
 function updateScore(userkey, result) {
-   
+   var gametype
+   console.log("gametype:", game.gametype);
+   switch(game.gametype) {
+      case "original":
+         gametype = "TTT"; break;
+      case "3d":
+         gametype = "3DT"; break;
+      case "orderChaos":
+         gametype = "OAC"; break;
+   }
+
    firebase.database().ref('users/'+userkey+'/username').on('value', function(snapshot) {      
       var username = snapshot.val();
       console.log("username: ", username);
       
-      firebase.database().ref('leaderboard/TTT/'+username+'/'+result).once('value').then(function(snapshot2) {
+      firebase.database().ref('leaderboard/'+gametype+'/'+username+'/'+result).once('value').then(function(snapshot2) {
          var resultCount = snapshot2.val() + 1;
          console.log(result,resultCount);        
          
-         firebase.database().ref().child('leaderboard/TTT/'+username).update({ [result]: resultCount});
+         firebase.database().ref().child('leaderboard/'+gametype+'/'+username).update({ [result]: resultCount});
       });
   });
 }
