@@ -113,12 +113,14 @@ const winState = {
     }
 }
 
+
 /* Takes a userkey and a string- "Losses" or "Wins" as the result.
  * Uses the userkey to lookup the username, then uses the username to update
  * the count of either Losses or Wins
  */
 function updateScore(userkey, result) {
-   var gametype
+   //Sets the gametype to be used in the query
+   var gametype;
    console.log("gametype:", game.gametype);
    switch(game.gametype) {
       case "original":
@@ -128,15 +130,18 @@ function updateScore(userkey, result) {
       case "orderChaos":
          gametype = "OAC"; break;
    }
-
+   
+   //Retrieves the username using the userkey
    firebase.database().ref('users/'+userkey+'/username').on('value', function(snapshot) {      
       var username = snapshot.val();
       console.log("username: ", username);
       
+      //Uses the username to retrieve the [win|loss] count of that user for the game and increments it
       firebase.database().ref('leaderboard/'+gametype+'/'+username+'/'+result).once('value').then(function(snapshot2) {
          var resultCount = snapshot2.val() + 1;
          console.log(result,resultCount);        
          
+         //Updates the the [win|loss] count of the user
          firebase.database().ref().child('leaderboard/'+gametype+'/'+username).update({ [result]: resultCount});
       });
   });

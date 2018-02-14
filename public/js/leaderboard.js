@@ -3,8 +3,9 @@ var DEBUG;                  //The debug flag for debugging
 var MAX_ROWS_ON_SCREEN;     //The max # of players that will be shown in the table at once
 
 var activeBoard;            //The default game to show rankings for when loading leaderboard.html
-var snapshotArr;            //The snapshot as an array, of the leaderboard names
+var snapshotArrs;           //The object containing arrays of the leaderboard for each game, e.g - snapshotArrs["TTT"] 
 var playerIndex;            //This is the initial index of the person to show on the leader, e.g - a value of 0 will be rank 1 player
+
 
 /* Firebase is already intialized, so load the leaderboard for tictactoe
  * All these variables need to be initialized in .ready() because they need to be
@@ -13,23 +14,32 @@ var playerIndex;            //This is the initial index of the person to show on
  */
 $(document).ready(function() {
                   
-                  DEBUG              = false;
-                  MAX_ROWS_ON_SCREEN = 10;
-                  activeBoard        = "TTT";
-                  playerIndex        = 0;
+   DEBUG              = false;
+   MAX_ROWS_ON_SCREEN = 10;
+   activeBoard        = "TTT";
+   snapshotArrs       = {};            
+   playerIndex        = 0;
                   
-                  if (DEBUG) { console.log("START: $document.ready()"); }
+   if (DEBUG) { console.log("START: $document.ready()"); }
                   
-                  getTopPlayersForGame(activeBoard);
-                  });
+   getTopPlayersForGame(activeBoard);
+});
+
 
 /* Toggles the color of the active shown game on the leaderboard when it is pressed.
  * Clears the current table and loads the players from the clicked game.
+ * If the leaderboard array for the clicked game is null, then we need to initialize it 
+ * first in getTopPlayersForGame(), otherwise we use createTable() 
  */
 function switchToLeaderBoard(clickedBoard) {
     playerIndex = 0;
-    getTopPlayersForGame(clickedBoard);
-    
+   
+    if (snapshotArrs[clickedBoard] == null) {
+       getTopPlayersForGame(clickedBoard);
+    }else {
+      createTable(clickedBoard);
+    }
+   
     if (clickedBoard !== activeBoard) {
         document.getElementById(clickedBoard).classList.add('w3-blue');
         document.getElementById(activeBoard).classList.toggle('w3-blue');
@@ -38,14 +48,16 @@ function switchToLeaderBoard(clickedBoard) {
     
 }
 
+
 /* Shows the top 10 players on the leaderboard
  */
 function toFirstPage() {
     if (playerIndex == 0) { return; }
     
     playerIndex = 0;
-    getTopPlayersForGame(activeBoard);
+    createTable(activeBoard);
 }
+
 
 /* Shows the previous top 10 players on the leaderboard starting at the new playerIndex
  */
@@ -57,16 +69,18 @@ function getPrevPlayers() {
         playerIndex = 0;
     }else {
         if (DEBUG) { console.log("playerIndex:", playerIndex); }
-        getTopPlayersForGame(activeBoard);
+        createTable(activeBoard);
     }
 }
+
 
 /* Shows the next top 10 players on the leaderboard starting at the new playerIndex
  */
 function getNextPlayers() {
     playerIndex += 10;
-    getTopPlayersForGame(activeBoard);
+    createTable(activeBoard);
 }
+
 
 /* Queries the DB for all the players from the given game, converts the result to an array
  * and then creates the leaderboard table. Apparently the function inside the firebase reference
@@ -74,43 +88,45 @@ function getNextPlayers() {
  * the table everytime a new table needs to be created
  */
 function getTopPlayersForGame(game) {
-    firebase.database().ref().child('leaderboard/'+game).orderByChild('Wins').on('value', function(snapshot) {
-                                                                                 $("#table tbody tr").remove();
-                                                                                 snapshotArr = snapshotToArray(snapshot);
-                                                                                 if (DEBUG) { console.log(snapshotArr); }
-                                                                                 createTable();
-                                                                                 });
+   firebase.database().ref().child('leaderboard/'+game).orderByChild('Wins').on('value', function(snapshot) {
+      snapshotArrs[game] = snapshotToArray(snapshot);
+      if (DEBUG) { console.log(snapshotArrs); }
+      createTable(game);
+   });
 }
+
 
 /* Converts a snapshot into an array
  */
 function snapshotToArray(snapshot) {
     var Arr = [];
     snapshot.forEach(function(childSnapshot) {
-                     var item = childSnapshot.val();
-                     item.key = childSnapshot.key;
+       var item = childSnapshot.val();
+       item.key = childSnapshot.key;
                      
-                     Arr.push(item);
-                     });
+       Arr.push(item);
+    });
     return Arr;
 };
 
 
-/* Creates the table by adding a row for each player in the snapshotArr. If there are less than
- * 10 rows, empty rows are added to pad the table to the constant size
+/* Clears current table, then creates the table by adding a row for each player in the snapshotArr. 
+ * If there are less than 10 rows, empty rows are added to pad the table to the constant size of 10 rows
  */
-function createTable() {
+function createTable(game) {
     if (DEBUG) { console.log("START: createTable()"); }
     
+    clearTable();
     var shownPlayers = 0;
     var rank = playerIndex + 1;
-    
-    for (var i=snapshotArr.length - playerIndex - 1; shownPlayers <= 10; i--) {
-        if (snapshotArr[i] == undefined ) { break; }
+    var start = snapshotArrs[game].length - playerIndex - 1;
+   
+    for (var i=start; shownPlayers <= 10; i--) {
+        if (snapshotArrs[game][i] == undefined ) { break; }
         
-        if (DEBUG) { console.log(snapshotArr[i].key + ' ' + snapshotArr[i].Wins + ' '+ snapshotArr[i].Losses); }
+        if (DEBUG) { console.log(snapshotArrs[game][i].key + ' ' + snapshotArrs[game][i].Wins + ' '+ snapshotArrs[game][i].Losses); }
         
-        addNewRow(rank, snapshotArr[i].key, snapshotArr[i].Wins, snapshotArr[i].Losses);
+        addNewRow(rank, snapshotArrs[game][i].key, snapshotArrs[game][i].Wins, snapshotArrs[game][i].Losses);
         shownPlayers++;
         rank++;
     }
@@ -121,6 +137,7 @@ function createTable() {
         rank++
     }
 }
+
 
 /* Adds a new row to the table, given the person's name and stats.
  * If the player has 0 wins and losses, set his winrate to ---
@@ -144,6 +161,7 @@ function addNewRow(rank, name, win, lose) {
     document.getElementById("table_body").appendChild(row);
 }
 
+
 /* Creates and returns a new TD element with the given text
  */
 function createTD(text) {
@@ -152,4 +170,11 @@ function createTD(text) {
     td.appendChild(text);
     
     return td;
+}
+
+
+/* Clears all the TR elements in the tbody for the table
+ */
+function clearTable() {
+   $("#table tbody tr").remove();  
 }
