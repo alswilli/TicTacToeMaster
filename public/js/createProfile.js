@@ -84,6 +84,12 @@ $('#btn-submit').on('click', function (e) {
             piece: "1000"
         };
         
+        var initWinLose = { 
+            win: 0, 
+            lose: 0, 
+            username: data.username
+        };
+       
         if (data.email != '' && data.password != '') {
             //create the user
             firebase.auth()
@@ -109,7 +115,13 @@ $('#btn-submit').on('click', function (e) {
                   usersRef.child(user.uid).child("challenges").set(achievements);
 
                   usersRef.child(user.uid).child("unlocked").set(customization);
-                    
+                  
+                  //Initialize the wins and losses in the leaderboard for the player
+                  dbRef.ref('leaderboard/3DT'+'/'+user.uid).set(initWinLose);
+                  dbRef.ref('leaderboard/OAC'+'/'+user.uid).set(initWinLose);
+                  dbRef.ref('leaderboard/TTT'+'/'+user.uid).set(initWinLose);
+                  dbRef.ref('leaderboard/ULT'+'/'+user.uid).set(initWinLose);
+               
               });
             }
     }   
