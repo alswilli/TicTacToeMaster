@@ -63,7 +63,7 @@ var threeDticTacState = {
         //if this is the first play against an opponent, create a new player on the server
         if(game.firstPlay === true)
         {
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype});
+            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
             console.log("firstPlay!")
             game.firstPlay = false
             game.waiting = true
@@ -638,7 +638,7 @@ var threeDticTacState = {
             game.playerPieceText.setText("You are O")
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
-            
+            game.opponentKey = data.challengerkey
             
         }
         else
@@ -649,9 +649,10 @@ var threeDticTacState = {
             game.playerPieceText.setText("You are X")
             game.opponent = data.username
             game.turnStatusText.setText("Your Turn")
+            game.opponentKey = data.userkey
         }
         console.log("you are challenged by " + game.opponent)
-
+        console.log("you are challenged by key " + game.opponentKey)
     },
     
     /*
@@ -740,11 +741,7 @@ var threeDticTacState = {
         game.printBoard();
     },
     
-    
-    handleOpponentLeaving()
-    {
-        game.state.start("waitingRoom");
-    },
+
     
     convertToIndexes(point)
     {
@@ -833,7 +830,6 @@ var threeDticTacState = {
         game.restartMatch = this.restartMatch
         game.askForRematch = this.askForRematch
         game.updateTurnStatus = this.updateTurnStatus
-        game.handleOpponentLeaving = this.handleOpponentLeaving
         game.convertToIndexes = this.convertToIndexes
         game.insidePolygon = this.insidePolygon
         game.multiplyMatrices = this.multiplyMatrices

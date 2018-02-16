@@ -51,7 +51,7 @@ var ticTacState = {
         //if this is the first play against an opponent, create a new player on the server
         if(game.firstPlay)
         {
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.});
+            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
             console.log("firstPlay!")
             game.firstPlay = false
             game.waiting = true
@@ -365,7 +365,7 @@ var ticTacState = {
             game.playerPieceText.setText("You are O")
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
-            
+            game.opponentKey = data.challengerkey
             
         }
         else
@@ -375,9 +375,11 @@ var ticTacState = {
             game.player = "x"
             game.playerPieceText.setText("You are X")
             game.opponent = data.username
+            game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
         }
         console.log("you are challenged by " + game.opponent)
+        console.log("you are challenged by key " + game.opponentKey)
         
     },
     
@@ -467,14 +469,6 @@ var ticTacState = {
     },
     
     
-    handleOpponentLeaving()
-    {
-        console.log("opponent left")
-        if(game.state.current==="win")
-           game.firstPlay = true
-        else
-            game.state.start("waitingRoom");
-    },
     
     /*
         asign functions ot the game object, so they can be called by the client
@@ -501,7 +495,6 @@ var ticTacState = {
         game.restartMatch = this.restartMatch
         game.askForRematch = this.askForRematch
         game.updateTurnStatus = this.updateTurnStatus
-        game.handleOpponentLeaving = this.handleOpponentLeaving
         game.convertIndexesToCoords = this.convertIndexesToCoords
     }
 };

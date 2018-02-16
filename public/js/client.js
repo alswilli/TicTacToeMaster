@@ -31,7 +31,7 @@ Client.socket.on('startGame',function(data){
                  console.log("tell them to start!");
                  game.startMatch(data);
                  Client.socket.emit('markRoomFull');
-                 });
+});
 
 Client.socket.on('confirmPlayer',function(data){
     game.assignID(data.id);
