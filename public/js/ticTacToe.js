@@ -51,7 +51,7 @@ var ticTacState = {
         //if this is the first play against an opponent, create a new player on the server
         if(game.firstPlay)
         {
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype});
+            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.});
             console.log("firstPlay!")
             game.firstPlay = false
             game.waiting = true
@@ -106,8 +106,7 @@ var ticTacState = {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
-        if(game.multiplayer)
-            game.waiting = true;
+        
         //the indexes in the 2D array corresponding to the clicked square
         var indexX = sprite.xIndex
         var indexY = sprite.yIndex
@@ -118,9 +117,12 @@ var ticTacState = {
         //string, don't do anything
         if(game.board[indexY][indexX] != "")
             return
+        if(game.multiplayer)
+            game.waiting = true;
            
          //place either an x or o, depending whose turn it is
-        if(game.isXTurn){
+        if(game.isXTurn)
+        {
             var piece = game.addSprite(sprite.x, sprite.y, 'star');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "x"

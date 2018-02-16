@@ -47,7 +47,8 @@ initGameRoom("orderChaos")
  */
 
 //when a new connection is established, call falling function
-io.on('connection',function(socket){
+io.on('connection',function(socket)
+{
       console.log("new connection!")
       
       
