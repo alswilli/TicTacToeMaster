@@ -88,7 +88,7 @@ function getNextPlayers() {
  * the table everytime a new table needs to be created
  */
 function getTopPlayersForGame(game) {
-   firebase.database().ref().child('leaderboard/'+game).orderByChild('Wins').on('value', function(snapshot) {
+   firebase.database().ref().child('leaderboard/'+game).orderByChild('win').on('value', function(snapshot) {
       snapshotArrs[game] = snapshotToArray(snapshot);
       if (DEBUG) { console.log(snapshotArrs); }
       createTable(game);
@@ -124,9 +124,12 @@ function createTable(game) {
     for (var i=start; shownPlayers <= 10; i--) {
         if (snapshotArrs[game][i] == undefined ) { break; }
         
-        if (DEBUG) { console.log(snapshotArrs[game][i].key + ' ' + snapshotArrs[game][i].Wins + ' '+ snapshotArrs[game][i].Losses); }
+        if (DEBUG) { console.log(snapshotArrs[game][i].key + ' ' 
+                               + snapshotArrs[game][i].win + ' '
+                               + snapshotArrs[game][i].lose+ ' '
+                               + snapshotArrs[game][i].username); }
         
-        addNewRow(rank, snapshotArrs[game][i].key, snapshotArrs[game][i].Wins, snapshotArrs[game][i].Losses);
+        addNewRow(rank, snapshotArrs[game][i].username, snapshotArrs[game][i].win, snapshotArrs[game][i].lose);
         shownPlayers++;
         rank++;
     }
