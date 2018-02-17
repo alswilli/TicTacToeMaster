@@ -117,20 +117,9 @@ const winState = {
  * Uses the userkey to fetch the current loss count of that user for the game,
  * then increments either the win or loss of that user and updates it
  */
-function updateScore(userkey, result) {
-   //Sets the gametype to be used in the query
-   var gametype;
-   console.log("gametype:", game.gametype);
-   switch(game.gametype) {
-      case "original":
-         gametype = "TTT"; break;
-      case "3d":
-         gametype = "3DT"; break;
-      case "orderChaos":
-         gametype = "OAC"; break;
-   }
-     
+function updateScore(userkey, result) {     
    //Uses the userkey to retrieve the [win|loss] count of that user for the game and increments it
+   var gametype = getGameType();
    firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/'+result).once('value').then(function(snapshot) {
       var resultCount = snapshot.val() + 1;
       console.log(result,resultCount);        
@@ -139,3 +128,48 @@ function updateScore(userkey, result) {
       firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
    });
 }
+
+/* Returns the current gametype
+ */
+function getGameType() {
+   var gametype;
+   console.log("gametype:", game.gametype);
+   
+   switch(game.gametype) {
+      case "original":
+         gametype = "TTT"; break;
+      case "3d":
+         gametype = "3DT"; break;
+      case "orderChaos":
+         gametype = "OAC"; break;
+   }
+   return gametype;
+}
+
+var myRating;  //Our rating
+var hisRating; //Opponent's rating
+
+function fetchRating(userkey) {
+   var gametype = getGameType();
+   var rating;
+   
+   firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/rating').once('value').then(function(snapshot) {
+      rating = snapshot.val();
+   }); 
+   
+   return rating;                                                                                                                                                         
+}
+
+function calculateExpectedScore() {
+   myRating = fetchRating(game.userkey);
+   
+}
+
+function calculateUpdatedScore() {
+   
+}
+
+
+
+
+
