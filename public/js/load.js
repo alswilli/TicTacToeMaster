@@ -22,6 +22,16 @@ var loadState = {
         it loads the images
     */
     create() {
+        game.handleOpponentLeaving = this.handleOpponentLeaving
         game.state.start('menu');
-    }
+    },
+    
+    handleOpponentLeaving()
+    {
+        console.log("opponent left")
+        if(game.state.current==="win")
+            game.firstPlay = true
+        else
+            game.state.start("waitingRoom");
+    },
 };

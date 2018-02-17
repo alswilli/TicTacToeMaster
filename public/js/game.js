@@ -104,5 +104,7 @@ game.addMenuOption = function(text, startY, callback) {
     
 },
 
+
+
 //start the game
 game.state.start('load')

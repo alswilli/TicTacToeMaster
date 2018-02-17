@@ -62,7 +62,7 @@ var orderChaosState = {
         //if this is the first play against an opponent, create a new player on the server
         if(typeof game.firstPlay)
         {
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype});
+            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
             console.log("firstPlay!")
             game.firstPlay = false
             game.waiting = true
@@ -453,6 +453,7 @@ var orderChaosState = {
             game.playerPieceText.setText("You are Chaos")
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
+            game.opponentKey = data.challengerkey
 
         }
         else
@@ -462,9 +463,11 @@ var orderChaosState = {
             game.player = "order"
             game.playerPieceText.setText("You are Order")
             game.opponent = data.username
+            game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
         }
         console.log("you are challenged by " + game.opponent)
+        console.log("you are challenged by key " + game.opponentKey)
         
     },
     
@@ -487,6 +490,7 @@ var orderChaosState = {
             game.player = "chaos"
             game.playerPieceText.setText("You are Chaos")
             game.turnStatusText.setText("Your Turn")
+            game.opponentKey = data.userkey
         }
         
     },
@@ -562,11 +566,6 @@ var orderChaosState = {
     },
     
     
-    handleOpponentLeaving()
-    {
-        game.state.start("waitingRoom");
-    },
-    
     /*
         asign functions ot the game object, so they can be called by the client
         technically this is a state object, so the functions in this file are not 
@@ -595,6 +594,5 @@ var orderChaosState = {
         game.restartMatch = this.restartMatch
         game.askForRematch = this.askForRematch
         game.updateTurnStatus = this.updateTurnStatus
-        game.handleOpponentLeaving = this.handleOpponentLeaving
     }
 };

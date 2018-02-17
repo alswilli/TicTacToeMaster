@@ -47,7 +47,8 @@ initGameRoom("orderChaos")
  */
 
 //when a new connection is established, call falling function
-io.on('connection',function(socket){
+io.on('connection',function(socket)
+{
       console.log("new connection!")
       
       
@@ -79,6 +80,7 @@ io.on('connection',function(socket){
                     roomNo: server.roomno,
                     username: data.name,
                     gametype: data.gametype,
+                    userkey: data.userkey,
                     roomName: roomName,
                     inFullRoom: false,
                 };
@@ -125,6 +127,7 @@ io.on('connection',function(socket){
                 {
                 
                     socket.player.challenger = io.nsps['/'].adapter.rooms[socket.player.roomName].challenger
+                    socket.player.challengerkey = io.nsps['/'].adapter.rooms[socket.player.roomName].challengerkey
                     console.log("start the game, " +socket.player.roomName)
                     // sending to all clients in 'game'
                     io.sockets.in(socket.player.roomName).emit('startGame', socket.player);
@@ -133,6 +136,7 @@ io.on('connection',function(socket){
                 else
                 {
                     io.nsps['/'].adapter.rooms[socket.player.roomName].challenger = socket.player.username
+                    io.nsps['/'].adapter.rooms[socket.player.roomName].challengerkey = socket.player.userkey
                     console.log(socket.player.roomName + "challenger is " +socket.player.username)
                 }
                 

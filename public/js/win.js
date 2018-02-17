@@ -28,9 +28,9 @@ const winState = {
             console.log("Current cash amount: ", game.cash);
             if (game.userkey != null) {
                 if (game.singleplayer == true) {
-      //              updateChallenges(game.userkey, "Draw", "Offline");
+                      updateChallenges(game.userkey, "Draw", "Offline");
                 } else {
-      //              updateChallenges(game.userkey, "Draw", "Online");
+                      updateChallenges(game.userkey, "Draw", "Online");
                 }
             } else {
                 console("USER IS NULL");
@@ -50,7 +50,7 @@ const winState = {
                 console.log("game.player:", game.player);
                 console.log("game.userkey", game.userkey);
                 console.log("game.username", game.username);
-  //            updateChallenges(game.userkey, "Draw", "Offline");
+                updateChallenges(game.userkey, "Draw", "Offline");
             }
             else 
             {
@@ -63,14 +63,13 @@ const winState = {
                     //game.userkey can be used to update firebase shtuff
 
                     game.cash = game.cash + 50;
-                    //console.log("I AM TILTED.");
                     console.log("Current cash amount: ", game.cash);
                     console.log("winner");
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
-   //                   updateChallenges(game.userkey, "Wins", "Online");
-                        updateScore(game.userkey, "Wins");
+                       updateChallenges(game.userkey, "Wins", "Online");
+                       updateScore(game.userkey, "win");
                     }else {
                        console("USER IS NULL: Not updating score");  
                     }
@@ -80,8 +79,8 @@ const winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
-      //                updateChallenges(game.userkey, "Losses", "Online");
-                        updateScore(game.userkey, "Losses");
+                       updateChallenges(game.userkey, "Losses", "Online");
+                       updateScore(game.userkey, "lose");
                     }else {
                        console.log("USER IS NULL: Not updating score");
                     }
@@ -129,9 +128,9 @@ const winState = {
 }
 
 
-/* Takes a userkey and a string- "Losses" or "Wins" as the result.
- * Uses the userkey to lookup the username, then uses the username to update
- * the count of either Losses or Wins
+/* Takes a userkey and a result- "lose" or "win"
+ * Uses the userkey to fetch the current loss count of that user for the game,
+ * then increments either the win or loss of that user and updates it
  */
 function updateScore(userkey, result) {
    //Sets the gametype to be used in the query
@@ -145,20 +144,14 @@ function updateScore(userkey, result) {
       case "orderChaos":
          gametype = "OAC"; break;
    }
-   
-   //Retrieves the username using the userkey
-   firebase.database().ref('users/'+userkey+'/username').on('value', function(snapshot) {      
-      var username = snapshot.val();
-      console.log("username: ", username);
-      
-      //Uses the username to retrieve the [win|loss] count of that user for the game and increments it
-      firebase.database().ref('leaderboard/'+gametype+'/'+username+'/'+result).once('value').then(function(snapshot2) {
-         var resultCount = snapshot2.val() + 1;
-         console.log(result,resultCount);        
-         
-         //Updates the the [win|loss] count of the user
-         firebase.database().ref().child('leaderboard/'+gametype+'/'+username).update({ [result]: resultCount});
-      });
+     
+   //Uses the userkey to retrieve the [win|loss] count of that user for the game and increments it
+   firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/'+result).once('value').then(function(snapshot) {
+      var resultCount = snapshot.val() + 1;
+      console.log(result,resultCount);        
+     
+      //Updates the the [win|loss] count of the user
+      firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
    });
 }
 

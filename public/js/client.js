@@ -24,12 +24,14 @@ Client.notifyQuit = function(){
     console.log("Client received notifyQuit, now Sending request to server")
     Client.socket.emit('playerQuit');
 };
+
+
 /*Callbacks that are called when the server sends a signal with the given name*/
 Client.socket.on('startGame',function(data){
                  console.log("tell them to start!");
                  game.startMatch(data);
                  Client.socket.emit('markRoomFull');
-                 });
+});
 
 Client.socket.on('confirmPlayer',function(data){
     game.assignID(data.id);
