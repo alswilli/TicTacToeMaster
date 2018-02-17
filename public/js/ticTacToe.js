@@ -1,5 +1,5 @@
-
-
+var keyValue = sessionStorage.getItem("userkey");
+var challengesRef = firebase.database().ref('/users/' + keyValue + '/challenges');
 /*
  The actual meat of the game, game state contains all the logic for the tictactoe
  game.
@@ -142,6 +142,7 @@ var ticTacState = {
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
         game.turns++
+        pieceChallenge(game.turns);
         console.log("turn count: " + game.turns)
         var turn = game.isXTurn ? "x" : "o"
         if(game.singleplayer)
@@ -502,4 +503,23 @@ var ticTacState = {
         game.handleOpponentLeaving = this.handleOpponentLeaving
         game.convertIndexesToCoords = this.convertIndexesToCoords
     }
+
+
 };
+
+function pieceChallenge(turn) {
+    if (game.turns == 1) {
+        challengesRef.once('value').then(function (snapshot) {
+            var check;
+            //check for placing first piece challenge                  
+            check = snapshot.val().piece;
+            if (check == '100%') {
+                //do nothing if challence is complete
+            } else {
+                challengesRef.update({piece: '100%'});
+                console.log('Challenge Complete!!!!!');
+                //need notification
+            }
+        });
+    }
+}
