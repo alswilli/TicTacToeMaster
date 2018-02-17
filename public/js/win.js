@@ -1,6 +1,8 @@
 /*
     State that is displayed when the game is over
 */
+var challengesRef;
+var leaderboardRef;
 const winState = {
     create () {
 
@@ -24,6 +26,16 @@ const winState = {
             //game.winner = 'o';
             game.cash = game.cash + 25;
             console.log("Current cash amount: ", game.cash);
+            if (game.userkey != null) {
+                if (game.singleplayer == true) {
+                      updateChallenges(game.userkey, "Draw", "Offline");
+                } else {
+                      updateChallenges(game.userkey, "Draw", "Online");
+                }
+            } else {
+                console("USER IS NULL");
+            }
+
         }
         else
         {
@@ -38,6 +50,7 @@ const winState = {
                 console.log("game.player:", game.player);
                 console.log("game.userkey", game.userkey);
                 console.log("game.username", game.username);
+                updateChallenges(game.userkey, "Draw", "Offline");
             }
             else 
             {
@@ -55,6 +68,7 @@ const winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
+                       updateChallenges(game.userkey, "Wins", "Online");
                        updateScore(game.userkey, "win");
                     }else {
                        console("USER IS NULL: Not updating score");  
@@ -65,6 +79,7 @@ const winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
+                       updateChallenges(game.userkey, "Losses", "Online");
                        updateScore(game.userkey, "lose");
                     }else {
                        console.log("USER IS NULL: Not updating score");
@@ -120,6 +135,7 @@ const winState = {
 function updateScore(userkey, result) {     
    //Uses the userkey to retrieve the [win|loss] count of that user for the game and increments it
    var gametype = getGameType();
+   
    firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/'+result).once('value').then(function(snapshot) {
       var resultCount = snapshot.val() + 1;
       console.log(result,resultCount);        
@@ -169,7 +185,103 @@ function calculateUpdatedScore() {
    
 }
 
+//takes in the userkey, the result of the game as 'Wins' 'Losses' or 'Draw',
+//and takes in the line to see if it is online or offline
+function updateChallenges(userkey, result, line) {
+
+    var check;
+    var keyValue = sessionStorage.getItem("userkey");
+    challengesRef = firebase.database().ref('/users/' + keyValue + '/challenges');
+    leaderboardRef = firebase.database().ref('leaderboard/' + gametype + '/' + keyValue);
 
 
+    //check for getting a draw match challenge
+
+    //check loss a match challenge
+    challengesRef.once('value').then(function(snapshot){
+        check = snapshot.val().lose;
+    
+        if (line == 'Online') {
+            if (check == '100%') {
+                //do nothing if challenge is complete
+            } else {
+                if (result == 'Losses') {
+                    challengesRef.update({ lose: '100%' });
+                    console.log('Challenge Complete!!!!!');
+                    //notification needed
+                }
+            }
+        }
+    
+        //check for playing all game modes challenge
+        check = snapshot.val().mode;
+    
+        if (check == '100%') {
+            //do nothing
+        } else {
+            leaderboardRef.once('value', function (snapshot) {
+                if(snapshot.wins == '0' || snapshot.lose == '0'){
+                    //do nothing if they have a win or loss
+                }else{
+                    if (check == '0%') {
+                        challengesRef.update({ mode: '25%' });
+                    } else if (check == '25%') {
+                        challengesRef.update({ mode: '50%' });
+                    } else if (check == '50%') {
+                        challengesRef.update({ mode: '75%' });
+                    } else {
+                        challengesRef.update({ mode: '100%' });
+                        console.log('Challenge Complete!!!!!');
+                        //notification needed
+                    }
+                }
+            });
+            }
+    
+        //check for winning as a O challenge
+        check = snapshot.val().o;
+        if (line == 'Online') {
+            if (check == '100%') {
+                //do nothing if challenge is complete
+            }else if(game.player == 'o' && result == 'Wins') {
+                challengesRef.update({ o: '100%' });
+                console.log('Challenge Complete!!!!!');
+            }
+        }
+
+        //check for playing an offline match challenge
+        check = snapshot.val().offline;
+        //if the player is undefined it is offline
+        if(line == 'Offline'){
+            if (check == '100%') {
+                //do nothing if challenge is complete
+            } else {
+                challengesRef.update({ offline: '100%' });
+                console.log('Challenge Complete!!!!!');
+            }
+        }
 
 
+        //check for playing an online match challenge
+        check = snapshot.val().online;
+        if (line == 'Online') {
+            if (check == '100%') {
+                //do nothing if challenge is complete
+            }else{
+                challengesRef.update({ online: '100%' });
+                console.log('Challenge Complete!!!!!');
+            }
+        }
+
+        //check for winning as a X challenge
+        check = snapshot.val().x;
+        if (line == 'Online') {
+            if (check == '100%') {
+                //do nothing if challence is complete
+            } else if (game.player == 'x' && result == 'Wins') {
+                challengesRef.update({ x: '100%' });
+                console.log('Challenge Complete!!!!!');
+            }
+        }
+    });
+};
