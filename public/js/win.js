@@ -21,7 +21,7 @@ const winState = {
         //display that the game ended in a draw or display the winner
         if(game.isDraw && game.gametype != "orderChaos")
         {
-            console.log("Hiya")
+            console.log("It's a draw")
             message = 'Draw, both players' + ' receive 25 gold coins!' //add sound and or animation here later for getting the money
             //game.winner = 'o';
             game.cash = game.cash + 25;
@@ -31,6 +31,7 @@ const winState = {
                       updateChallenges(game.userkey, "Draw", "Offline");
                 } else {
                       updateChallenges(game.userkey, "Draw", "Online");
+                      updateLeaderboard(game.userkey, "draw");
                 }
             } else {
                 console("USER IS NULL");
@@ -69,7 +70,7 @@ const winState = {
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
                        updateChallenges(game.userkey, "Wins", "Online");
-                       updateScore(game.userkey, "win");
+                       updateLeaderboard(game.userkey, "win");
                     }else {
                        console("USER IS NULL: Not updating score");  
                     }
@@ -80,7 +81,7 @@ const winState = {
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
                        updateChallenges(game.userkey, "Losses", "Online");
-                       updateScore(game.userkey, "lose");
+                       updateLeaderboard(game.userkey, "lose");
                     }else {
                        console.log("USER IS NULL: Not updating score");
                     }
@@ -132,58 +133,87 @@ const winState = {
  * Uses the userkey to fetch the current loss count of that user for the game,
  * then increments either the win or loss of that user and updates it
  */
-function updateScore(userkey, result) {     
-   //Uses the userkey to retrieve the [win|loss] count of that user for the game and increments it
-   var gametype = getGameType();
+function updateLeaderboard(userkey, result) {     
    
-   firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/'+result).once('value').then(function(snapshot) {
-      var resultCount = snapshot.val() + 1;
-      console.log(result,resultCount);        
+   var gametype;
+   switch(game.gametype) {
+      case "original":   gametype = "TTT"; break;
+      case "3d":         gametype = "3DT"; break;
+      case "orderChaos": gametype = "OAC"; break;
+   }   
+   
+   //Uses the userkey to retrieve the user reference to update the [win|loss] and the rating
+   firebase.database().ref('leaderboard/'+gametype+'/'+userkey).once('value').then(function(snapshot) {
       
-      //Updates the the [win|loss] count of the user
-      firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
+      updateScore( snapshot.val(), userkey, gametype, result);
+      updateRating(snapshot.val(), userkey, gametype, result);
    });
 }
 
-/* Returns the current gametype
+
+/* Updates the [win|loss] count of the user 
  */
-function getGameType() {
-   var gametype;
-   console.log("gametype:", game.gametype);
+function updateScore(userRef, userkey, gametype, result) {
+   console.log("userStats:", userRef);
+
+   var resultCount = userRef.win + 1;
+   if (result == "lose")
+      resultCount = userRef.lose + 1;
+   else if (result == "draw")
+      resultCount = userRef.draw + 1;
    
-   switch(game.gametype) {
-      case "original":
-         gametype = "TTT"; break;
-      case "3d":
-         gametype = "3DT"; break;
-      case "orderChaos":
-         gametype = "OAC"; break;
+   firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
+}
+
+
+/* Calculates and updates the elo rating of the user given the result = [win|draw|loss]
+ * Rating calculation is based on https://en.wikipedia.org/wiki/Elo_rating_system
+ * 
+ * Calculates the new rating updates firebase using the formula
+ * E.A = A's expected score,
+ * S.A = A's actual score (0:loss, 0.5:draw, 1:win)
+ * R.A = player A's rating, R.B = player B's rating
+ * K-factor = 32 (determines the maximum that a player's rating can change)
+ * 
+ * E.A = 1/(1 + 10^[(R.B - R.A)/400])
+ * R.A' = R.A + K(S.A - E.A)
+ */
+function updateRating(userRef, userkey, gametype, result) {
+   
+   var myRating  = userRef.rating; //Our rating
+   var oppRating;                  //Opponent's rating 
+   
+   //Fetches the opponent rating, and then calls doUpdateRating() update firebase
+   function fetchOppRating(userkey, gametype) {
+      firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/rating').once('value')
+      .then(function(snapshot) {
+         
+         oppRating = snapshot.val();
+         doUpdateRating();
+      });
    }
-   return gametype;
+ 
+   //Calculates the new rating and updates the leaderboard
+   function doUpdateRating() {
+      var power = (oppRating - myRating)/400;
+      var expectedScore = 1/(1 + Math.pow(10, power));
+      var actualScore = 1;                      //win
+      if (result === 'draw') actualScore = 0.5; //draw
+      if (result === 'lose') actualScore = 0;   //lose
+      var k = 32;                               //k-factor
+
+      var adjustedRating = myRating + k*(actualScore - expectedScore);
+      console.log("oppRating:", oppRating);
+      console.log("myRating:", myRating);
+      console.log("my new rating:", adjustedRating);
+      console.log("net gain:", adjustedRating - myRating);
+
+      firebase.database().ref('leaderboard/'+gametype+'/'+userkey).update({ rating: adjustedRating});  
+   }   
+   
+   fetchOppRating(game.opponentKey, gametype);
 }
 
-var myRating;  //Our rating
-var hisRating; //Opponent's rating
-
-function fetchRating(userkey) {
-   var gametype = getGameType();
-   var rating;
-   
-   firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/rating').once('value').then(function(snapshot) {
-      rating = snapshot.val();
-   }); 
-   
-   return rating;                                                                                                                                                         
-}
-
-function calculateExpectedScore() {
-   myRating = fetchRating(game.userkey);
-   
-}
-
-function calculateUpdatedScore() {
-   
-}
 
 //takes in the userkey, the result of the game as 'Wins' 'Losses' or 'Draw',
 //and takes in the line to see if it is online or offline
