@@ -47,7 +47,8 @@ third arg is rendering context, can be Phaser.CANVAS, Phaser.WEBGL, or Phaser.AU
 AUTO will automatically try to use webgl, but falls back in canvas if webgl is not supported on a browser
 fourth arg is the DOM element to place the game canvas in, body by default if left blank
 */
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gameDiv') 
+var width = document.getElementById('gameDiv').offsetWidth
+var game = new Phaser.Game(width, 600, Phaser.AUTO, 'gameDiv') 
 
 game.userkey = keyValue;
 game.username = nameOfUser;
@@ -99,7 +100,7 @@ game.addMenuOption = function(text, startY, callback) {
     txt.events.onInputOver.add(onOver, game);
     txt.events.onInputOut.add(onOut, game);
     
-    game.optionCount ++;
+    game.optionCount++;
     
     
 },
@@ -108,3 +109,5 @@ game.addMenuOption = function(text, startY, callback) {
 
 //start the game
 game.state.start('load')
+
+

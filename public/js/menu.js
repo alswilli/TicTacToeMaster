@@ -1,5 +1,5 @@
 // Initialize Firebase
-var config = {
+/*var config = {
     apiKey: "AIzaSyARQqkwmw-yDfR4Fl7eyDSs464kPyDTWpo",
     authDomain: "tictactoemaster-b46ab.firebaseapp.com",
     databaseURL: "https://tictactoemaster-b46ab.firebaseio.com",
@@ -7,7 +7,7 @@ var config = {
     storageBucket: "tictactoemaster-b46ab.appspot.com",
     messagingSenderId: "1050901435462"
 };
-firebase.initializeApp(config);
+firebase.initializeApp(config);*/
 
 /*
     The menu displayed before starting the game. Very simple right now, just displays

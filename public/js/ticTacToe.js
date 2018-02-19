@@ -378,6 +378,7 @@ var ticTacState = {
             game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
         }
+        //game.showOpponent();
         console.log("you are challenged by " + game.opponent)
         console.log("you are challenged by key " + game.opponentKey)
         
