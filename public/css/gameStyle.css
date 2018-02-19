@@ -1,0 +1,56 @@
+/* Card styles*/
+.card
+{
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 15%;
+    
+    height:400px;
+    
+    /*
+    margin-top:20px;
+    
+    
+    margin-left:35px;*/
+    position: relative;
+    
+    background-color: #f2f2f2;
+    
+    visibility: hidden;
+}
+
+.card:hover
+{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.cardTitle
+{
+    background-color: #333;
+    height: 50px
+}
+
+.cardTitle p
+{
+    margin: auto;
+    width: 50%;
+    text-align: center;
+    color:  #2161ab;
+    vertical-align: middle;
+    line-height: 50px;
+    font-size: 25px;
+    
+}
+
+.cardText
+{
+    float: left;
+    vertical-align: middle;
+    
+}
+
+.cardText p
+{
+    margin-left: 15px;
+    
+}
