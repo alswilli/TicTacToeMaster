@@ -88,7 +88,7 @@ function getNextPlayers() {
  * the table everytime a new table needs to be created
  */
 function getTopPlayersForGame(game) {
-   firebase.database().ref().child('leaderboard/'+game).orderByChild('win').on('value', function(snapshot) {
+   firebase.database().ref().child('leaderboard/'+game).orderByChild('rating').on('value', function(snapshot) {
       snapshotArrs[game] = snapshotToArray(snapshot);
       if (DEBUG) { console.log(snapshotArrs); }
       createTable(game);
@@ -114,61 +114,80 @@ function snapshotToArray(snapshot) {
  * If there are less than 10 rows, empty rows are added to pad the table to the constant size of 10 rows
  */
 function createTable(game) {
-    if (DEBUG) { console.log("START: createTable()"); }
-    
-    clearTable();
-    var shownPlayers = 0;
-    var rank = playerIndex + 1;
-    var start = snapshotArrs[game].length - playerIndex - 1;
    
-    for (var i=start; shownPlayers <= 10; i--) {
-        if (snapshotArrs[game][i] == undefined ) { break; }
-        
-        if (DEBUG) { console.log(snapshotArrs[game][i].key + ' ' 
-                               + snapshotArrs[game][i].win + ' '
-                               + snapshotArrs[game][i].lose+ ' '
-                               + snapshotArrs[game][i].username); }
-        
-        addNewRow(rank, snapshotArrs[game][i].username, snapshotArrs[game][i].win, snapshotArrs[game][i].lose);
-        shownPlayers++;
-        rank++;
-    }
+   clearTable();
+   addTableStatRow(game); //Creates 1st row - Rank, Player Name, ...
+   
+   var shownPlayers = 0;
+   var rank = playerIndex + 1;
+   var start = snapshotArrs[game].length - playerIndex - 1;
+   
+   for (var i=start; shownPlayers <= 10; i--) {
+      var player = snapshotArrs[game][i];
+      
+      if (player == undefined ) { break; }
+                
+      addNewRow(game, rank, player.username, player.rating, player.win, player.lose, player.draw);
+      shownPlayers++;
+      rank++;
+   }
     
-    //Creates rows to fill in empty values
-    for (var i=shownPlayers; i<MAX_ROWS_ON_SCREEN; i++) {
-        addNewRow(rank, '','','');
-        rank++
-    }
+   //Creates rows to fill in empty values
+   for (var i=shownPlayers; i<MAX_ROWS_ON_SCREEN; i++) {
+      addNewRow(game, rank, '','','', '', '');
+      rank++
+   }
+}
+
+
+/* This creates the 1st row of the table (Rank, Player Name, ...)
+ */
+function addTableStatRow(game) {   
+   var tableStatsRow = document.createElement("TR");
+   
+   tableStatsRow.appendChild( create("TH", "Rank" ) );
+   tableStatsRow.appendChild( create("TH", "Player Name" ) );
+   tableStatsRow.appendChild( create("TH", "Rating" ) );
+   tableStatsRow.appendChild( create("TH", "Wins" ) );
+   tableStatsRow.appendChild( create("TH", "Losses" ) );
+   if (game != "OAC")
+      tableStatsRow.appendChild( create("TH", "Draws" ) );
+   tableStatsRow.appendChild( create("TH", "Winrate" ) );
+   
+   document.getElementById("leaderboardStats").appendChild(tableStatsRow);   
 }
 
 
 /* Adds a new row to the table, given the person's name and stats.
- * If the player has 0 wins and losses, set his winrate to ---
- * If the player only has wins, set his winrate to 100%.
+ * If the player has 0 wins,losses, and draws, set the winrate to ---
  * If the name is '', set the winrate to '' for the empty row.
  */
-function addNewRow(rank, name, win, lose) {
-    var row = document.createElement("TR");
+function addNewRow(game, rank, name, rating, win, lose, draw) {
+   var row = document.createElement("TR");
     
-    var winRate = ((win/(win+lose) * 100).toFixed(2)) + '%';
-    if ( isNaN(win/lose) )           { winRate = "---";  }
-    if ( (win != 0) && (lose == 0) ) { winRate = "100%"; }
-    if ( name == '' )                { winRate = '';     }
+   rating = Math.round(rating); 
+   
+   var winRate = ( ( (win + 0.5*draw) / (win+lose+draw) ) * 100).toFixed(2) + '%';
+   if ( (win + lose + draw) == 0 )  { winRate = "---"; rating = "---" }
+   if ( name == '' )                { winRate = '';     }
     
-    row.appendChild( createTD(rank)    );
-    row.appendChild( createTD(name)    );
-    row.appendChild( createTD(win)     );
-    row.appendChild( createTD(lose)    );
-    row.appendChild( createTD(winRate) );
+   row.appendChild( create("TD", rank)    );
+   row.appendChild( create("TD", name)    );
+   row.appendChild( create("TD", rating)  );
+   row.appendChild( create("TD", win)     );
+   row.appendChild( create("TD", lose)    );
+   if (game != "OAC")
+      row.appendChild( create("TD", draw)    );
+   row.appendChild( create("TD", winRate) );
     
-    document.getElementById("table_body").appendChild(row);
+   document.getElementById("table_body").appendChild(row);
 }
 
 
-/* Creates and returns a new TD element with the given text
+/* Creates and returns a new element [TD|TH] with the given text
  */
-function createTD(text) {
-    var td   = document.createElement("TD");
+function create(elem, text) {
+    var td   = document.createElement(elem);
     var text = document.createTextNode(text);
     td.appendChild(text);
     
@@ -176,8 +195,17 @@ function createTD(text) {
 }
 
 
-/* Clears all the TR elements in the tbody for the table
+/* Removes all the rows of the table by removing the thead and tbody
  */
 function clearTable() {
+   $("#table thead tr").remove();
    $("#table tbody tr").remove();  
+}
+
+/* This sorts the players for the game by Rating -> Winrate -> Wins -> Draws
+ */
+function sortPlayers(game) {
+   snapshotArrs[game].sort(function(a, b) {
+      
+   });
 }
