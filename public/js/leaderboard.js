@@ -117,6 +117,7 @@ function createTable(game) {
    
    clearTable();
    addTableStatRow(game); //Creates 1st row - Rank, Player Name, ...
+   sortPlayers(game);
    
    var shownPlayers = 0;
    var rank = playerIndex + 1;
@@ -167,9 +168,9 @@ function addNewRow(game, rank, name, rating, win, lose, draw) {
     
    rating = Math.round(rating); 
    
-   var winRate = ( ( (win + 0.5*draw) / (win+lose+draw) ) * 100).toFixed(2) + '%';
+   var winRate = (calculateWinRate(win, lose, draw) * 100).toFixed(2) + '%';
    if ( (win + lose + draw) == 0 )  { winRate = "---"; rating = "---" }
-   if ( name == '' )                { winRate = '';     }
+   if ( name == '' )                { winRate = ''   ; rating = ""    }
     
    row.appendChild( create("TD", rank)    );
    row.appendChild( create("TD", name)    );
@@ -194,6 +195,11 @@ function create(elem, text) {
     return td;
 }
 
+/* Calculates winrate */
+function calculateWinRate(win, lose, draw) {
+   return (win + 0.5*draw) / (win+lose+draw);
+}
+
 
 /* Removes all the rows of the table by removing the thead and tbody
  */
@@ -203,9 +209,40 @@ function clearTable() {
 }
 
 /* This sorts the players for the game by Rating -> Winrate -> Wins -> Draws
+ * It prioritizes players who have played a game for the rating. 
  */
 function sortPlayers(game) {
    snapshotArrs[game].sort(function(a, b) {
+      var aPlayed = (a.win + a.lose + a.draw) == 0;
+      var bPlayed = (b.win + b.lose + b.draw) == 0;
+      var aWinRate = calculateWinRate(a.win, a.lose, a.draw);
+      var bWinRate = calculateWinRate(b.win, b.lose, b.draw);
       
+      var ratingDiff  = a.rating - b.rating;
+      var winRateDiff = aWinRate - bWinRate;
+      var winDiff     = a.win - b.win;
+      var drawDiff    = a.draw - b.draw;
+      
+      if (aPlayed && bPlayed) {
+         if (ratingDiff != 0) {
+            return ratingDiff;
+         }
+         else if (winRateDiff != 0) {   
+            return winRateDiff; 
+         }
+         else if (winDiff != 0) {   
+            return winDiff;
+         }
+         else {   
+            return drawDiff;
+         }
+      }
+      else if (aPlayed && !bPlayed) {
+         return -1;
+      }
+      else if (!aPlayed && bPlayed) {
+         return 1;
+      }
+      else return 0;  
    });
 }
