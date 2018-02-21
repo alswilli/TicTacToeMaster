@@ -4,8 +4,9 @@ var MAX_ROWS_ON_SCREEN;     //The max # of players that will be shown in the tab
 
 var activeBoard;            //The default game to show rankings for when loading leaderboard.html
 var snapshotArrs;           //The object containing arrays of the leaderboard for each game, e.g - snapshotArrs["TTT"] 
-var playerIndex;            //This is the initial index of the person to show on the leader, e.g - a value of 0 will be rank 1 player
-
+var playerIndex;            //This is maintained for the index of snapshotArrs[game][playerIndex] for changing pages 
+var sorted;                 /*This flag is set to false whenever there's a firebase update to the array, and set to true
+                             *the first time we createTable() */
 
 /* Firebase is already intialized, so load the leaderboard for tictactoe
  * All these variables need to be initialized in .ready() because they need to be
@@ -19,6 +20,7 @@ $(document).ready(function() {
    activeBoard        = "TTT";
    snapshotArrs       = {};            
    playerIndex        = 0;
+   sorted             = false;
                   
    if (DEBUG) { console.log("START: $document.ready()"); }
                   
@@ -32,19 +34,20 @@ $(document).ready(function() {
  * first in getTopPlayersForGame(), otherwise we use createTable() 
  */
 function switchToLeaderBoard(clickedBoard) {
-    playerIndex = 0;
+   playerIndex = 0;
+   sorted = false;
    
-    if (snapshotArrs[clickedBoard] == null) {
-       getTopPlayersForGame(clickedBoard);
-    }else {
-      createTable(clickedBoard);
-    }
+   if (snapshotArrs[clickedBoard] == null) {
+      getTopPlayersForGame(clickedBoard);
+   }else {
+      createTable(clickedBoard);    
+   }
    
-    if (clickedBoard !== activeBoard) {
-        document.getElementById(clickedBoard).classList.add('w3-blue');
-        document.getElementById(activeBoard).classList.toggle('w3-blue');
-        activeBoard = clickedBoard;
-    }
+   if (clickedBoard !== activeBoard) {
+      document.getElementById(clickedBoard).classList.add('w3-blue');
+      document.getElementById(activeBoard).classList.toggle('w3-blue');
+      activeBoard = clickedBoard;
+   }
     
 }
 
@@ -91,7 +94,14 @@ function getTopPlayersForGame(game) {
    firebase.database().ref().child('leaderboard/'+game).orderByChild('rating').on('value', function(snapshot) {
       snapshotArrs[game] = snapshotToArray(snapshot);
       if (DEBUG) { console.log(snapshotArrs); }
-      createTable(game);
+      
+      //Since this function calls for whenever there's an update on anygame, this check ensures that the shown table
+      //is only updated if we're viewing the game that's updated.
+      if (game == activeBoard) {
+         createTable(game);
+         sorted = false;
+      }
+      
    });
 }
 
@@ -116,14 +126,17 @@ function snapshotToArray(snapshot) {
 function createTable(game) {
    
    clearTable();
-   addTableStatRow(game); //Creates 1st row - Rank, Player Name, ...
-   sortPlayers(game);
+   addTableStatRow(game);   //Creates 1st row - Rank, Player Name, ...
+   
+   if (!sorted) {
+      sortPlayers(game)    //Sorts the users of the game
+      sorted = true;
+   }
    
    var shownPlayers = 0;
    var rank = playerIndex + 1;
-   var start = snapshotArrs[game].length - playerIndex - 1;
    
-   for (var i=start; shownPlayers <= 10; i--) {
+   for (var i=playerIndex; shownPlayers <= 10; i++) {
       var player = snapshotArrs[game][i];
       
       if (player == undefined ) { break; }
@@ -195,7 +208,9 @@ function create(elem, text) {
     return td;
 }
 
-/* Calculates winrate */
+
+/* Calculates winrate 
+ */
 function calculateWinRate(win, lose, draw) {
    return (win + 0.5*draw) / (win+lose+draw);
 }
@@ -208,22 +223,33 @@ function clearTable() {
    $("#table tbody tr").remove();  
 }
 
-/* This sorts the players for the game by Rating -> Winrate -> Wins -> Draws
- * It prioritizes players who have played a game for the rating. 
+
+/* This sorts the players descending by 
+ * the Priority = Rating->Winrate->Wins->Draws
+ * 
+ * Let P = Played , N = Didn't play, 
+ * Player A | Player B | cmp Result
+ * --------------------------------
+ *     P    |     P    | Priority
+ *     P    |     N    |    -1
+ *     N    |     P    |     1
+ *     N    |     N    |     0
  */
 function sortPlayers(game) {
    snapshotArrs[game].sort(function(a, b) {
-      var aPlayed = (a.win + a.lose + a.draw) == 0;
-      var bPlayed = (b.win + b.lose + b.draw) == 0;
+      var aPlayed = (a.win + a.lose + a.draw) != 0;
+      var bPlayed = (b.win + b.lose + b.draw) != 0;
+      
       var aWinRate = calculateWinRate(a.win, a.lose, a.draw);
       var bWinRate = calculateWinRate(b.win, b.lose, b.draw);
       
-      var ratingDiff  = a.rating - b.rating;
-      var winRateDiff = aWinRate - bWinRate;
-      var winDiff     = a.win - b.win;
-      var drawDiff    = a.draw - b.draw;
+      var ratingDiff  = Number(b.rating) - Number(a.rating);
+      var winRateDiff = Number(bWinRate) - Number(aWinRate);
+      var winDiff     = Number(b.win) - Number(a.win);
+      var drawDiff    = Number(b.draw) - Number(a.draw);
       
       if (aPlayed && bPlayed) {
+         
          if (ratingDiff != 0) {
             return ratingDiff;
          }
@@ -240,9 +266,11 @@ function sortPlayers(game) {
       else if (aPlayed && !bPlayed) {
          return -1;
       }
-      else if (!aPlayed && bPlayed) {
+      else if (!aPlayed && bPlayed) { 
          return 1;
       }
-      else return 0;  
+      else {
+         return 0;
+      }
    });
 }
