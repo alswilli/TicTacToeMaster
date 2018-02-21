@@ -3,6 +3,7 @@
 */
 var challengesRef;
 var leaderboardRef;
+var userRef;
 const winState = {
     create () {
 
@@ -220,9 +221,12 @@ function updateRating(userRef, userkey, gametype, result) {
 function updateChallenges(userkey, result, line) {
 
     var check;
+    var cashMoney;
+    var stringCash = sessionStorage.getItem("cash");
     var keyValue = sessionStorage.getItem("userkey");
     challengesRef = firebase.database().ref('/users/' + keyValue + '/challenges');
     leaderboardRef = firebase.database().ref('leaderboard/' + gametype + '/' + keyValue);
+    userRef = firebase.database().ref('/users/' + keyValue);
 
 
     //check for getting a draw match challenge
@@ -238,11 +242,16 @@ function updateChallenges(userkey, result, line) {
                 if (result == 'Losses') {
                     challengesRef.update({ lose: '100%' });
                     console.log('Challenge Complete!!!!!');
+                    cashMoney = parseInt(stringCash);
+                    cashMoney = cashMoney + 5;
+                    sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
+                    userRef.update({ cash: cashMoney }); //updates cash to firebase;
                     //notification needed
                 }
             }
         }
-    
+        cashMoney = sessionStorage.getItem("cash");
+
         //check for playing all game modes challenge
         check = snapshot.val().mode;
     
@@ -262,12 +271,17 @@ function updateChallenges(userkey, result, line) {
                     } else {
                         challengesRef.update({ mode: '100%' });
                         console.log('Challenge Complete!!!!!');
+                        cashMoney = parseInt(stringCash);
+                        cashMoney = cashMoney + 50;
+                        sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
+                        userRef.update({ cash: cashMoney }); //updates cash to firebase;
                         //notification needed
                     }
                 }
             });
             }
-    
+        cashMoney = sessionStorage.getItem("cash");
+
         //check for winning as a O challenge
         check = snapshot.val().o;
         if (line == 'Online') {
@@ -276,8 +290,13 @@ function updateChallenges(userkey, result, line) {
             }else if(game.player == 'o' && result == 'Wins') {
                 challengesRef.update({ o: '100%' });
                 console.log('Challenge Complete!!!!!');
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 50;
+                sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         }
+        cashMoney = sessionStorage.getItem("cash");
 
         //check for playing an offline match challenge
         check = snapshot.val().offline;
@@ -288,9 +307,13 @@ function updateChallenges(userkey, result, line) {
             } else {
                 challengesRef.update({ offline: '100%' });
                 console.log('Challenge Complete!!!!!');
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 25;
+                sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         }
-
+        cashMoney = sessionStorage.getItem("cash");
 
         //check for playing an online match challenge
         check = snapshot.val().online;
@@ -300,8 +323,13 @@ function updateChallenges(userkey, result, line) {
             }else{
                 challengesRef.update({ online: '100%' });
                 console.log('Challenge Complete!!!!!');
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 50;
+                sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         }
+        cashMoney = sessionStorage.getItem("cash");
 
         //check for winning as a X challenge
         check = snapshot.val().x;
@@ -311,6 +339,10 @@ function updateChallenges(userkey, result, line) {
             } else if (game.player == 'x' && result == 'Wins') {
                 challengesRef.update({ x: '100%' });
                 console.log('Challenge Complete!!!!!');
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 50;
+                sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         }
     });

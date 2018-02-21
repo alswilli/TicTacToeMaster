@@ -7,13 +7,53 @@
         <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
         <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+            <link rel = "stylesheet"
+            type = "text/css"
+            href = "css/gameStyle.css" />
 
     </head>
     
     <body>
-        <!-- The div that will contain the game -->
-        <div id="gameDiv" style="width:800px; margin:0 auto;"></div>
+        <!-- The div that will contain the game 
+        <div class="w3-card" style="width:15%; float:left;padding: 0px 0px 0px 0px;">
+            <div>
+            <img src="imgs/waluigi.png" id="userImage" style="width:100%; height:215px;margin-bottom:0px;">
+            <div class="c" style="padding: 0px 0px 0px 0px;margin:0px 0px 0px 0px;">
+                <div style="background-color: #333;height: 50px; width:100%;">
+                    <p id="username" style="color:  #2161ab;">Username</p>
+                </div>
+                <p id="battleText">The Troll's tongue in Hardanger, Norway</p>
+            </div>
+            </div>
+        </div>-->
+        <div class="card" id="playerCard"style="float:left;">
+            <div class="cardTitle">
+                <p id="username"></p>
+            </div>
+            <div>
+                <img src="images/wa.jpg" id="userImage" style="width:100%; height: 215px;">
+                    <div class="cardText">
+                        <p id="battleText"></p>
+                    </div>
+            </div>
+        </div>
+            
+        <div id="gameDiv" style="width:70%; margin:0 auto;float:left;"></div>
         
+        
+        <div class="card" id="opponentCard" style="float:right;">
+            <div class="cardTitle">
+                <p id="opponentUsername"></p>
+            </div>
+            <div>
+                <img src="images/wa.jpg" alt="img" id="opponentImage" style="width:100%; height: 215px;">
+                    <div class="cardText">
+                        <p id="opponentBattleText"></p>
+                    </div>
+                    </div>
+        </div>
         <!-- Notice the URL, this is handled by socket.io on the server automatically, via express-->
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
         

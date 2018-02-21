@@ -1,5 +1,6 @@
 var keyValue = sessionStorage.getItem("userkey");
 var challengesRef = firebase.database().ref('/users/' + keyValue + '/challenges');
+var userRef = firebase.database().ref('/users/' + keyValue);
 /*
  The actual meat of the game, game state contains all the logic for the tictactoe
  game.
@@ -379,6 +380,7 @@ var ticTacState = {
             game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
         }
+        //game.showOpponent();
         console.log("you are challenged by " + game.opponent)
         console.log("you are challenged by key " + game.opponentKey)
         
@@ -503,7 +505,12 @@ var ticTacState = {
 };
 
 function pieceChallenge(turn) {
+    console.log("pieceChallenge");
+    var cashMoney;
+    var stringCash = sessionStorage.getItem("cash");
+
     if (game.turns == 1) {
+        console.log("pieceChallenge turn 1");
         challengesRef.once('value').then(function (snapshot) {
             var check;
             //check for placing first piece challenge                  
@@ -514,6 +521,12 @@ function pieceChallenge(turn) {
                 challengesRef.update({piece: '100%'});
                 console.log('Challenge Complete!!!!!');
                 //need notification
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 50;
+                sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
+                console.log("cashMoney: ", cashMoney);
+                console.log("session money: ", sessionStorage.getItem("cash"));
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         });
     }

@@ -29,7 +29,7 @@ Client.notifyQuit = function(){
 /*Callbacks that are called when the server sends a signal with the given name*/
 Client.socket.on('startGame',function(data){
                  console.log("tell them to start!");
-                 game.startMatch(data);
+                 game.loadOpponent(data);
                  Client.socket.emit('markRoomFull');
 });
 
