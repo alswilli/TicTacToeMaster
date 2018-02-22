@@ -73,7 +73,8 @@ app.controller('SidebarCtrl', function($scope) {
                           $scope.img_url = app.img_url;//sessionStorage.getItem("picUrl");
                           $scope.battleText = '"' + app.battleText + '"';
                           $scope.money = "$" +  app.money;//sessionStorage.getItem("cash");
-                          document.getElementById("cash").innerHTML = "$" + app.money;
+                          if(document.getElementById("cash"))
+                            document.getElementById("cash").innerHTML = "$" + app.money;
                           console.log("update dat user " + app.money)
                           setSelected(link);
                           });
