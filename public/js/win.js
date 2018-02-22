@@ -135,7 +135,7 @@ const winState = {
  * then increments either the win or loss of that user and updates it
  */
 function updateLeaderboard(userkey, result) {     
-   
+   console.log("updating leaderboard");
    var gametype;
    switch(game.gametype) {
       case "original":   gametype = "TTT"; break;

@@ -34,21 +34,21 @@ $(document).ready(function() {
  * first in getTopPlayersForGame(), otherwise we use createTable() 
  */
 function switchToLeaderBoard(clickedBoard) {
+ 
+   if (clickedBoard !== activeBoard) {
+      document.getElementById(clickedBoard).classList.add('w3-green');
+      document.getElementById(activeBoard).classList.toggle('w3-green');
+      activeBoard = clickedBoard;
+      sorted = false;
+   }   
+   
    playerIndex = 0;
-   sorted = false;
    
    if (snapshotArrs[clickedBoard] == null) {
       getTopPlayersForGame(clickedBoard);
    }else {
       createTable(clickedBoard);    
-   }
-   
-   if (clickedBoard !== activeBoard) {
-      document.getElementById(clickedBoard).classList.add('w3-blue');
-      document.getElementById(activeBoard).classList.toggle('w3-blue');
-      activeBoard = clickedBoard;
-   }
-    
+   }  
 }
 
 
@@ -59,6 +59,26 @@ function toFirstPage() {
     
     playerIndex = 0;
     createTable(activeBoard);
+}
+
+
+/* Shows the page where the user is in the leaderboard
+ * Does nothing for a guest
+ */
+function toYourPage() {
+   var username = sessionStorage.getItem("username");
+   if (username == null) return;
+   
+   
+   var index = snapshotArrs[activeBoard].map(function(player) {
+      return player.username;
+   }).indexOf(username);
+   
+   playerIndex = Math.floor(index/10) * 10;
+   createTable(activeBoard);
+   
+   //This is the fading animation on the row that represents the player
+   document.getElementById("userRow").classList.toggle('w3-animate-opacity');
 }
 
 
@@ -96,10 +116,11 @@ function getTopPlayersForGame(game) {
       if (DEBUG) { console.log(snapshotArrs); }
       
       //Since this function calls for whenever there's an update on anygame, this check ensures that the shown table
-      //is only updated if we're viewing the game that's updated.
+      //is only updated if we're viewing the list that's updated. We also set sorted to false, because if there's an
+      //update on the list we're viewing, then the list will potentially be out of order. 
       if (game == activeBoard) {
-         createTable(game);
          sorted = false;
+         createTable(game);
       }
       
    });
@@ -136,7 +157,7 @@ function createTable(game) {
    var shownPlayers = 0;
    var rank = playerIndex + 1;
    
-   for (var i=playerIndex; shownPlayers <= 10; i++) {
+   for (var i=playerIndex; shownPlayers < 10; i++) {
       var player = snapshotArrs[game][i];
       
       if (player == undefined ) { break; }
@@ -178,7 +199,12 @@ function addTableStatRow(game) {
  */
 function addNewRow(game, rank, name, rating, win, lose, draw) {
    var row = document.createElement("TR");
-    
+   
+   //Sets the id for the row that represents you so that we can find it later
+   if (name == sessionStorage.getItem("username")) {
+      row.setAttribute("id", "userRow");
+   }
+   
    rating = Math.round(rating); 
    
    var winRate = (calculateWinRate(win, lose, draw) * 100).toFixed(2) + '%';
@@ -243,10 +269,10 @@ function sortPlayers(game) {
       var aWinRate = calculateWinRate(a.win, a.lose, a.draw);
       var bWinRate = calculateWinRate(b.win, b.lose, b.draw);
       
-      var ratingDiff  = Number(b.rating) - Number(a.rating);
-      var winRateDiff = Number(bWinRate) - Number(aWinRate);
-      var winDiff     = Number(b.win) - Number(a.win);
-      var drawDiff    = Number(b.draw) - Number(a.draw);
+      var ratingDiff  = b.rating - a.rating;
+      var winRateDiff = bWinRate - aWinRate;
+      var winDiff     = b.win    - a.win;
+      var drawDiff    = b.draw   - a.draw;
       
       if (aPlayed && bPlayed) {
          
