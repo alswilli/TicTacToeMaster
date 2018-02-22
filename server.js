@@ -154,11 +154,12 @@ io.on('connection',function(socket)
                 socket.on('playerQuit',function(){
                           // sending to all clients in 'game' room, including sender
                           socket.to(socket.player.roomName).emit('playerLeft')
-                          updateRoomStatus(socket.player)
+                          //updateRoomStatus(socket.player)
                 });
                 
                 socket.on('markRoomFull',function(){
-                          socket.player.inFullRoom = true
+                          socket.player.inFullRoom = true;
+                          console.log(socket.player.username + " is in a full room ")
                 });
                 
                 
@@ -186,13 +187,14 @@ function getRoomName(data)
 
 function updateRoomStatus(data)
 {
-    console.log(data.roomName)
-    console.log(roomsNo[data.gametype].total)
-    if(!data.inFullRoom)
+    console.log(data.username + " left " + data.roomName)
+    console.log("there were " + roomsNo[data.gametype].total)
+    if(!data.inFullRoom && !needNewRoom(data.gametype))
     {
         roomsNo[data.gametype].total++
     }
-     console.log(roomsNo[data.gametype].total)
+
+     console.log("now there are " +roomsNo[data.gametype].total)
 }
 
 

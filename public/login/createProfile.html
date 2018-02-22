@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login Form</title>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" type="text/css" href="css/createProfile.css"></link>
+        <link rel="stylesheet" typy="text/css" href="css/font-awesome.css">
+        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div>
+                <img id='image' src="../SiteImages/dudeicon.png" class="image">
+            </div>
+                                
+                <input type="file" id="profile_image" required>
+    
+            <form id='userInputForm'>
+                <div class="form-input">
+                    <input id="username" type="text" name="username" placeholder="Username:" required>
+                </div>
+                <div class="form-input">
+                        <input id="email" type="text" name="email" placeholder="Email:" required>
+                </div>
+                <div class="form-input">
+                    <input id="password" type="password" name="password" placeholder="Password:" required>
+                </div>
+                <div class="form-input">
+                    <input id="battleText" type="text" name="battleText" placeholder="Battle Phrase:" required>
+                </div>
+                <div class="form-input">
+                    <select id= "secQ">
+                            <option id="birthdate" value="birthdate">Where were you born?</option>
+                            <option id="petName" value="petName">What is your first pet's name?</option>
+                            <option id="moveName" value="moveName">What is your favorite movie?</option>
+                            <option id="dadName" value="dadName">What is your father's middle name?</option>
+                    </select>
+                </div>
+                <div class="form-input">
+                    <input id="secQAnswer" type="text" name="secQAnswer" placeholder="Answer:" required>
+                </div>
+                <input type="submit" name="submit" value="Create Account" id ="btn-submit" class="btn-submit"><br>
+            </form>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="js/createProfile.js"></script>
+    </body>
+</html>

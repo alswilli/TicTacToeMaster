@@ -1,0 +1,24 @@
+<div>
+ <div class="w3-container w3-blue-gray">   
+<h2>{{username}}</h2>
+</div>
+ <img   ng-src="{{img_url}}" alt="TicTacToe" style="width:100%; height:150px;background-color: #f2f2f2;" ></img>
+ <div class="w3-container w3-blue-gray">
+ <p class="w3-right-align" ng-model='$parent.battleText'>{{battleText}}</p>
+ <p class="w3-right-align" id='cash'>{{money}}</p>
+ </div>
+ <!--</div>-->
+
+
+
+ 
+ <!--<div class="w3-container" style="width:100%">-->
+ <span id="links">
+ <a href="#/editProfile" id="editProfileLink">Edit Profile</a>
+ <a href="#/home" id="homePageLink" >Home Page</a>
+ <a href="#/achievements" id="achievementsLink">Achievements</a>
+ <a href="#/customization" id="customizationLink" >Customization</a>
+ <a href="#/leaderboard" id="leaderboardLink">Leaderboard</a>
+ <a  id="logoutLink" onclick="logout()">Logout</a>
+ </span>
+</div>

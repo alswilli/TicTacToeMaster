@@ -1,0 +1,37 @@
+
+        
+
+<div id="gameDiv" style="width:80%; margin:0 auto;float:left;"></div>
+
+
+<div class="gameCard" id="opponentCard" style="float:right;">
+    <!--<div class=".gameCardTitle">-->
+        <div class="w3-container w3-blue-gray">   
+            <h2 id="opponentUsername">hey</h2>
+        </div>
+        
+    <!--</div>-->
+    <div style="height:100%;">
+        <img src="imgs/waluigi.png" alt="img" id="opponentImage" style="width:100%; height: 215px;"> <img>
+            <div class="w3-container w3-blue-gray" style="height:185px;">
+                <p id="opponentBattleText">im batle text</p>
+            </div>
+    </div>
+</div>
+<!-- Notice the URL, this is handled by socket.io on the server automatically, via express-->
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+
+
+
+
+<!-- Load the js scripts that will make the game playable -->
+<script src="js/games/win.js"></script>
+<script src="js/games/load.js"></script>
+<script src="js/games/menu.js"></script>
+<script src="js/games/ticTacToe.js"></script>
+<script src="js/games/3DticTacToe.js"></script>
+<script src="js/games/orderChaos.js"></script>
+
+<script src="js/games/waitingRoom.js"></script>
+<script src="js/games/game.js"></script>

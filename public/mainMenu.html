@@ -1,175 +1,90 @@
-﻿<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Tic Tac Toe</title>
-        <!-- Include the Phaser API -->
+  <head>
+    <meta charset="utf-8">
+    <title>TicTacToeMaster</title>
+    
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="css/myStyle.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/customization.css">
+    <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+    <!-- Include the Phaser API -->
+    <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
+    <!-- Include Socet.io for networking-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="js/client.js" type="text/javascript"></script>
+    <link rel = "stylesheet" type = "text/css" href = "css/gameStyle.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js"></script>
+    <style>
+        h5{margin: 0;}
+        h2{margin: 0;}
+        h1{margin: 0;}
+        h5 {margin:0; font-size: 15px;}
+        h6 {margin:0; font-size: 15px;}
+    </style>
+  </head>
+  <body ng-app="TicTacToeApp">
+      
+        <!--<img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px;position: relative;"></img>-->
+        <!--<div class="contentSideBarContainer">
+            <div style="width:15%; height:100%; background-color: #7c0db6;position: relative;flex:1;">
+               hi <!--<div ng-include='"templates/sidebar.html"' style="height:100%"></div>-->
+            <!--</div>
+            <div class="contentPanel" role="main"><!--<div style="margin-left:25%;">-->
+                  <!--<div ng-view></div>
+            <!--</div>
+        </div>     
+        
+        <!--<footer>
+            <ul class="footerBar">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Credits</a></li>
+            </ul>
+        </footer>-->
+    <!-- Application Files -->
+    <header id="banner">
+    <img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:150px;margin-top: 0px;
+        margin-bottom: 0px;">
+        </header>
+        <!--<ul class="navigationBar">
+            <li><a href="index.html" class="selectedTab">Home</a></li>
+            <li><a href="todo.html">To Do List</a></li>
+            <li><a href="todoForm.html">To Do Form</a></li>
+        </ul>-->
+    <div class="contentSideBarContainer">
+        <div ng-controller="SidebarCtrl as sidebar" class="sidebar">
+            <div ng-include='"templates/sidebar.html"'></div>
+        </div>
 
         
-        <link rel = "stylesheet"
-            type = "text/css"
-            href = "css/mainMenuStyle.css" />
-         
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <style>
-            h5 {font-size: 15px;}
-            h6 {font-size: 15px;}
-        </style>
+            
+        
+        <main class="contentPanel" role="main" style="width:100%">
+            <div ng-view style="width:100%"></div>
+        </main>
+        
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
-        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script src="js/mainMenu.js"></script>
-    </head>
+    </div>
     
-    <body>
-
-
-
-
-            <div class="w3-sidebar w3-light-gray w3-bar-block w3-card" style="width:25%">
-                <div class="w3-container w3-blue-gray">
-                    <h2 id='username'>Username</h2>
-                    <p class="w3-right-align" id='battleText'>waaaa</p>
-                    <p class="w3-right-align" id='cash'>moneyay</p>
-                </div>
-
-
-                <img id="profileImage" alt="TicTacToe" style="width:100%" class=image>
-                    
-
-                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="editProfile">Edit Profile</a>
-
-
-                
-                <!-- drop down
-
-                <button class="w3-button w3-block w3-hover-blue-gray w3-left-align" onclick="accordion('themeButton')">Theme <i class="fa fa-caret-down"></i>
-                </button>
-                <div id="themeButton" class="w3-hide w3-white w3-card">
-                    <a href="#" class="w3-bar-item w3-button">Select Theme</a>
-                    <a href="#" class="w3-bar-item w3-button">Theme Shop</a>
-                </div>
-                -->
-                <a href="#" class="w3-bar-item w3-blue-gray">Home Page</a>
-                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="achievements">Achievements</a>
-                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="customization">Customization</a>
-                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray " id="leaderboard">Leaderboard</a>
-                <a href="#" class="w3-bar-item w3-button w3-hover-blue-gray" id="logout">Logout</a>
-            </div>
-        <!--
-            <div class="gameSelection">
-                <ul class="listNoBullet">
-                     <li>
-                         <div class="gameDiv">
-                            <a href="game.html">
-                                <img src="imgs/moon.png" alt="TicTacToe" height="75" width="75">
-                                </img>
-                            </a>
-                            <br>
-                            <a href="game.html">TicTacToe</a>
-                         </div>
-                     </li>
-                    
-                    <li>
-                        <div class="gameDiv">
-                             <a href="game.html">
-                                <img src="imgs/moon.png" alt="TicTacToe" height="75" width="75">
-                                </img>
-                             </a>
-                             <br>
-                             <a href="game.html">3DTicTacToe</a>
-                         </div>
-                     </li>
-                    <li>
-                        <div class="gameDiv">
-                            <a href="game.html">
-                                <img src="imgs/moon.png" alt="TicTacToe" height="75" width="75">
-                                </img>
-                                <br>
-                                <a href="game.html">Order&#38;Chaos</a>
-                            </a>
-                        </div>
-                    </li>
-                     <li>
-                         <div class="gameDiv">
-                             <a href="game.html">
-                                <img src="imgs/moon.png" alt="TicTacToe" height="75" width="75">
-                                </img>
-                                <br>
-                                <a href="game.html">Ultimate</a><br><a href="game.html">TicTacToe</a>
-                             </a>
-                         </div>
-                     </li>
-
-                     
-                     
-                </ul>
-         -->       
-        <div class="games"style="margin-left:25%;margin-bottom:10%">
-            <img src="SiteImages/banner.png" alt="Avatar" style="width:100%; height:100px">
-            <div class="w3-container w3-section">
-                <div class="w3-card w3-left" style="width:175px; float:left; margin-left:10%; margin-right:10%; margin-bottom:16px" >
-                    <header class="w3-container w3-light-blue w3-center">
-                        <h5>Tic Tac Toe</h5>
-                    </header>
-                    <div class="w3-container w3-center">
-                        <img src="imgs/moon.png" alt="Avatar" style="width:80%">
-                        <button class="w3-button w3-block w3-dark-grey" id="tictactoeOriginal" type="button">Play</button>
-                    </div>
-                </div>
-
-                <div class="w3-card w3-left" style="width:175px; float:right; margin-left:10%; margin-right:10%" >
-                    <header class="w3-container w3-light-blue w3-center">
-                        <h5>3D Tic Tac Toe</h5>
-                    </header>
-                    <div class="w3-container w3-center">
-                        <img src="imgs/moon.png" alt="Avatar" style="width:80%">
-                            <button class="w3-button w3-block w3-dark-grey" id="3dtictactoe" type="button">Play</button>
-                    </div>
-
-                </div>
-            </div>
-            <div class="w3-container w3-section">
-                <div class="w3-card w3-left" style="width:175px; float:left; margin-left:10%; margin-right:10%; margin-bottom:16px" >
-                    <header class="w3-container w3-light-blue w3-center">
-                        <h5>Order&#38;Chaos</h5>
-                    </header>
-                    <div class="w3-container w3-center">
-                        <img src="imgs/moon.png" alt="Avatar" style="width:80%">
-                            <button class="w3-button w3-block w3-dark-grey" id="orderChaos">Play</button>
-                            </div>
-                </div>
-
-                <div class="w3-card w3-left" style="width:175px; float:left; margin-left:10%; margin-right:10%">
-                    <header class="w3-container w3-light-blue w3-center">
-                        <h6>Ultimate Tic Tac Toe</h6>
-                    </header>
-                    <div class="w3-container w3-center">
-                        <img src="imgs/moon.png" alt="Avatar" style="width:80%">
-                            <button class="w3-button w3-block w3-dark-grey">Play</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-       
-       
-
-<!--
-        <script>
-        function accordion(id) {
-            var x = document.getElementById(id);
-            if (x.className.indexOf("w3-show") == -1) {
-                x.className += " w3-show";
-                x.previousElementSibling.className += " w3-blue-gray";
-            } else { 
-                x.className = x.className.replace(" w3-show", "");
-                x.previousElementSibling.className += " w3-light-gray";
-            }
-        }
-        </script>
--->
-
-
-    </body>
+    <footer>
+        <ul class="footerBar">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Credits</a></li>
+        </ul>
+    </footer>
+    
+    <script src="js/app.js"></script>
+    <script src="js/controllers/home.js"></script>
+    <script src="js/controllers/editProfile.js"></script>
+    <script src="js/controllers/achievements.js"></script>
+    <script src="js/controllers/customization.js"></script>
+    <script src="js/controllers/leaderboard.js"></script>
+    <script src="js/controllers/gameController.js"></script>
+  </body>
 </html>
