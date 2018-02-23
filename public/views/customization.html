@@ -1,192 +1,217 @@
-<div class="customization">
-<div id="insufficientCash"> 
-    <div class="insufficientCash-content">
-        <header>Insufficient Cash</header>
-        <p>Win more games and complete achievements to get more cash.</p>
-        <button id="closePopUp" class="w3-button w3-blue-gray" onclick="remove('insufficientCash')"> close </button>
-    </div>
-</div>
-<div class="boardDesign w3-container">
-    <h2>Board Design</h2>
-    <div class="w3-row">
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="boardImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="boardLockTag0" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="boardSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                        <button id="boardButton0" class="w3-button w3-black" onclick="unlockVerification('boardButton0','boardLockTag0','boardImage0')">$0 </button>
-                    </div>
-                </div>
-                <p>Board1</p>
-            </div>
-                <!--add 1 in column 1-->
+<div class="cardPlain">  
+    <div class="customization">
+    <div id="insufficientCash"> 
+        <div class="insufficientCash-content">
+            <header>Insufficient Cash</header>
+            <p>Win more games and complete achievements to get more cash.</p>
+            <button id="closePopUp" class="w3-button w3-blue-gray" onclick="remove('insufficientCash')"> close </button>
         </div>
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="boardImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="boardLockTag1" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="boardSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                            <button id="boardButton1" class="w3-button w3-black" onclick="unlockVerification('boardButton1','boardLockTag1','boardImage1')">$25 </button>
+    </div>
+    <div class="cardPlainTitle w3-blue-gray" style="border-radius: 5px;">
+        <h2 style="color:white;" class="centered">Board Design</h2>
+    </div>
+    <div id="confirmation"> 
+        <div class="confirmation-content">
+            <!--					<span onclick="remove('confirmation')" class="w3-button w3-display-topright">&times;</span>-->
+            <header class="w3-blue-gray">Confirmation</header>
+            <div id="confirmInfo">
+                <p></p>
+                <img id="confirmationImage" style="width:100%; max-width: 300px">
+                    <br/>
+                    <br/>
+                    <div id="confirmButtons">
+                        <button class="w3-button w3-teal"> Yes </button>
+                        <button class="w3-button w3-purple" onclick="remove('confirmation')"> No </button>
                     </div>
+                    </div>
+        </div>
+    </div>
+    <div class="boardDesign w3-container">
+        <div class="w3-row">
+            <div class="w3-col l3 s6">
+                <div class="w3-container">
+                    <div class="w3-display-container">
+                        <img id="boardImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="boardLockTag0" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="boardSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                        <div class="w3-display-middle w3-display-hover">
+                            <button id="boardButton0" class="w3-button w3-black" onclick="unlockVerification('boardButton0','boardLockTag0','boardImage0')">$0 </button>
+                        </div>
+                    </div>
+                    <p>Board1</p>
                 </div>
-                <p>Board2</p>
-                </div>
-                <!--add 1 in column 2 -->
+                    <!--add 1 in column 1-->
             </div>
             <div class="w3-col l3 s6">
                 <div class="w3-container">
                     <div class="w3-display-container">
-                        <img id="boardImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                        <span id="boardLockTag2" class="w3-tag w3-display-topleft">Locked</span>
-                        <span id="boardSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                        <img id="boardImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="boardLockTag1" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="boardSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
                         <div class="w3-display-middle w3-display-hover">
-                            <button id="boardButton2" class="w3-button w3-black" onclick="unlockVerification('boardButton2','boardLockTag2','boardImage2')">$50 </button>
+                                <button id="boardButton1" class="w3-button w3-black" onclick="unlockVerification('boardButton1','boardLockTag1','boardImage1')">$25 </button>
                         </div>
                     </div>
-                    <p>Board3</p>
+                    <p>Board2</p>
+                    </div>
+                    <!--add 1 in column 2 -->
                 </div>
-                    <!--add 1 in column 3-->
+                <div class="w3-col l3 s6">
+                    <div class="w3-container">
+                        <div class="w3-display-container">
+                            <img id="boardImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                            <span id="boardLockTag2" class="w3-tag w3-display-topleft">Locked</span>
+                            <span id="boardSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                            <div class="w3-display-middle w3-display-hover">
+                                <button id="boardButton2" class="w3-button w3-black" onclick="unlockVerification('boardButton2','boardLockTag2','boardImage2')">$50 </button>
+                            </div>
+                        </div>
+                        <p>Board3</p>
+                    </div>
+                        <!--add 1 in column 3-->
+                </div>
+                <div class="w3-col l3 s6">
+                    <div class="w3-container">
+                        <div class="w3-display-container">
+                            <img id="boardImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                            <span id="boardLockTag3" class="w3-tag w3-display-topleft">Locked</span>
+                            <span id="boardSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                            <div class="w3-display-middle w3-display-hover">
+                                <button id="boardButton3" class="w3-button w3-black" onclick="unlockVerification('boardButton3','boardLockTag3','boardImage3')">$100 </button>
+                            </div>
+                        </div>
+                        <p>Board4</p>
+                    </div>
+                    <!--add 1 in column 4-->
+                </div>
+            </div>
+        </div>
+        <div class="cardPlainTitle w3-blue-gray" style="border-radius: 5px;">
+            <h2 style="color:white;" class="centered">Board Design</h2>
+        </div>
+        <div class="PieceDesign w3-container">
+            
+            <div class="w3-row">
+            <div class="w3-col l3 s6">
+                <div class="w3-container">
+                    <div class="w3-display-container">
+                        <img id="pieceImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="pieceLockTag0" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="pieceSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                            <div class="w3-display-middle w3-display-hover">
+                                <button id="pieceButton0" class="w3-button w3-black" onclick="unlockVerification('pieceButton0','pieceLockTag0','pieceImage0')">$0 </button>
+                            </div>
+                    </div>
+                    <p>Piece1</p>
+                </div>
+                    <!--add 1 in column 1-->
             </div>
             <div class="w3-col l3 s6">
                 <div class="w3-container">
                     <div class="w3-display-container">
-                        <img id="boardImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                        <span id="boardLockTag3" class="w3-tag w3-display-topleft">Locked</span>
-                        <span id="boardSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                        <img id="pieceImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="pieceLockTag1" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="pieceSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
                         <div class="w3-display-middle w3-display-hover">
-                            <button id="boardButton3" class="w3-button w3-black" onclick="unlockVerification('boardButton3','boardLockTag3','boardImage3')">$100 </button>
+                            <button id="pieceButton1" class="w3-button w3-black" onclick="unlockVerification('pieceButton1','pieceLockTag1','pieceImage1')">$25 </button>
                         </div>
                     </div>
-                    <p>Board4</p>
+                    <p>Piece2</p>
                 </div>
-                <!--add 1 in column 4-->
+                    <!--add 1 in column 1-->
             </div>
-        </div>
-    </div>
-    <div class="PieceDesign w3-container">
-        <h2>Piece Design</h2>
-        <div class="w3-row">
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="pieceImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="pieceLockTag0" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="pieceSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+            <div class="w3-col l3 s6">
+                <div class="w3-container">
+                    <div class="w3-display-container">
+                        <img id="pieceImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="pieceLockTag2" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="pieceSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
                         <div class="w3-display-middle w3-display-hover">
-                            <button id="pieceButton0" class="w3-button w3-black" onclick="unlockVerification('pieceButton0','pieceLockTag0','pieceImage0')">$0 </button>
+                            <button id="pieceButton2" class="w3-button w3-black" onclick="unlockVerification('pieceButton2','pieceLockTag2','pieceImage2')">$50 </button>
                         </div>
-                </div>
-                <p>Piece1</p>
-            </div>
-                <!--add 1 in column 1-->
-        </div>
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="pieceImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="pieceLockTag1" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="pieceSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                        <button id="pieceButton1" class="w3-button w3-black" onclick="unlockVerification('pieceButton1','pieceLockTag1','pieceImage1')">$25 </button>
                     </div>
+                    <p>Piece3</p>
                 </div>
-                <p>Piece2</p>
+                    <!--add 1 in column 2-->
             </div>
-                <!--add 1 in column 1-->
-        </div>
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="pieceImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="pieceLockTag2" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="pieceSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                        <button id="pieceButton2" class="w3-button w3-black" onclick="unlockVerification('pieceButton2','pieceLockTag2','pieceImage2')">$50 </button>
+            <div class="w3-col l3 s6">
+                <div class="w3-container">
+                    <div class="w3-display-container">
+                        <img id="pieceImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="pieceLockTag3" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="pieceSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                        <div class="w3-display-middle w3-display-hover">
+                            <button id="pieceButton3" class="w3-button w3-black" onclick="unlockVerification('pieceButton3','pieceLockTag3','pieceImage3')">$100 </button>
+                        </div>
                     </div>
+                    <p>Piece4</p>
                 </div>
-                <p>Piece3</p>
+                    <!--add 1 in column 2-->
             </div>
-                <!--add 1 in column 2-->
-        </div>
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="pieceImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="pieceLockTag3" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="pieceSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                        <button id="pieceButton3" class="w3-button w3-black" onclick="unlockVerification('pieceButton3','pieceLockTag3','pieceImage3')">$100 </button>
-                    </div>
-                </div>
-                <p>Piece4</p>
-            </div>
-                <!--add 1 in column 2-->
         </div>
     </div>
-</div>
-    <div class="backgroundDesign w3-container">
-        <h2>Background Design</h2>
-        <div class="w3-row">
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="backgroundImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="backgroundLockTag0" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="backgroundSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                        <button id="backgroundButton0" class="w3-button w3-black" onclick="unlockVerification('backgroundButton0','backgroundLockTag0','backgroundImage0')">$0 </button>
-                    </div>
-                </div>
-                <p>background1</p>
-            </div>
-                <!--add 1 in column 1-->
-        </div>
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="backgroundImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="backgroundLockTag1" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="backgroundSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                        <button id="backgroundButton1" class="w3-button w3-black" onclick="unlockVerification('backgroundButton1','backgroundLockTag1','backgroundImage1')">$25 </button>
-                    </div>
-                </div>
-                <p>background2</p>
-            </div>
-                <!--add 1 in column 2-->
-        </div>
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="backgroundImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="backgroundLockTag2" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="backgroundSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                        <button id="backgroundButton2" class="w3-button w3-black" onclick="unlockVerification('backgroundButton2','backgroundLockTag2','backgroundImage2')">$50 </button>
-                    </div>
-                </div>
-                <p>background2</p>
-            </div>
-                <!--add 1 in column 2-->
-        </div>
-        <div class="w3-col l3 s6">
-            <div class="w3-container">
-                <div class="w3-display-container">
-                    <img id="backgroundImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
-                    <span id="backgroundLockTag3" class="w3-tag w3-display-topleft">Locked</span>
-                    <span id="backgroundSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
-                    <div class="w3-display-middle w3-display-hover">
-                        <button id="backgroundButton3" class="w3-button w3-black" onclick="unlockVerification('backgroundButton3','backgroundLockTag3','backgroundImage3')">$100 </button>
-                    </div>
-                </div>
-                <p>background2</p>
-            </div>
-                <!--add 1 in column 2-->
-        </div>
+    <div class="cardPlainTitle w3-blue-gray" style="border-radius: 5px;">
+        <h2 style="color:white;" class="centered">Background Design</h2>
     </div>
+        <div class="backgroundDesign w3-container">
+            <div class="w3-row">
+            <div class="w3-col l3 s6">
+                <div class="w3-container">
+                    <div class="w3-display-container">
+                        <img id="backgroundImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="backgroundLockTag0" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="backgroundSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                        <div class="w3-display-middle w3-display-hover">
+                            <button id="backgroundButton0" class="w3-button w3-black" onclick="unlockVerification('backgroundButton0','backgroundLockTag0','backgroundImage0')">$0 </button>
+                        </div>
+                    </div>
+                    <p>background1</p>
+                </div>
+                    <!--add 1 in column 1-->
+            </div>
+            <div class="w3-col l3 s6">
+                <div class="w3-container">
+                    <div class="w3-display-container">
+                        <img id="backgroundImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="backgroundLockTag1" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="backgroundSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                        <div class="w3-display-middle w3-display-hover">
+                            <button id="backgroundButton1" class="w3-button w3-black" onclick="unlockVerification('backgroundButton1','backgroundLockTag1','backgroundImage1')">$25 </button>
+                        </div>
+                    </div>
+                    <p>background2</p>
+                </div>
+                    <!--add 1 in column 2-->
+            </div>
+            <div class="w3-col l3 s6">
+                <div class="w3-container">
+                    <div class="w3-display-container">
+                        <img id="backgroundImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="backgroundLockTag2" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="backgroundSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                        <div class="w3-display-middle w3-display-hover">
+                            <button id="backgroundButton2" class="w3-button w3-black" onclick="unlockVerification('backgroundButton2','backgroundLockTag2','backgroundImage2')">$50 </button>
+                        </div>
+                    </div>
+                    <p>background2</p>
+                </div>
+                    <!--add 1 in column 2-->
+            </div>
+            <div class="w3-col l3 s6">
+                <div class="w3-container">
+                    <div class="w3-display-container">
+                        <img id="backgroundImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+                        <span id="backgroundLockTag3" class="w3-tag w3-display-topleft">Locked</span>
+                        <span id="backgroundSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
+                        <div class="w3-display-middle w3-display-hover">
+                            <button id="backgroundButton3" class="w3-button w3-black" onclick="unlockVerification('backgroundButton3','backgroundLockTag3','backgroundImage3')">$100 </button>
+                        </div>
+                    </div>
+                    <p>background2</p>
+                </div>
+                    <!--add 1 in column 2-->
+            </div>
+        </div>
+        </div>
     </div>
 </div>

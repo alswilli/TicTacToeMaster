@@ -4,12 +4,11 @@ angular.module('TicTacToeApp')
 .controller('EditProfileCtrl',
             function EditCtrl ($scope, $rootScope ) {
             
-            //var name = sessionStorage.getItem("name");
+
             'use strict';
-            console.log('Edit Profile Loaded!')
+
              $scope.img_url = app.img_url;
-            //$scope.name = name;
-            //document.getElementById("ass").innerHTML = "hi";
+            //update siebar to hilight edit page selection
             $rootScope.$broadcast('update', 'editProfileLink');
             
             $(function(){

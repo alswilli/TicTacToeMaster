@@ -6,6 +6,9 @@ var unlockedPiece; //String repsensentation of the unlocked status of piece desi
 var unlockedBackground; //String repsensentation of the unlocked status of background design
 var selectedList; //String representation of what is slected for each customization category
 var root
+//update the cash displayed on the sidebar
+
+//
 angular.module('TicTacToeApp')
 .controller('CustomizationCtrl',
             function CustomizationCtrl ($scope, $rootScope ) {
@@ -16,11 +19,10 @@ angular.module('TicTacToeApp')
             unlockedRef= userRef.child('unlocked');
             initializeLocked();
             initializeSelected();
-            
+            //update siebar to hilight customization page selection
             $rootScope.$broadcast('update', "customizationLink");
             root = $rootScope;
 });  
-
 
 
 //takes in a string and change a character specified by the index
@@ -63,6 +65,26 @@ function unlock(buttonId, tagId, imageId){
                                                       });
 }
 
+//display the pop up for user to have preview of the item and confirm thier purchase
+function unlockConfirmation(buttonId, tagId, imageId){
+    var confirmPopUp=document.getElementById("confirmation"); //element of the pop up
+    var itemCost =document.getElementById(buttonId).innerHTML;
+    var image = document.getElementById(imageId); //image element of the selected item
+    var itemName =image.parentNode.parentNode.querySelector("p").innerHTML;
+    // changes the lines in the popup according to the selected item
+    var confirmContent=confirmPopUp.querySelector("p");
+    confirmContent.innerHTML="Purchase "+itemName+" for "+itemCost+"?";
+    //copy's the image of selected over to the preview popup
+    document.getElementById("confirmationImage").src=image.src;
+    //make the confirmation button direct to the correct purchase
+    confirmPopUp.querySelectorAll("button")[0].onclick=function(){
+        updateAndUnlock(buttonId, tagId, imageId);
+        remove("confirmation");
+    }
+    //make the whole pop up appear
+    appear("confirmation");
+}
+
 /* 
  Gets the string represntation of what's unlocked(1) and what's locked(0) from firbase and unlocks the corresponding item for each category (board design, piece design, and background design)
  */
@@ -94,6 +116,7 @@ function initializeLocked(){
                      }
                      });
 }
+
 //Reads the string respresentaion of what's unlocked and makes the selected tag of the corresponding customization to appear
 function initializeSelected(){
     userRef.once('value', function(snapshot) {
@@ -111,29 +134,15 @@ function unlockVerification(buttonId, tagId, imageId){
     var itemCost =document.getElementById(buttonId).innerHTML.substring(1);
     //for some reason I can't parseInt at the same time so I did it seperately
     itemCost=parseInt(itemCost);
-    var cashMoney = app.money; //sessionStorage.getItem("cash");
+    var cashMoney = app.money //sessionStorage.getItem("cash");
     console.log(cashMoney+" - "+itemCost);
-    
     if(cashMoney>=itemCost){
-        updateAndUnlock(buttonId, tagId, imageId)
-        
-        cashMoney=cashMoney-itemCost;
-        app.money = cashMoney; //sessionStorage.setItem("cash",cashMoney);//updates cash to session storage
-        //console.log(sessionStorage);
-        
-        //update the cash displayed on the sidebar
-        root.$broadcast('update', "homePageLink");
-        
-        //document.getElementById('cash').innerHTML = '$' + cashMoney;
-        //gets reference to cash of user in firebase
-        var cashRef=userRef.child("cash"); 
-        cashRef.set(cashMoney); //updates cash to firebase;
+        unlockConfirmation(buttonId, tagId, imageId);
     }else{
         console.log("you're poor, get some money");
         
         //shows a popup box to tell user he/she doesn't have enough money
-        var popUp = document.getElementById('insufficientCash');
-        popUp.style.display = "block";
+        appear('insufficientCash');
     }
 }
 
@@ -173,6 +182,19 @@ function updateAndUnlock(buttonId, tagId, imageId){
         console.log("buttonId error: incorrectId");
     }
     unlock(buttonId,tagId,imageId);
+    var cashMoney = app.money //sessionStorage.getItem("cash");
+    var itemCost =document.getElementById(buttonId).innerHTML.substring(1);
+    //for some reason I can't parseInt at the same time so I did it seperately
+    itemCost=parseInt(itemCost);
+    cashMoney=cashMoney-itemCost;
+    app.money = cashMoney//sessionStorage.setItem("cash",cashMoney);//updates cash to session storage
+    root.$broadcast('update', "homePageLink");
+    //console.log(sessionStorage);
+    
+    document.getElementById('cash').innerHTML = '$' + cashMoney;
+    //gets reference to cash of user in firebase
+    var cashRef=userRef.child("cash"); 
+    cashRef.set(cashMoney); //updates cash to firebase;
 }
 
 /*

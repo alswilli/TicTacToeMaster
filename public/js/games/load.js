@@ -40,6 +40,7 @@ var loadState = {
         game.handleOpponentLeaving = this.handleOpponentLeaving
         //game.showOpponent = this.showOpponent
         game.loadOpponent = this.loadOpponent
+        game.disconnectSocket = this.disconnectSocket
         
         game.gametype = app.gameType;
         game.userkey = app.keyValue;
@@ -95,22 +96,12 @@ var loadState = {
                    game.startMatch(data);
               })
      })
+    },
+    
+    disconnectSocket()
+    {
+        Client.disconnect();
     }
 };
 
-/*$( window ).on( "load", function()
-               {
-               
 
-               
-               document.getElementById('username').innerHTML = nameOfUser;
-               document.getElementById('battleText').innerHTML = battleText;
-               //document.getElementById('cash').innerHTML = '$' + cashMoney;
-               $('#userImage').attr('src', url);
-               document.getElementById('playerCard').style.visibility = "visible";
-               
-               $('#playerCard').css({ 'right': '0px', 'left': '-15%' }).animate({
-                                                                     'left' : '0%'    
-                                                                     });  
-               
-});*/

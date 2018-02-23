@@ -10,7 +10,7 @@ angular.module('TicTacToeApp')
             
             challengesRef = firebase.database().ref('/users/' + app.keyValue + '/challenges');
             initializeChallenge();
-            
+            //update siebar to hilight achievemnet page selection
             $rootScope.$broadcast('update', "achievementsLink");
 }); 
 

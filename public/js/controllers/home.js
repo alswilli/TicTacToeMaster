@@ -2,10 +2,9 @@ angular.module('TicTacToeApp')
 .controller('HomeCtrl',
             function HomeCtrl ($scope, $rootScope, $window ) {
             'use strict';
-            
-            
+            //update siebar to hilight home page selection
             $rootScope.$broadcast('update', "homePageLink");
-            
+            //add onclick listeners ot every game button
             $('#3dtictactoe').on('click', function (e) {
                  e.preventDefault();
                  

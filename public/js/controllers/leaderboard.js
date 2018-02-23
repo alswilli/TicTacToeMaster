@@ -24,7 +24,7 @@ angular.module('TicTacToeApp')
             if (DEBUG) { console.log("START: $document.ready()"); }
             
             getTopPlayersForGame(activeBoard);
-            
+            //update siebar to hilight leaderboard page selection
             $rootScope.$broadcast('update', "leaderboardLink");
             });  
 

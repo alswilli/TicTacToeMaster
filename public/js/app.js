@@ -1,8 +1,3 @@
-/*sessionStorage.setItem("name", "smitty");
-sessionStorage.setItem("picUrl", "https://firebasestorage.googleapis.com/v0/b/tictactoemaster-b46ab.appspot.com/o/1517607600847-OwlWingUp.png?alt=media&token=5c8f19ff-d2b2-490e-85c6-759b3dcec9e5");
-sessionStorage.setItem("cash", "100");
-sessionStorage.setItem("battleText", "get rekt");*/
-
 // Initialize Firebase
 var config = {
 apiKey: "AIzaSyARQqkwmw-yDfR4Fl7eyDSs464kPyDTWpo",
@@ -14,10 +9,15 @@ messagingSenderId: "1050901435462"
 };
 firebase.initializeApp(config);
 
+var game = null;
 
-console.log("here we go");
 
-
+/*
+    app is the main object that controlls the website. The routeProvider controlls which page to 
+    open when a certain href is linked to. The routeProvider specifies which html page to open
+    on a given route and which controller to use. The controller is essentially the javascript 
+    code that runs on a html page
+ */
 var app = angular.module('TicTacToeApp', ['ngRoute']).config(function ($routeProvider) 
 {
            $routeProvider
@@ -49,15 +49,16 @@ var app = angular.module('TicTacToeApp', ['ngRoute']).config(function ($routePro
              .when('/game', {
                    templateUrl: 'views/game.html',
                    controller: 'GameCtrl',
-                   controllerAs: '/game'
+                   controllerAs: '/game',
                    }) 
            .otherwise({
                       redirectTo: '/home'
                       });
 });
 
+//save info in session storage if user logs out, reloads page, or closes page without loggin out
 window.onbeforeunload = saveSessionInfo
-
+//load values from sessionStorage
 app.keyValue = sessionStorage.getItem("userkey")
 app.username = sessionStorage.getItem("name");
 app.img_url = sessionStorage.getItem("picUrl");
@@ -65,14 +66,17 @@ app.battleText = sessionStorage.getItem("battleText");
 app.money = sessionStorage.getItem("cash");
 app.gameType = sessionStorage.getItem("gametype");
 userRef = firebase.database().ref('/users/' + app.keyValue);
-
+//the controller for the sidebar. attaches a callback that updates the cash, username, and battletext on screen
 app.controller('SidebarCtrl', function($scope) {
              //setSelected("homePageLink");
-               $scope.$on('update', function(event, link) {
-                          $scope.username = app.username;//sessionStorage.getItem("name");
-                          $scope.img_url = app.img_url;//sessionStorage.getItem("picUrl");
+               $scope.$on('update', function(event, link) 
+                {
+                          //set username, battletext, and img_url
+                          $scope.username = app.username;
+                          $scope.img_url = app.img_url;
                           $scope.battleText = '"' + app.battleText + '"';
-                          $scope.money = "$" +  app.money;//sessionStorage.getItem("cash");
+                          $scope.money = "$" +  app.money;
+                          //update cash on screen
                           if(document.getElementById("cash"))
                             document.getElementById("cash").innerHTML = "$" + app.money;
                           console.log("update dat user " + app.money)
@@ -80,23 +84,27 @@ app.controller('SidebarCtrl', function($scope) {
                           });
                });
 
+
+/*
+    sets the selected tab on the sidebar, i.e puts a light blue bar over the current page
+ */
 function setSelected(selectedId)
 {
     console.log(selectedId)
     if(!document.getElementById("links"))
         return
     var links = document.getElementById("links").children;
-    console.log(links);
-    console.log(selectedId);
     for(var i = 0; i < links.length; i++)
     {
         links[i].style.backgroundColor = "";
     }
-    //document.getElementById(selectedId).style.backgroundColor = "yellow";
-    console.log(links);
+    
+    
     document.getElementById(selectedId).style.backgroundColor = "#00b8e6";
 }
-
+/*
+    called before leaving the page, in case user refreshes page
+ */
 function saveSessionInfo()
 {
     console.log("beforeonunload")
@@ -108,17 +116,18 @@ function saveSessionInfo()
     sessionStorage.setItem("gametype", app.gameType);
 }
 
+/*
+    logs out user and redirects to login page
+ */
 function logout()
 {
     firebase.auth().signOut()
     .then(function(authData) {
           console.log("Logged out successfully");
           window.location.href = "index.html";
-          auth = authData;
-          //$('#messageModalLabel').html(spanText('Success!', ['center', 'success']))     
+          auth = authData;     
           })
     .catch(function(error) {
            console.log("Logout Failed!", error);
-           //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
            });
 }

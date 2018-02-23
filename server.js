@@ -140,10 +140,10 @@ io.on('connection',function(socket)
                     console.log(socket.player.roomName + "challenger is " +socket.player.username)
                 }
                 
-                socket.on('disconnect',function(){
+                /*socket.on('disconnect',function(){
                     // sending to all clients in 'game'
                     io.sockets.in(socket.player.roomName).emit('playerLeft')
-                });
+                });*/
                 
                 socket.on('disconnect',function(){
                           // sending to all clients in 'game'
@@ -154,13 +154,18 @@ io.on('connection',function(socket)
                 socket.on('playerQuit',function(){
                           // sending to all clients in 'game' room, including sender
                           socket.to(socket.player.roomName).emit('playerLeft')
-                          //updateRoomStatus(socket.player)
+                          updateRoomStatus(socket.player)
                 });
                 
                 socket.on('markRoomFull',function(){
                           socket.player.inFullRoom = true;
                           console.log(socket.player.username + " is in a full room ")
                 });
+                
+                socket.on('manualDisconnect',function(){
+                          console.log(socket.player.username + " disconnecting")
+                          socket.disconnect()
+                 });
                 
                 
             }
