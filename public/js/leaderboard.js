@@ -4,8 +4,9 @@ var MAX_ROWS_ON_SCREEN;     //The max # of players that will be shown in the tab
 
 var activeBoard;            //The default game to show rankings for when loading leaderboard.html
 var snapshotArrs;           //The object containing arrays of the leaderboard for each game, e.g - snapshotArrs["TTT"] 
-var playerIndex;            //This is the initial index of the person to show on the leader, e.g - a value of 0 will be rank 1 player
-
+var playerIndex;            //This is maintained for the index of snapshotArrs[game][playerIndex] for changing pages 
+var sorted;                 /*This flag is set to false whenever there's a firebase update to the array, and set to true
+                             *the first time we createTable() */
 
 /* Firebase is already intialized, so load the leaderboard for tictactoe
  * All these variables need to be initialized in .ready() because they need to be
@@ -19,6 +20,7 @@ $(document).ready(function() {
    activeBoard        = "TTT";
    snapshotArrs       = {};            
    playerIndex        = 0;
+   sorted             = false;
                   
    if (DEBUG) { console.log("START: $document.ready()"); }
                   
@@ -32,20 +34,21 @@ $(document).ready(function() {
  * first in getTopPlayersForGame(), otherwise we use createTable() 
  */
 function switchToLeaderBoard(clickedBoard) {
-    playerIndex = 0;
+ 
+   if (clickedBoard !== activeBoard) {
+      document.getElementById(clickedBoard).classList.add('w3-green');
+      document.getElementById(activeBoard).classList.toggle('w3-green');
+      activeBoard = clickedBoard;
+      sorted = false;
+   }   
    
-    if (snapshotArrs[clickedBoard] == null) {
-       getTopPlayersForGame(clickedBoard);
-    }else {
-      createTable(clickedBoard);
-    }
+   playerIndex = 0;
    
-    if (clickedBoard !== activeBoard) {
-        document.getElementById(clickedBoard).classList.add('w3-blue');
-        document.getElementById(activeBoard).classList.toggle('w3-blue');
-        activeBoard = clickedBoard;
-    }
-    
+   if (snapshotArrs[clickedBoard] == null) {
+      getTopPlayersForGame(clickedBoard);
+   }else {
+      createTable(clickedBoard);    
+   }  
 }
 
 
@@ -56,6 +59,26 @@ function toFirstPage() {
     
     playerIndex = 0;
     createTable(activeBoard);
+}
+
+
+/* Shows the page where the user is in the leaderboard
+ * Does nothing for a guest
+ */
+function toYourPage() {
+   var username = sessionStorage.getItem("username");
+   if (username == null) return;
+   
+   
+   var index = snapshotArrs[activeBoard].map(function(player) {
+      return player.username;
+   }).indexOf(username);
+   
+   playerIndex = Math.floor(index/10) * 10;
+   createTable(activeBoard);
+   
+   //This is the fading animation on the row that represents the player
+   document.getElementById("userRow").classList.toggle('w3-animate-opacity');
 }
 
 
@@ -88,10 +111,18 @@ function getNextPlayers() {
  * the table everytime a new table needs to be created
  */
 function getTopPlayersForGame(game) {
-   firebase.database().ref().child('leaderboard/'+game).orderByChild('win').on('value', function(snapshot) {
+   firebase.database().ref().child('leaderboard/'+game).orderByChild('rating').on('value', function(snapshot) {
       snapshotArrs[game] = snapshotToArray(snapshot);
       if (DEBUG) { console.log(snapshotArrs); }
-      createTable(game);
+      
+      //Since this function calls for whenever there's an update on anygame, this check ensures that the shown table
+      //is only updated if we're viewing the list that's updated. We also set sorted to false, because if there's an
+      //update on the list we're viewing, then the list will potentially be out of order. 
+      if (game == activeBoard) {
+         sorted = false;
+         createTable(game);
+      }
+      
    });
 }
 
@@ -114,61 +145,89 @@ function snapshotToArray(snapshot) {
  * If there are less than 10 rows, empty rows are added to pad the table to the constant size of 10 rows
  */
 function createTable(game) {
-    if (DEBUG) { console.log("START: createTable()"); }
-    
-    clearTable();
-    var shownPlayers = 0;
-    var rank = playerIndex + 1;
-    var start = snapshotArrs[game].length - playerIndex - 1;
    
-    for (var i=start; shownPlayers <= 10; i--) {
-        if (snapshotArrs[game][i] == undefined ) { break; }
-        
-        if (DEBUG) { console.log(snapshotArrs[game][i].key + ' ' 
-                               + snapshotArrs[game][i].win + ' '
-                               + snapshotArrs[game][i].lose+ ' '
-                               + snapshotArrs[game][i].username); }
-        
-        addNewRow(rank, snapshotArrs[game][i].username, snapshotArrs[game][i].win, snapshotArrs[game][i].lose);
-        shownPlayers++;
-        rank++;
-    }
+   clearTable();
+   addTableStatRow(game);   //Creates 1st row - Rank, Player Name, ...
+   
+   if (!sorted) {
+      sortPlayers(game)    //Sorts the users of the game
+      sorted = true;
+   }
+   
+   var shownPlayers = 0;
+   var rank = playerIndex + 1;
+   
+   for (var i=playerIndex; shownPlayers < 10; i++) {
+      var player = snapshotArrs[game][i];
+      
+      if (player == undefined ) { break; }
+                
+      addNewRow(game, rank, player.username, player.rating, player.win, player.lose, player.draw);
+      shownPlayers++;
+      rank++;
+   }
     
-    //Creates rows to fill in empty values
-    for (var i=shownPlayers; i<MAX_ROWS_ON_SCREEN; i++) {
-        addNewRow(rank, '','','');
-        rank++
-    }
+   //Creates rows to fill in empty values
+   for (var i=shownPlayers; i<MAX_ROWS_ON_SCREEN; i++) {
+      addNewRow(game, rank, '','','', '', '');
+      rank++
+   }
+}
+
+
+/* This creates the 1st row of the table (Rank, Player Name, ...)
+ */
+function addTableStatRow(game) {   
+   var tableStatsRow = document.createElement("TR");
+   
+   tableStatsRow.appendChild( create("TH", "Rank" ) );
+   tableStatsRow.appendChild( create("TH", "Player Name" ) );
+   tableStatsRow.appendChild( create("TH", "Rating" ) );
+   tableStatsRow.appendChild( create("TH", "Wins" ) );
+   tableStatsRow.appendChild( create("TH", "Losses" ) );
+   if (game != "OAC")
+      tableStatsRow.appendChild( create("TH", "Draws" ) );
+   tableStatsRow.appendChild( create("TH", "Winrate" ) );
+   
+   document.getElementById("leaderboardStats").appendChild(tableStatsRow);   
 }
 
 
 /* Adds a new row to the table, given the person's name and stats.
- * If the player has 0 wins and losses, set his winrate to ---
- * If the player only has wins, set his winrate to 100%.
+ * If the player has 0 wins,losses, and draws, set the winrate to ---
  * If the name is '', set the winrate to '' for the empty row.
  */
-function addNewRow(rank, name, win, lose) {
-    var row = document.createElement("TR");
+function addNewRow(game, rank, name, rating, win, lose, draw) {
+   var row = document.createElement("TR");
+   
+   //Sets the id for the row that represents you so that we can find it later
+   if (name == sessionStorage.getItem("username")) {
+      row.setAttribute("id", "userRow");
+   }
+   
+   rating = Math.round(rating); 
+   
+   var winRate = (calculateWinRate(win, lose, draw) * 100).toFixed(2) + '%';
+   if ( (win + lose + draw) == 0 )  { winRate = "---"; rating = "---" }
+   if ( name == '' )                { winRate = ''   ; rating = ""    }
     
-    var winRate = ((win/(win+lose) * 100).toFixed(2)) + '%';
-    if ( isNaN(win/lose) )           { winRate = "---";  }
-    if ( (win != 0) && (lose == 0) ) { winRate = "100%"; }
-    if ( name == '' )                { winRate = '';     }
+   row.appendChild( create("TD", rank)    );
+   row.appendChild( create("TD", name)    );
+   row.appendChild( create("TD", rating)  );
+   row.appendChild( create("TD", win)     );
+   row.appendChild( create("TD", lose)    );
+   if (game != "OAC")
+      row.appendChild( create("TD", draw)    );
+   row.appendChild( create("TD", winRate) );
     
-    row.appendChild( createTD(rank)    );
-    row.appendChild( createTD(name)    );
-    row.appendChild( createTD(win)     );
-    row.appendChild( createTD(lose)    );
-    row.appendChild( createTD(winRate) );
-    
-    document.getElementById("table_body").appendChild(row);
+   document.getElementById("table_body").appendChild(row);
 }
 
 
-/* Creates and returns a new TD element with the given text
+/* Creates and returns a new element [TD|TH] with the given text
  */
-function createTD(text) {
-    var td   = document.createElement("TD");
+function create(elem, text) {
+    var td   = document.createElement(elem);
     var text = document.createTextNode(text);
     td.appendChild(text);
     
@@ -176,8 +235,68 @@ function createTD(text) {
 }
 
 
-/* Clears all the TR elements in the tbody for the table
+/* Calculates winrate 
+ */
+function calculateWinRate(win, lose, draw) {
+   return (win + 0.5*draw) / (win+lose+draw);
+}
+
+
+/* Removes all the rows of the table by removing the thead and tbody
  */
 function clearTable() {
+   $("#table thead tr").remove();
    $("#table tbody tr").remove();  
+}
+
+
+/* This sorts the players descending by 
+ * the Priority = Rating->Winrate->Wins->Draws
+ * 
+ * Let P = Played , N = Didn't play, 
+ * Player A | Player B | cmp Result
+ * --------------------------------
+ *     P    |     P    | Priority
+ *     P    |     N    |    -1
+ *     N    |     P    |     1
+ *     N    |     N    |     0
+ */
+function sortPlayers(game) {
+   snapshotArrs[game].sort(function(a, b) {
+      var aPlayed = (a.win + a.lose + a.draw) != 0;
+      var bPlayed = (b.win + b.lose + b.draw) != 0;
+      
+      var aWinRate = calculateWinRate(a.win, a.lose, a.draw);
+      var bWinRate = calculateWinRate(b.win, b.lose, b.draw);
+      
+      var ratingDiff  = b.rating - a.rating;
+      var winRateDiff = bWinRate - aWinRate;
+      var winDiff     = b.win    - a.win;
+      var drawDiff    = b.draw   - a.draw;
+      
+      if (aPlayed && bPlayed) {
+         
+         if (ratingDiff != 0) {
+            return ratingDiff;
+         }
+         else if (winRateDiff != 0) {   
+            return winRateDiff; 
+         }
+         else if (winDiff != 0) {   
+            return winDiff;
+         }
+         else {   
+            return drawDiff;
+         }
+      }
+      else if (aPlayed && !bPlayed) {
+         return -1;
+      }
+      else if (!aPlayed && bPlayed) { 
+         return 1;
+      }
+      else {
+         return 0;
+      }
+   });
 }

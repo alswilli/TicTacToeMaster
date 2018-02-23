@@ -68,7 +68,9 @@ var loadState = {
     
     handleOpponentLeaving()
     {
-        console.log("opponent left")
+        updateLeaderboard(keyValue, "win");
+        updateLeaderboard(game.opponentKey, "lose");
+       
         if(game.state.current==="ticTac")
             game.state.start("waitingRoom");
         else
