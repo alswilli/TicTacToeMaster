@@ -27,28 +27,27 @@ angular.module('TicTacToeApp')
             //update siebar to hilight leaderboard page selection
             $rootScope.$broadcast('update', "leaderboardLink");
             });  
-
 /* Toggles the color of the active shown game on the leaderboard when it is pressed.
  * Clears the current table and loads the players from the clicked game.
  * If the leaderboard array for the clicked game is null, then we need to initialize it 
  * first in getTopPlayersForGame(), otherwise we use createTable() 
  */
 function switchToLeaderBoard(clickedBoard) {
+    
+    if (clickedBoard !== activeBoard) {
+        document.getElementById(clickedBoard).classList.add('w3-green');
+        document.getElementById(activeBoard).classList.toggle('w3-green');
+        activeBoard = clickedBoard;
+        sorted = false;
+    }   
+    
     playerIndex = 0;
-    sorted = false;
     
     if (snapshotArrs[clickedBoard] == null) {
         getTopPlayersForGame(clickedBoard);
     }else {
         createTable(clickedBoard);    
-    }
-    
-    if (clickedBoard !== activeBoard) {
-        document.getElementById(clickedBoard).classList.add('w3-blue');
-        document.getElementById(activeBoard).classList.toggle('w3-blue');
-        activeBoard = clickedBoard;
-    }
-    
+    }  
 }
 
 
@@ -59,6 +58,26 @@ function toFirstPage() {
     
     playerIndex = 0;
     createTable(activeBoard);
+}
+
+
+/* Shows the page where the user is in the leaderboard
+ * Does nothing for a guest
+ */
+function toYourPage() {
+    var username = app.username 
+    if (username == null) return;
+    
+    
+    var index = snapshotArrs[activeBoard].map(function(player) {
+                                              return player.username;
+                                              }).indexOf(username);
+    
+    playerIndex = Math.floor(index/10) * 10;
+    createTable(activeBoard);
+    
+    //This is the fading animation on the row that represents the player
+    document.getElementById("userRow").classList.toggle('w3-animate-opacity');
 }
 
 
@@ -92,17 +111,18 @@ function getNextPlayers() {
  */
 function getTopPlayersForGame(game) {
     firebase.database().ref().child('leaderboard/'+game).orderByChild('rating').on('value', function(snapshot) {
-       snapshotArrs[game] = snapshotToArray(snapshot);
-       if (DEBUG) { console.log(snapshotArrs); }
-       
-       //Since this function calls for whenever there's an update on anygame, this check ensures that the shown table
-       //is only updated if we're viewing the game that's updated.
-       if (game == activeBoard) {
-       createTable(game);
-       sorted = false;
-       }
-       
-       });
+                                                                                   snapshotArrs[game] = snapshotToArray(snapshot);
+                                                                                   if (DEBUG) { console.log(snapshotArrs); }
+                                                                                   
+                                                                                   //Since this function calls for whenever there's an update on anygame, this check ensures that the shown table
+                                                                                   //is only updated if we're viewing the list that's updated. We also set sorted to false, because if there's an
+                                                                                   //update on the list we're viewing, then the list will potentially be out of order. 
+                                                                                   if (game == activeBoard) {
+                                                                                   sorted = false;
+                                                                                   createTable(game);
+                                                                                   }
+                                                                                   
+                                                                                   });
 }
 
 
@@ -136,7 +156,7 @@ function createTable(game) {
     var shownPlayers = 0;
     var rank = playerIndex + 1;
     
-    for (var i=playerIndex; shownPlayers <= 10; i++) {
+    for (var i=playerIndex; shownPlayers < 10; i++) {
         var player = snapshotArrs[game][i];
         
         if (player == undefined ) { break; }
@@ -178,6 +198,11 @@ function addTableStatRow(game) {
  */
 function addNewRow(game, rank, name, rating, win, lose, draw) {
     var row = document.createElement("TR");
+    
+    //Sets the id for the row that represents you so that we can find it later
+    if (name == app.username) {
+        row.setAttribute("id", "userRow");
+    }
     
     rating = Math.round(rating); 
     
@@ -237,40 +262,40 @@ function clearTable() {
  */
 function sortPlayers(game) {
     snapshotArrs[game].sort(function(a, b) {
-    var aPlayed = (a.win + a.lose + a.draw) != 0;
-    var bPlayed = (b.win + b.lose + b.draw) != 0;
-    
-    var aWinRate = calculateWinRate(a.win, a.lose, a.draw);
-    var bWinRate = calculateWinRate(b.win, b.lose, b.draw);
-    
-    var ratingDiff  = Number(b.rating) - Number(a.rating);
-    var winRateDiff = Number(bWinRate) - Number(aWinRate);
-    var winDiff     = Number(b.win) - Number(a.win);
-    var drawDiff    = Number(b.draw) - Number(a.draw);
-    
-    if (aPlayed && bPlayed) {
-    
-        if (ratingDiff != 0) {
-            return ratingDiff;
-        }
-        else if (winRateDiff != 0) {   
-            return winRateDiff; 
-        }
-        else if (winDiff != 0) {   
-            return winDiff;
-        }
-        else {   
-            return drawDiff;
-        }
-    }
-    else if (aPlayed && !bPlayed) {
-    return -1;
-    }
-    else if (!aPlayed && bPlayed) { 
-    return 1;
-    }
-    else {
-    return 0;
-    }
-    });
+                            var aPlayed = (a.win + a.lose + a.draw) != 0;
+                            var bPlayed = (b.win + b.lose + b.draw) != 0;
+                            
+                            var aWinRate = calculateWinRate(a.win, a.lose, a.draw);
+                            var bWinRate = calculateWinRate(b.win, b.lose, b.draw);
+                            
+                            var ratingDiff  = b.rating - a.rating;
+                            var winRateDiff = bWinRate - aWinRate;
+                            var winDiff     = b.win    - a.win;
+                            var drawDiff    = b.draw   - a.draw;
+                            
+                            if (aPlayed && bPlayed) {
+                            
+                            if (ratingDiff != 0) {
+                            return ratingDiff;
+                            }
+                            else if (winRateDiff != 0) {   
+                            return winRateDiff; 
+                            }
+                            else if (winDiff != 0) {   
+                            return winDiff;
+                            }
+                            else {   
+                            return drawDiff;
+                            }
+                            }
+                            else if (aPlayed && !bPlayed) {
+                            return -1;
+                            }
+                            else if (!aPlayed && bPlayed) { 
+                            return 1;
+                            }
+                            else {
+                            return 0;
+                            }
+                            });
 }
