@@ -40,17 +40,29 @@
 			
 			<div id="insufficientCash"> 
 				<div class="insufficientCash-content">
-					<header>Insufficient Cash</header>
-					<p>Win more games and complete achievements to get more cash.</p>
-					<button id="closePopUp" class="w3-button w3-blue-gray" onclick="remove('insufficientCash')"> close </button>
+					<header class="w3-blue-gray">Insufficient Cash</header>
+					<p>Win more games and complete achievements to get more cash.
+						<br/>
+						<br/>
+						<button id="closePopUp" class="w3-button w3-blue-gray" onclick="remove('insufficientCash')"> close </button>
+					</p>
 				</div>
 			</div>
 			
-			<div id="insufficientCash"> 
-				<div class="insufficientCash-content">
-					<header>Confirmation</header>
-					<p></p>
-					<button id="closePopUp" class="w3-button w3-blue-gray" onclick="remove('insufficientCash')"> close </button>
+			<div id="confirmation"> 
+				<div class="confirmation-content">
+<!--					<span onclick="remove('confirmation')" class="w3-button w3-display-topright">&times;</span>-->
+					<header class="w3-blue-gray">Confirmation</header>
+					<div id="confirmInfo">
+						<p></p>
+						<img id="confirmationImage" style="width:100%; max-width: 300px">
+						<br/>
+						<br/>
+						<div id="confirmButtons">
+							<button class="w3-button w3-teal"> Yes </button>
+							<button class="w3-button w3-purple" onclick="remove('confirmation')"> No </button>
+						</div>
+					</div>
 				</div>
 			</div>
 			
@@ -59,7 +71,7 @@
 					<div class="w3-row-padding w3-padding-16 w3-center">
 						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
-								<img id="boardImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<img id="boardImage0" src="imgs/star.png" class="w3-grayscale-max" style="width:100%; max-width: 150px">
 								<span id="boardLockTag0" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="boardSelectedTag0" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
@@ -70,36 +82,36 @@
 						</div>
 						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
-								<img id="boardImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<img id="boardImage1" src="imgs/star.png" class="w3-grayscale-max" style="width:100%; max-width: 150px">
 								<span id="boardLockTag1" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="boardSelectedTag1" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
 									<button id="boardButton1" class="w3-button w3-black" onclick="unlockVerification('boardButton1','boardLockTag1','boardImage1')">$25 </button>
 								</div>
 							</div>
-							<p>Board1</p>
+							<p>Board2</p>
 						</div>
 						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
-								<img id="boardImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<img id="boardImage2" src="imgs/star.png" class="w3-grayscale-max" style="width:100%; max-width: 150px">
 								<span id="boardLockTag2" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="boardSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
 									<button id="boardButton2" class="w3-button w3-black" onclick="unlockVerification('boardButton2','boardLockTag2','boardImage2')">$50 </button>
 								</div>
 							</div>
-							<p>Board2</p>
+							<p>Board3</p>
 						</div>
 						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
-								<img id="boardImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
+								<img id="boardImage3" src="imgs/star.png" class="w3-grayscale-max" style="width:100%; max-width: 150px">
 								<span id="boardLockTag3" class="w3-tag w3-display-topleft">Locked</span>
 								<span id="boardSelectedTag3" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
 								<div class="w3-display-middle w3-display-hover">
 									<button id="boardButton3" class="w3-button w3-black" onclick="unlockVerification('boardButton3','boardLockTag3','boardImage3')">$100 </button>
 								</div>
 							</div>
-							<p>Board3</p>
+							<p>Board4</p>
 						</div>
 						
 					</div>
@@ -107,7 +119,7 @@
 				<div class="PieceDesign w3-container">
 					<h2>Piece Design</h2>
 					<div class="w3-row-padding w3-padding-16 w3-center">
-						<div class="w3-container w3-quarter">
+						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
 								<img id="pieceImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="pieceLockTag0" class="w3-tag w3-display-topleft">Locked</span>
@@ -118,7 +130,7 @@
 							</div>
 							<p>Piece1</p>
 						</div>
-						<div class="w3-container w3-quarter">
+						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
 								<img id="pieceImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="pieceLockTag1" class="w3-tag w3-display-topleft">Locked</span>
@@ -129,7 +141,7 @@
 							</div>
 							<p>Piece2</p>
 						</div>
-						<div class="w3-container w3-quarter">
+						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
 								<img id="pieceImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="pieceLockTag2" class="w3-tag w3-display-topleft">Locked</span>
@@ -140,7 +152,7 @@
 							</div>
 							<p>Piece3</p>
 						</div>
-						<div class="w3-container w3-quarter">
+						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
 								<img id="pieceImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="pieceLockTag3" class="w3-tag w3-display-topleft">Locked</span>
@@ -156,7 +168,7 @@
 				<div class="backgroundDesign w3-container">
 					<h2>Background Design</h2>
 					<div class="w3-row-padding w3-padding-16 w3-center">
-						<div class="w3-container  w3-quarter">
+						<div class="w3-container  w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
 								<img id="backgroundImage0" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="backgroundLockTag0" class="w3-tag w3-display-topleft">Locked</span>
@@ -167,7 +179,7 @@
 							</div>
 							<p>background1</p>
 						</div>
-						<div class="w3-container w3-quarter">
+						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
 								<img id="backgroundImage1" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="backgroundLockTag1" class="w3-tag w3-display-topleft">Locked</span>
@@ -178,7 +190,7 @@
 							</div>
 							<p>background2</p>
 						</div>
-						<div class="w3-container w3-quarter">
+						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
 								<img id="backgroundImage2" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="backgroundLockTag2" class="w3-tag w3-display-topleft">Locked</span>
@@ -189,7 +201,7 @@
 							</div>
 							<p>background2</p>
 						</div>
-						<div class="w3-container w3-quarter">
+						<div class="w3-container w3-quarter" style="min-width: 250px">
 							<div class="w3-display-container">
 								<img id="backgroundImage3" src="imgs/waluigi.png" class="w3-grayscale-max" style="width:100%">
 								<span id="backgroundLockTag3" class="w3-tag w3-display-topleft">Locked</span>

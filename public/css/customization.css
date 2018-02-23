@@ -1,4 +1,3 @@
-/* The Modal (background) */
 #insufficientCash {
 	display: none; 
 	position: fixed; 
@@ -12,16 +11,20 @@
 	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-/* Modal Content */
 .insufficientCash-content{
 	position: relative;
 	background-color: white;
 	margin: auto;
-	padding: 20px;
-	width: 50%;
+	width: 375px;
 	height: auto;
 }
-.insufficientCash-content header{
+
+.insufficientCash-content p{
+	padding: 15px;
+}
+
+.insufficientCash-content header {
+	padding: 10px;
 	font-weight: bold;
 	font-size: 18px;
 }
@@ -39,12 +42,30 @@
 	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-/* Modal Content */
 .confirmation-content{
 	position: relative;
 	background-color: white;
 	margin: auto;
-	padding: 20px;
-	width: 50%;
+	width: 250px;
 	height: auto;
+}
+
+#confirmInfo{
+	padding: 10px;
+}
+.confirmation-content p{
+	margin-top: 0px;
+}
+
+.confirmation-content header{
+	padding: 10px;
+	font-weight: bold;
+	font-size: 18px;
+}
+
+#confirmButtons{
+	width: 117px;
+	display: block;
+	margin-left: auto;
+  margin-right: auto;
 }
