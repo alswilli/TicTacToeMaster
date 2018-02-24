@@ -32,6 +32,8 @@ function startGame()
         game.state.add('ticTac', threeDticTacState)
     else if(app.gameType == "orderChaos")
         game.state.add('ticTac', orderChaosState)
+    else if(app.gameType == "ultimate")
+        game.state.add('ticTac', ultimateTTTState)
     else
         console.log("unknown gametype: ", game.gametype)
                     

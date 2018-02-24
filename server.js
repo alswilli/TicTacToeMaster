@@ -35,6 +35,7 @@ var roomsNo = {}
 initGameRoom("original")
 initGameRoom("3d")
 initGameRoom("orderChaos")
+initGameRoom("ultimate")
 
 
 

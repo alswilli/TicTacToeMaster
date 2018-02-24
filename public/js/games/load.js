@@ -29,7 +29,7 @@ var loadState = {
         game.load.image('square', 'imgs/square.png');
         game.load.image('moon', 'imgs/moon.png');
         game.load.image('board', 'imgs/angledBoard.png');
-        
+        game.load.image('greensquare', 'imgs/greensquare.png')
     },  
     
     /*
