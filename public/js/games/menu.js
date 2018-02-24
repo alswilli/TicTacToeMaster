@@ -26,7 +26,6 @@ var menuState = {
         else if(game.gametype === "orderChaos")
             title = 'Order and Chaos'
         else if(game.gametype === "ultimate")
-            console.log(game.gametype)
             title = 'Ultimate Tic Tac Toe'
         // display game name
         const gameName = game.add.text(
