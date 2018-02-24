@@ -687,6 +687,7 @@ var ultimateTTTState = {
         // THIS WILL NEED TO HAVE LOGIC FOR BIG PIECES UPDATES TOO
 
         game.board = board
+        console.log('BOARD: ', game.board)
         //rub out pieces, so we don't draw multiple on top of each other
         for(var i in game.placedPieces)
         {
@@ -720,11 +721,16 @@ var ultimateTTTState = {
                     for (var l=0; l < game.n; l++) {
                         var lx = game.startingX + i*game.squareSize*3 + k*game.squareSize;
                         var ly = game.startingY + j*game.squareSize*3 + l*game.squareSize;
-                        if(game.board[j][i][l][k] === "x"){
+                        if(typeof game.board[j][i] === 'string')
+                        {
+                            //if magic overwrites closed, then if you click on a "supposed" closed board and it is magic itll loop)
+                            //Do nothing (continue)
+                        }
+                        else if(game.board[j][i][l][k] === "x"){
                             game.addSprite(lx, ly, 'star');
                             
                         }
-                        if(game.board[j][i][l][k] === "o"){
+                        else if(game.board[j][i][l][k] === "o"){
                             game.addSprite(lx, ly, 'moon');
                         }
                     }
