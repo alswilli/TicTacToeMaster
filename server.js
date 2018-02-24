@@ -102,6 +102,14 @@ io.on('connection',function(socket)
                           console.log('wut')
                           return
                           }
+                    console.log("sent by " + data.id)
+                    if(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid === data.id)
+                    {
+                          console.log('wut duh')
+                          console.log(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid + " " + data.id)
+                          return
+                    }
+                    io.nsps['/'].adapter.rooms[socket.player.roomName].lastid = data.id
                     socket.player.lastboard = data.board
                     socket.player.board = data.board
                     io.sockets.in(socket.player.roomName).emit('switchTurn',socket.player,data);
@@ -138,6 +146,7 @@ io.on('connection',function(socket)
                 {
                     io.nsps['/'].adapter.rooms[socket.player.roomName].challenger = socket.player.username
                     io.nsps['/'].adapter.rooms[socket.player.roomName].challengerkey = socket.player.userkey
+                    io.nsps['/'].adapter.rooms[socket.player.roomName].lastid = -1
                     console.log(socket.player.roomName + "challenger is " +socket.player.username)
                 }
                 

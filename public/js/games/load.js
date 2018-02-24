@@ -60,7 +60,7 @@ var loadState = {
             game.state.start("waitingRoom");
         else
             game.firstPlay = true
-        
+        game.opponentLeft = true;
         $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
                                                                             'right' : '-20%'    
                                                                             });  
@@ -93,6 +93,7 @@ var loadState = {
                    $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
                                                                                        'right' : '0%'    
                                                                                        });  
+                   game.opponentLeft = false;
                    game.startMatch(data);
               })
      })

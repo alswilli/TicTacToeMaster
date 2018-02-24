@@ -194,7 +194,8 @@ var orderChaosState = {
         //string, don't do anything
         if(game.board[indexY][indexX] != "")
             return
-           
+        if(game.multiplayer)
+            game.waiting = true
          //place either an x or o, depending on which piece is picked
         if(game.XPicked){
             var piece = game.addSprite(sprite.x, sprite.y, 'star');

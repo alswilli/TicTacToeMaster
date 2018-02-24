@@ -79,6 +79,8 @@ app.controller('SidebarCtrl', function($scope) {
                           //update cash on screen
                           if(document.getElementById("cash"))
                             document.getElementById("cash").innerHTML = "$" + app.money;
+                          if($("#player_img"))
+                            $("#player_img").attr("src", app.img_url);
                           console.log("update dat user " + app.money)
                           setSelected(link);
                           });
