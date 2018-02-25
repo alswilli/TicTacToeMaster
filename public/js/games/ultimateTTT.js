@@ -130,9 +130,12 @@ var ultimateTTTState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
+        
+        game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
         if(game.firstPlay)
         {
+            makeClient();
             Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
             console.log("firstPlay!")
             game.firstPlay = false
@@ -225,7 +228,8 @@ var ultimateTTTState = {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
-        
+        if(game.multiplayer && game.checkForDoubleClick())
+            return
         //the indexes in the 2D big array corresponding to the clicked square    
         var bigIndexX = sprite.bigXindex
         console.log("bX: ", bigIndexX)
@@ -281,11 +285,13 @@ var ultimateTTTState = {
             var piece = game.addSprite(sprite.x, sprite.y, 'star');
             game.placedPieces.push(piece);
             game.board[bigIndexY][bigIndexX][littleIndexY][littleIndexX] = "x"
+            game.previousPiece = "x";
         }
         else{
             var piece = game.addSprite(sprite.x, sprite.y, 'moon');
             game.placedPieces.push(piece);
             game.board[bigIndexY][bigIndexX][littleIndexY][littleIndexX] = "o";
+            game.previousPiece = "o";
         }
         
 

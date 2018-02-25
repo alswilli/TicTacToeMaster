@@ -46,6 +46,8 @@ var ticTacState = {
         game.makeBoardOnScreen()
         //add messages that display turn status, connection statuses
         this.addTexts()
+        
+        game.previousPiece = ""
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
@@ -109,7 +111,8 @@ var ticTacState = {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
-        
+        if(game.multiplayer && game.checkForDoubleClick())
+            return
         //the indexes in the 2D array corresponding to the clicked square
         var indexX = sprite.xIndex
         var indexY = sprite.yIndex
@@ -129,11 +132,13 @@ var ticTacState = {
             var piece = game.addSprite(sprite.x, sprite.y, 'star');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "x"
+            game.previousPiece = "x"
         }
         else{
             var piece = game.addSprite(sprite.x, sprite.y, 'moon');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "o";
+            game.previousPiece = "o"
         }
         
 
@@ -145,6 +150,7 @@ var ticTacState = {
      */
     switchTurn(){
         console.log("switching current turn")
+        
         game.isXTurn = !game.isXTurn
         game.turns++
         pieceChallenge(game.turns);

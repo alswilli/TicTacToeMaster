@@ -60,6 +60,8 @@ var threeDticTacState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
+            
+        game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
         if(game.firstPlay === true)
         {
@@ -134,6 +136,8 @@ var threeDticTacState = {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
+        if(game.multiplayer && game.checkForDoubleClick())
+            return
         //the board that was clicked on, 0 is on top, 3 is on bottom
         var boardNum = sprite.boardNum
 
@@ -168,11 +172,13 @@ var threeDticTacState = {
         {
             var piece = game.addSprite(worldX, worldY, 'X');
             game.board[boardNum][indexY][indexX] = "x"
+            game.previousPiece = "x"
         }
         else
         {
             var piece = game.addSprite(worldX, worldY, 'O');
             game.board[boardNum][indexY][indexX] = "o"
+            game.previousPiece = "o"
         }
         game.updateTurnStatus(boardNum, indexX, indexY)
     },

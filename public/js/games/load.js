@@ -41,6 +41,8 @@ var loadState = {
         //game.showOpponent = this.showOpponent
         game.loadOpponent = this.loadOpponent
         game.disconnectSocket = this.disconnectSocket
+        game.checkForDoubleClick = this.checkForDoubleClick
+        game.animateOpponentLeaving = this.animateOpponentLeaving
         
         game.gametype = app.gameType;
         game.userkey = app.keyValue;
@@ -50,6 +52,7 @@ var loadState = {
         game.cash = parseInt(app.money);
         game.url = app.img_url;
         console.log("in load: ", game.gametype);
+        game.opponentLeft = false;
         game.state.start('menu');
     },
     
@@ -102,7 +105,34 @@ var loadState = {
     disconnectSocket()
     {
         Client.disconnect();
+    },
+    
+    checkForDoubleClick()
+    {
+        var turn
+        if(app.gameType === "orderChaos")
+            turn = game.isXTurn ?  "order" : "chaos"
+        else
+            turn = game.isXTurn ? "x" : "o"
+        if(turn === game.previousPiece)
+        {
+            console.log("you double clicking mother fucker")
+            game.isXTurn = !game.isXTurn
+            game.waiting = true
+            return true
+        }
+        else
+            return false
+    },
+    
+    animateOpponentLeaving()
+    {
+        game.opponentLeft = true;
+        $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
+                                                                            'right' : '-20%'    
+                                                                            });
     }
+    
 };
 
 

@@ -121,6 +121,8 @@ var winState = {
         game.addMenuOption('Return to TicTacToe Menu', 400, function () {
                            game.firstPlay = true
                            Client.notifyQuit()
+                           if(!game.opponentLeft)
+                                game.animateOpponentLeaving()
                            game.state.start("menu");
                            });
     },

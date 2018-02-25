@@ -58,6 +58,8 @@ var orderChaosState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
+        
+        game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
         if(typeof game.firstPlay)
         {
@@ -181,6 +183,8 @@ var orderChaosState = {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
+        if(game.multiplayer && game.checkForDoubleClick())
+            return
         // if(!game.piecePicked){
         //     game.pickPiece();
         // }
@@ -207,7 +211,7 @@ var orderChaosState = {
             game.pickedPieces.push(piece);
             game.board[indexY][indexX] = "o";
         }
-        
+        game.previousPiece = game.isXTurn ?  "order" : "chaos"
 
         game.updateTurnStatus(indexX, indexY)
     },
