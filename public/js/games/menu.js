@@ -36,16 +36,24 @@ var menuState = {
         gameName.anchor.setTo(0.5, 0.5)
         
         game.optionCount = 0;
-        game.addMenuOption('SinglePlayer', 200, function () {
+       
+        if (game.gametype == "original") {
+           game.addMenuOption('SinglePlayer', 200, function () {
+                           game.singleplayer = true;
+                           game.vsAi = true;
+                           game.state.start("ticTac");
+                           });
+        }
+        game.addMenuOption('Local Multiplayer', 200, function () {
                            game.singleplayer = true
                            game.state.start("ticTac");
                            });
-        game.addMenuOption('Multiplayer', 200,function () {
+        game.addMenuOption('Online Multiplayer', 200,function () {
                            game.singleplayer = false
                            game.state.start("ticTac");
                            });
         // If neither option, do the database logic with leaderboards, achievements, currency, etc. (we will add more to here later, thoughwill need to be in home page because href loads first)
-        game.addMenuOption('Exit to Home Page', 200, function () {
+        game.addMenuOption('Exit to Home Page', 250, function () {
 
             // var dbRefObject = firebase.database().ref('/users/' + game.userkey + '/cash/');
             // console.log("Cash:", game.cash);
