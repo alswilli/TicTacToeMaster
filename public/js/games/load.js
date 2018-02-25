@@ -29,7 +29,7 @@ var loadState = {
         game.load.image('square', 'imgs/square.png');
         game.load.image('moon', 'imgs/moon.png');
         game.load.image('board', 'imgs/angledBoard.png');
-        
+        game.load.image('greensquare', 'imgs/greensquare.png')
     },  
     
     /*
@@ -60,7 +60,7 @@ var loadState = {
             game.state.start("waitingRoom");
         else
             game.firstPlay = true
-        
+        game.opponentLeft = true;
         $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
                                                                             'right' : '-20%'    
                                                                             });  
@@ -93,6 +93,7 @@ var loadState = {
                    $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
                                                                                        'right' : '0%'    
                                                                                        });  
+                   game.opponentLeft = false;
                    game.startMatch(data);
               })
      })

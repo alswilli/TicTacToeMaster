@@ -734,7 +734,7 @@ var threeDticTacState = {
         {
             game.waiting = true;
             //send updated board to the server so the opponent's board is updated too
-            var data = {board:game.board, boardNum:boardNum, x:indexX, y:indexY};
+            var data = {board:game.board, boardNum:boardNum, x:indexX, y:indexY, id:game.id};
             Client.sendClick(data);
         }
         

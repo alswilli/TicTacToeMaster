@@ -491,6 +491,7 @@ var ticTacState = {
         {
             //send updated board to the server so the opponent's board is updated too
             var data = {board:game.board, x:indexX, y:indexY,id:game.id};
+            console.log(data)
             Client.sendClick(data);
         }
         

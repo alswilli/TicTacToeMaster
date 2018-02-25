@@ -15,7 +15,7 @@ function startGame()
     game.screenWidth = width;
     
     
-    console.log("In Game Page "+ game.gametype);
+    console.log("In Game Page "+ app.gametype);
     
     //add all the different states to the game, these states are defined in all the 
     //corresponding .js files, i.e loadState is in load.js
@@ -32,6 +32,8 @@ function startGame()
         game.state.add('ticTac', threeDticTacState)
     else if(app.gameType == "orderChaos")
         game.state.add('ticTac', orderChaosState)
+    else if(app.gameType == "ultimate")
+        game.state.add('ticTac', ultimateTTTState)
     else
         console.log("unknown gametype: ", game.gametype)
                     
