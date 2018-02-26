@@ -14,9 +14,10 @@ angular.module('TicTacToeApp')
             $(function(){
               $('#profile_image').change( function(e) {
                                          
-                                         var img = URL.createObjectURL(e.target.files[0]);
-                                         $('.imageNew').attr('src', img);
-                                         });
+                var img = URL.createObjectURL(e.target.files[0]);
+                console.log(img)
+                $('.imageNew').attr('src', img);
+                });
               });
             $('#btn-applyChanges').on('click', updateUserInfo);
             
@@ -25,6 +26,9 @@ angular.module('TicTacToeApp')
 function updateUserInfo(e)
 {
     e.preventDefault();
+
+    console.log(document.getElementById("usernameNew").innerHTML)
+    // sessionStorage.setItem("name", nameOfUser) 
     
     // Get image ref
     const storageRef = firebase.storage().ref();
