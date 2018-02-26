@@ -80,7 +80,28 @@ $(document).ready(function(){
  
 $('#guestlogin').on('click', function (e){
     e.preventDefault();
-    window.location.href = "mainMenu.html";
+
+    firebase.database().ref('/users/C3LPVheToUZYC8PvIGn74kOdJym2').once('value').then(function(snapshot) {
+        nameOfUser = (snapshot.val().username);
+        console.log("Name of user: ", nameOfUser);
+        battleText = (snapshot.val().battleText);
+        console.log("Battle text: ", battleText);              
+        var img = (snapshot.val().image);
+        console.log("Image: ", img);
+        cashMoney = (snapshot.val().cash);
+                                     
+        firebase.storage().ref(img).getDownloadURL().then(function(url) {
+            urlVal = url;
+            sessionStorage.setItem("name", nameOfUser)
+            sessionStorage.setItem("userkey", keyValue)
+            sessionStorage.setItem("battleText", battleText)
+            sessionStorage.setItem("cash", cashMoney)
+            sessionStorage.setItem("picUrl", urlVal)
+            sessionStorage.setItem("imageName", null)
+            window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
+            console.log("holaGuest");
+        })
+    })
 })
 
 })

@@ -36,6 +36,7 @@ var loadState = {
 				game.load.image('background','imgs/background0.png');
 				//game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.load.image('greensquare', 'imgs/greensquare.png')
+        game.load.image('redsquare', 'imgs/redsquare.png')
         game.load.image('square', prefix + 'square.png')
         console.log(prefix)
     },  
