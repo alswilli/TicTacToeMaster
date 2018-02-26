@@ -24,12 +24,18 @@ var loadState = {
         can have its own preload() function,but its easier to keep it all here
     */
     preload() {
+        var prefix = 'imgs/'
+        if(app.gameType == "3d")
+            prefix = 'imgs/3D/'
+        
         game.load.image('logo', 'imgs/phaser.png');
         game.load.image('star', 'imgs/star.png');
-        game.load.image('square', 'imgs/square.png');
+        //game.load.image('square', 'imgs/square.png');
         game.load.image('moon', 'imgs/moon.png');
         game.load.image('board', 'imgs/angledBoard.png');
         game.load.image('greensquare', 'imgs/greensquare.png')
+        game.load.image('square', prefix + 'square.png')
+        console.log(prefix)
     },  
     
     /*

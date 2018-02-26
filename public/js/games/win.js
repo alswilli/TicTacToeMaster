@@ -13,11 +13,15 @@ var winState = {
          state, so we have to save what the board looked like when the game ended so 
          it can be displayed in this winState
          */
-        game.endingBoard.forEach(function(element) {
-                                 if(element.key != 'text')
-                                 game.addSprite(element.x, element.y, element.key);
-                                 });
-        
+        if(app.gameType == "3d")
+            game.rescaleSprites()
+        else
+        {
+            game.endingBoard.forEach(function(element) {
+                                     if(element.key != 'text')
+                                     game.addSprite(element.x, element.y, element.key);
+                                     });
+            }
         var message
         var submessage = ""
         //display that the game ended in a draw or display the winner

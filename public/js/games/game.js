@@ -11,8 +11,10 @@ console.log("In Game Page");
 function startGame()
 {
     var width = document.getElementById('gameDiv').offsetWidth
-    game = new Phaser.Game(width, 600, Phaser.AUTO, 'gameDiv') 
+    var height = 700
+    game = new Phaser.Game(width, height, Phaser.AUTO, 'gameDiv') 
     game.screenWidth = width;
+    game.screenHeight = height;
     
     
     console.log("In Game Page "+ app.gametype);
