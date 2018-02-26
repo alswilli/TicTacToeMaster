@@ -15,6 +15,8 @@ var winState = {
          */
         if(app.gameType == "3d")
             game.rescaleSprites()
+        else if(app.gameType == "original")
+            game.showSprites()
         else
         {
             game.endingBoard.forEach(function(element) {
