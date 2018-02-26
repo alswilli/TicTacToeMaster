@@ -25,10 +25,13 @@ var loadState = {
     */
     preload() {
         game.load.image('logo', 'imgs/phaser.png');
-        game.load.image('star', 'imgs/star.png');
-        game.load.image('square', 'imgs/square.png');
-        game.load.image('moon', 'imgs/moon.png');
+        game.load.image('star', 'imgs/rathalos.png');
+        game.load.image('square', 'imgs/squarew.png');
+        game.load.image('moon', 'imgs/rathian.png');
         game.load.image('board', 'imgs/angledBoard.png');
+				game.load.image('background','imgs/background.png');
+				game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    		//game.scale.setMinMax(400, 300, 800, 600);
         
     },  
     

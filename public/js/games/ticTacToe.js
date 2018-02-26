@@ -19,6 +19,11 @@ var ticTacState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
+				var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+    		background.anchor.set(0.5);
+				background.width = game.screenWidth;
+        background.height = 600;
+			
         game.squareSize = 115
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 3
