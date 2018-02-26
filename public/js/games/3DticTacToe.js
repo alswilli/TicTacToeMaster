@@ -23,10 +23,10 @@ var threeDticTacState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
-        game.boardHeight = 102
+        game.boardHeight = game.cache.getImage('square').height * 4
         game.boardOffset = 15
-        game.pieceWidth = 38
-        game.pieceHeight = 25
+        game.pieceWidth = 50
+        game.pieceHeight = 50
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 4
         game.isXTurn = true
@@ -52,7 +52,7 @@ var threeDticTacState = {
         
         console.log(game.board)
         //create the board on screen and makes each square clickable
-        game.makeBoardOnScreen()
+        game.makeBoardOnScreenBetter()
         //add messages that display turn status, connection statuses
         this.addTexts()
         
@@ -60,6 +60,8 @@ var threeDticTacState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
+            
+        game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
         if(game.firstPlay === true)
         {
@@ -127,55 +129,146 @@ var threeDticTacState = {
     },
     
     /*
-     places a piece on an empty square, either x or o depending whose turn it is
+     creates the board on the screen using individual squares, rather than four entire board sprites,
+     so now each square will have its own callback function. Will make adding custom tiles easier
+     */
+    makeBoardOnScreenBetter()
+    {
+        var xScale = 0.9;
+        var yScale = 0.6;
+        game.spriteSquares = game.makeBoardAsArray(game.n)
+        for (var i=0; i < game.n; i++)
+        {
+            var adjustmentY = game.startingY + (i * (game.boardHeight + game.boardOffset) * 0.6)
+            for (var j=0; j < game.n; j++)
+            {
+                for (var k=0; k < game.n; k++)
+                {
+                    indexX = j
+                    indexY = k
+                    //convert the indexes to actual coordinates on the screen
+                    var sheared = game.convertToShearCoords(indexX * game.pieceWidth, indexY * game.pieceHeight)
+                    //adjust the x and y values to where they should appear on the screen, this number seems to
+                    //adjust tiles well
+                    var width = 32
+                    var worldX = game.startingX + sheared[1] * xScale + (j * width * xScale/2)
+                    var worldY = sheared[0] + adjustmentY
+                    //87 X 50 is the dimension of the image, hardcoded so when we add future custom tiles
+                    //they will also fit the screen
+                    var square = game.addSpriteWithWidth(worldX, worldY, 'square', 87, 50);
+                    //adjust coordinates after scaling so there are no gaps between tiles
+                    game.adjustForScale(square, xScale, yScale, k, j)
+                    game.addPolygonBounds(square, xScale, yScale)
+                    //enable input in game, don't if this is being called in winState
+                    if(game.state.current==="ticTac")
+                    {
+                        square.inputEnabled = true
+                        square.events.onInputDown.add(game.placePiece, game)
+                    }
+                    square.indexX = indexX
+                    square.indexY = indexY
+                    square.key = 'square'
+                    square.boardNum = i
+                    game.spriteSquares[i][j][k] = square
+                }
+            }
+        }
+        
+        
+
+    },
+    
+    /*
+        After scaling an image, move its x and y coordinates accordingly so tiles still are next to each 
+        other without any gaps
+     */
+    adjustForScale(square, xScale, yScale, k, j)
+    {
+        //not sure why but this number seems to make squares adjust perfectly
+        var height = 32
+        var width = 32 
+        square.scale.setTo(xScale, yScale);
+        //add 0.01 to adjust for nonoverlapping tiles
+        square.y -=  k * height * (yScale + 0.01)
+        square.x -=  j * width * xScale/2
+    },
+    
+    /*
+        Every square is given bounds to check if a click on a sprite is actually inside of the square
+     */
+    addPolygonBounds(square, xScale, yScale)
+    {
+        var topLeft = new Phaser.Point((37 * xScale) + square.x, square.y)
+        var topRight = new Phaser.Point(square.x + square.width, square.y)
+        var bottomRight = new Phaser.Point((51 * xScale) + square.x, square.y + square.height)
+        var bottomLeft = new Phaser.Point(square.x, square.y + square.height)
+        square.poly = new Phaser.Polygon([ topLeft, topRight, bottomRight, bottomLeft ]);
+        square.poly.topLeft = topLeft.x
+    },
+    
+    /*
+        Checks if the square to the left of a sprite is clicked, since images overlap now 
+     */
+    checkAdjacentShears(sprite, pointer)
+    {
+        if(pointer.worldX < sprite.poly.topLeft)
+        {
+            //make sure this isn't a corner square
+            if(sprite.indexX > 0)
+            {
+                var indexX = sprite.indexX
+                var indexY = sprite.indexY
+                var boardNum = sprite.boardNum
+                var leftSquare = game.spriteSquares[boardNum][indexX-1][indexY]
+                game.placePieceNoPointer(leftSquare)
+            }
+        }
+    },
+    
+    /*
+        places a piece on an empty square, either x or o depending whose turn it is, given a pointer9i.e mouse click)
      */
     placePiece(sprite, pointer)
     {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
-        //the board that was clicked on, 0 is on top, 3 is on bottom
-        var boardNum = sprite.boardNum
-
-        //used to adjust y value for space between boards
-        var adjustmentY = game.startingY + (boardNum * (game.boardHeight + game.boardOffset))
-        //used to adjust x value for centering the boards
-        var adjustmentX = game.screenWidth/2 - game.cache.getImage('board').width / 2
-        var y = pointer.worldY - adjustmentY
-        var x = pointer.worldX - adjustmentX
-        var point = [x, y]
-        //get the indexes that were clicked on
-        var placement = game.convertToIndexes(point)
-            
-        var indexX =placement[1]
-        var indexY =placement[0]
-        //check to make sure index is in bounds, since board is sheared, its possible to click out of bounds
-        if(indexX < 0 || indexX >= game.n )
+        if(game.multiplayer && game.checkForDoubleClick())
             return
-        //check if there is already something placed at this position
-        if(game.board[boardNum][indexY][indexX] != "")
-            return
-        
-        //convert the indexes to actual coordinates on the screen
-        var sheared = game.convertToShearCoords(indexX * game.pieceWidth, indexY * game.pieceHeight)
-        //get width of images to adjust placements
-        var width = game.cache.getImage('X').width
-        //adjust the x and y values to where they should appear on the screen
-        var worldX = game.startingX + sheared[1] - width/2
-        var worldY = sheared[0] + adjustmentY
-        //place appropriate piece, depending whose turn it is
-        if(game.isXTurn)
-        {
-            var piece = game.addSprite(worldX, worldY, 'X');
-            game.board[boardNum][indexY][indexX] = "x"
-        }
+        if(sprite.poly.contains(pointer.worldX, pointer.worldY))
+            game.placePieceNoPointer(sprite)
         else
-        {
-            var piece = game.addSprite(worldX, worldY, 'O');
-            game.board[boardNum][indexY][indexX] = "o"
-        }
-        game.updateTurnStatus(boardNum, indexX, indexY)
+            game.checkAdjacentShears(sprite, pointer)
+        
     },
+     /*
+        called when a mouse click has been verified to actually be on a square
+      */
+    placePieceNoPointer(sprite)
+    {
+       var indexX = sprite.indexX
+       var indexY = sprite.indexY
+       var boardNum = sprite.boardNum
+       if(game.board[boardNum][indexY][indexX] != "")
+            return 
+           
+       var Ypadding = 3
+       var Xpadding = 15
+       if(game.isXTurn)
+       {
+           var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'X');
+           game.board[boardNum][indexY][indexX] = "x"
+           game.previousPiece = "x"
+       }
+       else
+       {
+           var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'O');
+           game.board[boardNum][indexY][indexX] = "o"
+           game.previousPiece = "o"
+       }
+       game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
+    },
+
     
     
     /*
@@ -215,11 +308,14 @@ var threeDticTacState = {
      */
     addSprite(x, y, name) {
         var sprite = game.add.sprite(x, y, name);
-        //sprite.scale.setTo(0.5, 0.5);
+        
         var width = game.cache.getImage(name).width
         var height = game.cache.getImage(name).height
-        sprite.width = width
-        sprite.height = height
+        sprite.width = width 
+        sprite.height = height 
+        //sprite.scale.setTo(0.75, 0.75);
+        //sprite.x -= width * 1.75
+        //sprite.y -= height * 1.75
         return sprite
     },
     
@@ -230,7 +326,7 @@ var threeDticTacState = {
     addSpriteWithWidth(x, y, name, width, height)
     {
         var sprite = game.add.sprite(x, y, name);
-        //sprite.scale.setTo(0.5, 0.5);
+        //sprite.scale.setTo(0.75, 0.75);
         sprite.width = width
         sprite.height = height
         return sprite
@@ -587,19 +683,18 @@ var threeDticTacState = {
         console.log(board)
         
         var boardNum = coordInfo.boardNum
-        var row = coordInfo.x
-        var col = coordInfo.y
-            
-            
+        var x = coordInfo.worldX
+        var y = coordInfo.worldY
+
+        var Ypadding = 3
+        var Xpadding = 15   
         if(game.isXTurn)
         {
-            var coords = game.convertIndexesToCoords(boardNum, row, col)
-            game.addSprite(coords[0], coords[1], 'X');
+            game.addSprite(x + Xpadding, y + Ypadding, 'X');
         }
         else
         {
-            var coords = game.convertIndexesToCoords(boardNum, row, col)
-            game.addSprite(coords[0], coords[1], 'O');
+            game.addSprite(x + Xpadding, y + Ypadding, 'O');
         }
     },
     
@@ -705,7 +800,7 @@ var threeDticTacState = {
         game.turnStatusText.key = 'text'
         
         game.playerPieceText = game.add.text(
-                                             game.world.centerX, 600-50, '',
+                                             game.world.centerX, game.screenHeight-50, '',
                                              { font: '50px Arial', fill: '#ffffff' }
                                              )
         //setting anchor centers the text on its x, y coordinates
@@ -719,7 +814,7 @@ var threeDticTacState = {
     /*
      Update the status of the current turn player
      */
-    updateTurnStatus(boardNum, indexX, indexY)
+    updateTurnStatus(boardNum, indexX, indexY, worldX, worldY)
     {
         if(game.singleplayer)
         {
@@ -734,7 +829,7 @@ var threeDticTacState = {
         {
             game.waiting = true;
             //send updated board to the server so the opponent's board is updated too
-            var data = {board:game.board, boardNum:boardNum, x:indexX, y:indexY};
+            var data = {board:game.board, boardNum:boardNum, worldX:worldX, worldY:worldY, x:indexX, y:indexY, id:game.id};
             Client.sendClick(data);
         }
         
@@ -749,7 +844,7 @@ var threeDticTacState = {
         var height = game.cache.getImage('board').height
         var zpoint = [[point[0], height -  point[1]]]
         var shear = [[1, 0],
-                     [-1.15, 1]
+                     [-0.75, 1] //1.15
                      ]
         
         var result = game.multiplyMatrices(zpoint, shear)
@@ -772,7 +867,7 @@ var threeDticTacState = {
         var height = game.cache.getImage('board').height
         var zpoint = [[x, height -  y]]
         var shear = [[1, 0],
-                     [1.15, 1]
+                     [0.75, 1] //1.15
                      ]
         console.log("Convert to grid coords: " + zpoint[0][0] + ", " + zpoint[0][1])
         var result = game.multiplyMatrices(zpoint, shear)
@@ -805,6 +900,18 @@ var threeDticTacState = {
       return result;
     },
     
+    /*
+        called in winstate to redisplay the board
+     */
+    rescaleSprites()
+    {
+        game.makeBoardOnScreenBetter()
+        game.endingBoard.forEach(function(element) {
+            if(element.key != 'text' && element.key != 'square')
+                  game.addSprite(element.x, element.y, element.key);
+        });
+    },
+    
     
     /*
      asign functions ot the game object, so they can be called by the client
@@ -814,10 +921,12 @@ var threeDticTacState = {
     assignFunctions()
     {
         game.makeBoardOnScreen = this.makeBoardOnScreen;
+        game.makeBoardOnScreenBetter = this.makeBoardOnScreenBetter;
         game.switchTurn = this.switchTurn;
         game.placePiece = this.placePiece
         game.makeBoardAsArray = this.makeBoardAsArray
         game.addSprite = this.addSprite
+        game.addSpriteWithWidth = this.addSpriteWithWidth
         game.displayDraw = this.displayDraw
         game.displayWinner = this.displayWinner
         game.saveBoard = this.saveBoard
@@ -842,5 +951,11 @@ var threeDticTacState = {
         game.checkIfOver3D = this.checkIfOver3D
         game.checkMainDiagonals3D = this.checkMainDiagonals3D
         game.convertIndexesToCoords = this.convertIndexesToCoords
+        game.adjustForScale = this.adjustForScale
+        game.addPolygonBounds = this.addPolygonBounds
+        game.placePieceNoPointer = this.placePieceNoPointer
+        game.rescaleSprites = this.rescaleSprites
+        game.checkAdjacentShears = this.checkAdjacentShears
     }
+    
 };

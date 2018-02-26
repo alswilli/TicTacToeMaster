@@ -22,7 +22,7 @@ var ticTacState = {
 				var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
     		background.anchor.set(0.5);
 				background.width = game.screenWidth;
-        background.height = 600;
+        background.height = 700;
 			
         game.squareSize = 115
         //the size of the board, i.e nxn board, 3x3 for tictactoe
@@ -30,7 +30,7 @@ var ticTacState = {
         game.isXTurn = true
         game.isDraw = false
         game.turns = 0
-        
+         
         //the top left coordinate to place the whole board at, we will make game
         //not hardcoded in the furture to center the board, but I believe we need jQuery
         //to get window size and I didn't feel like learning that right now
@@ -51,8 +51,10 @@ var ticTacState = {
         game.makeBoardOnScreen()
         //add messages that display turn status, connection statuses
         this.addTexts()
+        
+        game.previousPiece = ""
         //folloowing logic is for multiplayer games
-        if(game.singleplayer)
+        if(game.singleplayer || game.vsAi)
             return
         //if this is the first play against an opponent, create a new player on the server
         if(game.firstPlay)
@@ -78,6 +80,7 @@ var ticTacState = {
         for (var i=0; i < n; i++) {
             board[i]=new Array(n)
         }
+        console.log(board);
         return board;
     },
     
@@ -111,10 +114,15 @@ var ticTacState = {
      */
     placePiece(sprite, pointer)
     {
+        console.log(sprite); 
+        console.log("x: ", sprite.x);
+        console.log("y: ", sprite.y);
+       //console.log(pointer);
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
-        
+        if(game.multiplayer && game.checkForDoubleClick())
+            return
         //the indexes in the 2D array corresponding to the clicked square
         var indexX = sprite.xIndex
         var indexY = sprite.yIndex
@@ -131,14 +139,16 @@ var ticTacState = {
          //place either an x or o, depending whose turn it is
         if(game.isXTurn)
         {
-            var piece = game.addSprite(sprite.x, sprite.y, 'star');
+            var piece = game.addSprite(sprite.x, sprite.y, 'X');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "x"
+            game.previousPiece = "x"
         }
         else{
-            var piece = game.addSprite(sprite.x, sprite.y, 'moon');
+            var piece = game.addSprite(sprite.x, sprite.y, 'O');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "o";
+            game.previousPiece = "o"
         }
         
 
@@ -150,12 +160,13 @@ var ticTacState = {
      */
     switchTurn(){
         console.log("switching current turn")
+        
         game.isXTurn = !game.isXTurn
         game.turns++
         pieceChallenge(game.turns);
         console.log("turn count: " + game.turns)
         var turn = game.isXTurn ? "x" : "o"
-        if(game.singleplayer)
+        if(game.singleplayer || game.vsAi)
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
         // Below is for multiplayer
         else if(game.player === turn)
@@ -266,7 +277,7 @@ var ticTacState = {
      */
     displayWinner() {
         var winningPiece = game.isXTurn ? 'x' : 'o'
-        if(game.singleplayer)
+        if(game.singleplayer || game.vsAi)
             game.winner = winningPiece
         else
         {
@@ -314,12 +325,12 @@ var ticTacState = {
         if(game.isXTurn)
         {
             var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'star');
+            game.addSprite(coords[0], coords[1], 'X');
         }
         else
         {
             var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'moon');
+            game.addSprite(coords[0], coords[1], 'O');
         }
         return*/
         game.board = board
@@ -336,10 +347,10 @@ var ticTacState = {
                 var x = game.startingX + i*game.squareSize;
                 var y = game.startingY + j * game.squareSize;
                 if(game.board[j][i] === "x"){
-                    game.addSprite(x, y, 'star');
+                    game.addSprite(x, y, 'X');
                 }
                 if(game.board[j][i] === "o"){
-                    game.addSprite(x, y, 'moon');
+                    game.addSprite(x, y, 'O');
                 }
             }
         }
@@ -431,7 +442,7 @@ var ticTacState = {
         Initialize the texts used to display turn status and matching status
      */
     addTexts(){
-        var startingMessage = game.singleplayer ? "Current Turn: X" : "Searching for Opponent"
+        var startingMessage = (game.singleplayer || game.vsAi) ? "Current Turn: X" : "Searching for Opponent"
         
         game.turnStatusText = game.add.text(
             game.world.centerX, 50, startingMessage,
@@ -458,8 +469,28 @@ var ticTacState = {
      */
     updateTurnStatus(indexX, indexY)
     {
-        if(game.singleplayer)
+        if (game.vsAi) {
+           console.log("updateTurnStatus: single player AI");
+           if(game.isOver(indexX, indexY)) {
+              game.displayWinner()         
+           }
+           else {
+              game.switchTurn(); 
+              game.waiting = true;
+              console.log("indexX: "+indexX+" indexY: "+indexY);
+              console.log(board);
+              console.log(boardToArray());
+              
+              aiMakesMove();
+              game.switchTurn();
+              console.log(boardToArray());
+              game.waiting = false;
+              
+           }
+        }
+        else if(game.singleplayer)
         {
+            console.log("updateTurnStatus: single player");
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
                 game.displayWinner()
@@ -471,6 +502,7 @@ var ticTacState = {
         {
             //send updated board to the server so the opponent's board is updated too
             var data = {board:game.board, x:indexX, y:indexY,id:game.id};
+            console.log(data)
             Client.sendClick(data);
         }
         
@@ -537,4 +569,175 @@ function pieceChallenge(turn) {
             }
         });
     }
+}
+
+/****************************************** Tic Tac Toe AI ************************/
+var human = "x";
+var ai    = "o";
+
+       
+/* This is called when for the ai to make a move.
+ * Converts the board to a single array for minimax to calculate where to play a move.
+ * Then we place the move there for the AI.
+ * We convert the board back to a single array and check for the winning condition.
+ */
+function aiMakesMove() {
+   var boardArr = boardToArray();
+   var move = minimax(boardArr, ai);
+   
+   var convertedMove = convertMove(move); 
+   console.log("AI's move: ", move);
+   console.log("convertedMove: ", convertedMove);
+   
+   placePieceAt(convertedMove.row, convertedMove.column);
+   
+   boardArr = boardToArray();
+
+   if ( gameIsWon(boardArr, human) || gameIsWon(boardArr, ai) ) {
+      game.displayWinner();
+   }
+} 
+
+ 
+/* Draws a piece at the given index 
+ */
+function placePieceAt(row , col) {
+   console.log(game.screenWidth);
+   var x = 485 + (col * 115);
+   var y = 115   * (row + 1);
+   var piece = game.addSprite(x, y, 'O');
+   game.placedPieces.push(piece);
+   game.board[row][col] = "o";
+}
+
+       
+/* Converts the board to a single array 
+ */
+function boardToArray() {
+   
+   var array = [];
+   
+   for (var i=0; i<board.length; i++) {
+      for (var j=0; j<board[i].length; j++) {
+         if (board[i][j] != "") {
+            array.push(board[i][j]);
+         }else {
+            array.push(i*3 + j);
+         }
+      }
+   }
+   return array;
+}
+
+
+/* Converts a move{index, score} to location{row, column}
+ */
+function convertMove(move) {
+   var loc = {};
+   
+   loc.row    = Math.floor(move.index / 3);
+   loc.column = move.index % 3;
+   return loc;
+}
+
+       
+/* Returns the list of indexes of empty spaces on the board
+ */
+function emptyIndexies(board){
+  return  board.filter(tile => tile != "o" && tile != "x");
+}
+
+
+/* Tests if the given player has won the board by checking all combinations
+ * 0 1 2
+ * 3 4 5
+ * 6 7 8 
+ */
+function gameIsWon(board, player) {
+   if ( (board[0] == player && board[1] == player && board[2] == player) ||
+        (board[3] == player && board[4] == player && board[5] == player) ||
+        (board[6] == player && board[7] == player && board[8] == player) ||
+        
+        (board[0] == player && board[3] == player && board[6] == player) ||
+        (board[1] == player && board[4] == player && board[7] == player) ||
+        (board[2] == player && board[5] == player && board[8] == player) ||
+       
+        (board[0] == player && board[4] == player && board[8] == player) ||
+        (board[2] == player && board[4] == player && board[6] == player) ) 
+   {
+      return true;
+   }
+   return false;
+}
+
+
+/* This is the minimax algorithm that recursively chooses the best move to play for the 
+ * ai by playing ahead. 
+ * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
+ */
+function minimax(newBoard, player) {
+   
+   var availSpots = emptyIndexies(newBoard);
+   
+   if (gameIsWon(newBoard, human)) {
+      return {score: -10};
+   }
+   else if (gameIsWon(newBoard, ai)) {
+      return {score:  10};
+   }
+   else if (availSpots.length == 0) {
+      return {score:   0};
+   }
+   
+   var moves = []; //Collects all the objects
+   
+   for (var i=0; i<availSpots.length; i++) {
+      
+      //Create an object for each and store the index of that spot 
+      var move = {};
+      move.index = newBoard[availSpots[i]];
+      
+      newBoard[availSpots[i]] = player; //Set the empty spot to the current player
+      
+      if (player == ai) {
+         var result = minimax(newBoard, human);
+         move.score = result.score;
+      }
+      else {
+         var result = minimax(newBoard, ai);
+         move.score = result.score;
+      }
+      
+      newBoard[availSpots[i]] = move.index; //Reset the spot to empty
+      
+      moves.push(move); //Push the spot to empty
+   }
+      
+   //If it's the ai's turn, loop over the moves and choose the one with the highest score
+   var bestMove;
+   
+   if (player == ai) {
+      var bestScore = -10000;
+      
+      for (var i=0; i<moves.length; i++) {
+         if (moves[i].score > bestScore) {
+            bestScore = moves[i].score;
+            bestMove  = i;
+         }
+      }
+   }
+   //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
+   else { 
+      var bestScore = 10000;
+      
+      for (var i=0; i<moves.length; i++) {
+         if (moves[i].score < bestScore) {
+            bestScore = moves[i].score;
+            bestMove  = i;
+         }
+      }
+   }
+   
+   //Return the chosen move(object) from the moves array
+   return moves[bestMove];
 }

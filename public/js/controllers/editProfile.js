@@ -66,6 +66,7 @@ function updateUserInfo(e)
       
                               app.username =  newUserName
                               app.battleText =  newBattleText
+                              app.img_url = newUrlVal
 
                               //updates info on firebase
                               userRef.child("username").set(newUserName); 

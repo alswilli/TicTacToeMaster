@@ -23,7 +23,7 @@ var orderChaosState = {
         game.isDraw = false
         game.turns = 0
         game.XPicked = true;
-        //game.pickedPiece = 'star'
+        //game.pickedPiece = 'X'
         
         game.PPOffset = 60;
         console.log("we PP");
@@ -58,6 +58,8 @@ var orderChaosState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
+        
+        game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
         if(typeof game.firstPlay)
         {
@@ -139,12 +141,12 @@ var orderChaosState = {
                 //initialize 2D array board to be empty strings
                 if (j == 0) {
                     game.pickPieceBoard[i][j] = square;
-                    var pieceImg = game.addSprite(square.x, square.y, 'star');
+                    var pieceImg = game.addSprite(square.x, square.y, 'X');
                     //game.placedPieces.push(pieceImg);
                 }
                 if (j == 1) {
                     game.pickPieceBoard[i][j] = square;
-                    var pieceImg = game.addSprite(square.x, square.y, 'moon');
+                    var pieceImg = game.addSprite(square.x, square.y, 'O');
                     //game.placedPieces.push(pieceImg);
                     square.alpha = 0.4; 
                 }
@@ -181,6 +183,8 @@ var orderChaosState = {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
+        if(game.multiplayer && game.checkForDoubleClick())
+            return
         // if(!game.piecePicked){
         //     game.pickPiece();
         // }
@@ -194,19 +198,20 @@ var orderChaosState = {
         //string, don't do anything
         if(game.board[indexY][indexX] != "")
             return
-           
+        if(game.multiplayer)
+            game.waiting = true
          //place either an x or o, depending on which piece is picked
         if(game.XPicked){
-            var piece = game.addSprite(sprite.x, sprite.y, 'star');
+            var piece = game.addSprite(sprite.x, sprite.y, 'X');
             game.pickedPieces.push(piece);
             game.board[indexY][indexX] = "x"
         }
         else{
-            var piece = game.addSprite(sprite.x, sprite.y, 'moon');
+            var piece = game.addSprite(sprite.x, sprite.y, 'O');
             game.pickedPieces.push(piece);
             game.board[indexY][indexX] = "o";
         }
-        
+        game.previousPiece = game.isXTurn ?  "order" : "chaos"
 
         game.updateTurnStatus(indexX, indexY)
     },
@@ -400,12 +405,12 @@ var orderChaosState = {
          if(game.isXTurn)
          {
          var coords = game.convertIndexesToCoords(row, col)
-         game.addSprite(coords[0], coords[1], 'star');
+         game.addSprite(coords[0], coords[1], 'X');
          }
          else
          {
          var coords = game.convertIndexesToCoords(row, col)
-         game.addSprite(coords[0], coords[1], 'moon');
+         game.addSprite(coords[0], coords[1], 'O');
          }
          return*/
             game.board = board
@@ -421,11 +426,11 @@ var orderChaosState = {
                 
                 var x = game.startingX + i*game.squareSize;
                 var y = game.startingY + j * game.squareSize;
-                if(game.board[j][i] === "x"){
-                    game.addSprite(x, y, 'star');
+                if(game.board[j][i] === "X"){
+                    game.addSprite(x, y, 'X');
                 }
                 if(game.board[j][i] === "o"){
-                    game.addSprite(x, y, 'moon');
+                    game.addSprite(x, y, 'O');
                 }
             }
         }

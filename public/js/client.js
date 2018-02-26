@@ -50,7 +50,9 @@ function makeClient()
      });
 
     Client.socket.on('switchTurn',function(data, coordInfo){
-         console.log("sending message to game to switch turn");
+         console.log("sending message from " + data.id + " to game to switch turn");
+        // if(!game.verifyBoard(data.board))
+          //  return
          game.updateBoard(data.board, data.id, coordInfo);
          game.synchronizeTurn(data.id, coordInfo);
     });

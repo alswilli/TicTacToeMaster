@@ -24,15 +24,20 @@ var loadState = {
         can have its own preload() function,but its easier to keep it all here
     */
     preload() {
-        game.load.image('logo', 'imgs/phaser.png');
-        game.load.image('star', 'imgs/rathalos.png');
-        game.load.image('square', 'imgs/squarew.png');
-        game.load.image('moon', 'imgs/rathian.png');
-        game.load.image('board', 'imgs/angledBoard.png');
-				game.load.image('background','imgs/background.png');
-				game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    		//game.scale.setMinMax(400, 300, 800, 600);
+        var prefix = 'imgs/'
+        if(app.gameType == "3d")
+            prefix = 'imgs/3D/'
         
+        game.load.image('logo', 'imgs/phaser.png');
+        game.load.image('X', 'imgs/rathalos.png');
+        game.load.image('square', 'imgs/squarew.png');
+        game.load.image('O', 'imgs/rathian.png');
+        game.load.image('board', 'imgs/angledBoard.png');
+				game.load.image('background','imgs/background0.png');
+				//game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.load.image('greensquare', 'imgs/greensquare.png')
+        game.load.image('square', prefix + 'square.png')
+        console.log(prefix)
     },  
     
     /*
@@ -44,6 +49,8 @@ var loadState = {
         //game.showOpponent = this.showOpponent
         game.loadOpponent = this.loadOpponent
         game.disconnectSocket = this.disconnectSocket
+        game.checkForDoubleClick = this.checkForDoubleClick
+        game.animateOpponentLeaving = this.animateOpponentLeaving
         
         game.gametype = app.gameType;
         game.userkey = app.keyValue;
@@ -53,6 +60,7 @@ var loadState = {
         game.cash = parseInt(app.money);
         game.url = app.img_url;
         console.log("in load: ", game.gametype);
+        game.opponentLeft = false;
         game.state.start('menu');
     },
     
@@ -63,7 +71,7 @@ var loadState = {
             game.state.start("waitingRoom");
         else
             game.firstPlay = true
-        
+        game.opponentLeft = true;
         $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
                                                                             'right' : '-20%'    
                                                                             });  
@@ -96,6 +104,7 @@ var loadState = {
                    $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
                                                                                        'right' : '0%'    
                                                                                        });  
+                   game.opponentLeft = false;
                    game.startMatch(data);
               })
      })
@@ -104,7 +113,34 @@ var loadState = {
     disconnectSocket()
     {
         Client.disconnect();
+    },
+    
+    checkForDoubleClick()
+    {
+        var turn
+        if(app.gameType === "orderChaos")
+            turn = game.isXTurn ?  "order" : "chaos"
+        else
+            turn = game.isXTurn ? "x" : "o"
+        if(turn === game.previousPiece)
+        {
+            console.log("you double clicking mother fucker")
+            game.isXTurn = !game.isXTurn
+            game.waiting = true
+            return true
+        }
+        else
+            return false
+    },
+    
+    animateOpponentLeaving()
+    {
+        game.opponentLeft = true;
+        $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
+                                                                            'right' : '-20%'    
+                                                                            });
     }
+    
 };
 
 
