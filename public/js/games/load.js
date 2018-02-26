@@ -35,6 +35,7 @@ var loadState = {
         game.load.image('moon', 'imgs/moon.png');
         game.load.image('board', 'imgs/angledBoard.png');
         game.load.image('greensquare', 'imgs/greensquare.png')
+        game.load.image('redsquare', 'imgs/redsquare.png')
         game.load.image('square', prefix + 'square.png')
         console.log(prefix)
     },  

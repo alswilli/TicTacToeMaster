@@ -218,6 +218,18 @@ var ultimateTTTState = {
                 }
             }
         }
+        for (var i = 1; i < 3; i++)
+        {
+            var horzLine = game.add.graphics(game.startingX, game.startingY + i*game.squareSize*3)
+            horzLine.lineStyle(6, 0xffff0, 1);
+            horzLine.lineTo(game.squareSize*9,0);
+            horzLine.endFill();
+
+            var vertLine = game.add.graphics(game.startingX + i*game.squareSize*3, game.startingY)
+            vertLine.lineStyle(6, 0xffff0, 1);
+            vertLine.lineTo(0,game.squareSize*9);
+            vertLine.endFill();
+        }
     },
     
     /*
@@ -325,7 +337,7 @@ var ultimateTTTState = {
                     console.log("lx: ", lx)
                     console.log("ly: ", ly)
                     game.bigBoardLogic[i][j] = "open"
-                    game.cursorSquares[i][j].alpha = .3
+                    game.cursorSquares[i][j].alpha = .5
                     // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 // If the click on a open spot sends you to magic board
@@ -336,7 +348,7 @@ var ultimateTTTState = {
                         for (var j = 0; j < 3; j++)
                         {
                                 game.bigBoardLogic[i][j] = "open"
-                                game.cursorSquares[i][j].alpha = .3
+                                game.cursorSquares[i][j].alpha = .5
                                 // game.cursorSquares[i][j].tint = 0xffffff
                                 if (game.magicBoardLogic[i][j] === "magic")
                                     game.cursorSquares[i][j].alpha = 0
