@@ -39,7 +39,22 @@ var ticTacState = {
         
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
-        
+
+        game.cursorSquares = []
+        for (var i=0; i < game.n; i++) {
+            game.cursorSquares[i]=new Array(game.n)
+        }  
+
+        for (var i=0; i < game.n; i++)
+        {
+            for (var j=0; j < game.n; j++)
+            {
+                console.log("HERE")
+                game.cursorSquares[i][j] = game.addSprite(game.startingX + i*game.squareSize, game.startingY + j*game.squareSize, 'redsquare')
+                game.cursorSquares[i][j].alpha = 0
+            }
+        }
+
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         //create the board on screen and makes each square clickable
@@ -146,6 +161,8 @@ var ticTacState = {
             game.previousPiece = "o"
         }
         
+        // game.cursorSquares[i][j] = game.addSprite(game.startingX + i*game.squareSize, game.startingY + j*game.squareSize, 'redsquare')
+        // game.cursorSquares[i][j].alpha = 0.5
 
         game.updateTurnStatus(indexX, indexY)
     },
@@ -153,11 +170,35 @@ var ticTacState = {
     /*
         switch current turn, and display whose turn it is
      */
-    switchTurn(){
+    switchTurn(x,y){
         console.log("switching current turn")
+        console.log("x: ", x)
+        console.log("y: ", y)
         
         game.isXTurn = !game.isXTurn
         game.turns++
+
+        for (var i = 0; i < 3; i++)
+        {
+            for (var j = 0; j < 3; j++)
+            {
+                //Normal functionality, just assign one open spot
+                if(i == x && j == y)
+                {
+                    console.log("i: ", i)
+                    console.log("j: ", j)
+                    console.log("x: ", x)
+                    console.log("y: ", y)
+                    game.cursorSquares[i][j].alpha = .5
+                    // game.cursorSquares[i][j].tint = 0xffffff
+                }
+                else
+                {
+                    game.cursorSquares[i][j].alpha = 0
+                }
+            }
+        }
+
         pieceChallenge(game.turns);
         console.log("turn count: " + game.turns)
         var turn = game.isXTurn ? "x" : "o"
@@ -185,7 +226,7 @@ var ticTacState = {
             game.displayWinner()
             console.log(board)
         }
-        game.switchTurn()
+        game.switchTurn(coordInfo.x, coordInfo.y)
     },
     
     /*
@@ -470,14 +511,14 @@ var ticTacState = {
               game.displayWinner()         
            }
            else {
-              game.switchTurn(); 
+              game.switchTurn(indexX, indexY); 
               game.waiting = true;
               console.log("indexX: "+indexX+" indexY: "+indexY);
               console.log(board);
               console.log(boardToArray());
               
               aiMakesMove();
-              game.switchTurn();
+              game.switchTurn(indexX, indexY);
               console.log(boardToArray());
               game.waiting = false;
               
@@ -490,7 +531,7 @@ var ticTacState = {
             if(game.isOver(indexX, indexY))
                 game.displayWinner()
             else
-                game.switchTurn()
+                game.switchTurn(indexX, indexY)
         }
         //if multiplayer, set waiting to true so that you can't place two pieces in one turn
         else
