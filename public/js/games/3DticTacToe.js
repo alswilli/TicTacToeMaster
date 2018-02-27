@@ -15,6 +15,10 @@ var threeDticTacState = {
     preload() {
         game.load.image('X', 'imgs/3D/X.png');
         game.load.image('O', 'imgs/3D/O.png');
+        
+            game.load.image('comet', 'imgs/comet.png');
+            game.load.image('cometTail', 'imgs/cometTail.png');
+
     },
     
     /*
@@ -23,10 +27,13 @@ var threeDticTacState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
+        
         game.boardHeight = game.cache.getImage('square').height * 4
         game.boardOffset = 15
         game.pieceWidth = 50
         game.pieceHeight = 50
+        game.squareSize = 50
+        game.boardHeightScaled = game.squareSize * 4 * 0.6
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 4
         game.isXTurn = true
@@ -56,7 +63,7 @@ var threeDticTacState = {
         //add messages that display turn status, connection statuses
         this.addTexts()
         
-        
+                
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
@@ -911,6 +918,8 @@ var threeDticTacState = {
                   game.addSprite(element.x, element.y, element.key);
         });
     },
+    
+    
     
     
     /*

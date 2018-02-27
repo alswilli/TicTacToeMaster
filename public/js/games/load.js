@@ -139,7 +139,9 @@ var loadState = {
         $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
                                                                             'right' : '-20%'    
                                                                             });
-    }
+    },
+    
+    
     
 };
 

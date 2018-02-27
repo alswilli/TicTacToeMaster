@@ -24,6 +24,8 @@ var ticTacState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
+        game.linesToAnimate = 0
+        
         game.squareSize = 115
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 3
@@ -230,7 +232,8 @@ var ticTacState = {
             game.waiting = false
         if(game.isOver(coordInfo.x, coordInfo.y))
         {
-            game.displayWinner()
+            game.waiting = true
+            //game.displayWinner()
             console.log(board)
         }
         game.switchTurn(coordInfo.x, coordInfo.y)
@@ -297,26 +300,46 @@ var ticTacState = {
         {
             gameOver = true
             game.isDraw = false
+            var lineAngle = -90
+            var startingY = game.startingX + (game.squareSize * (row)) - game.squareSize/4
+            var endingX = game.screenWidth + 100
+            game.drawWinningLine(game.startingX - 15, startingY, endingX, startingY, lineAngle, 45)
         }
-        else if(vertical.size === 1)
+        if(vertical.size === 1)
         {
             gameOver = true
             game.isDraw = false
-            //game.drawWinningLine(game.screenWidth/2, game.startingY - 15, game.screenWidth/2, 400)
+            var lineAngle = 0
+            var startingX = game.startingX + (game.squareSize * (col+1)) - game.squareSize/2
+            game.drawWinningLine(startingX, game.startingY - 15, startingX, 800, lineAngle, 45)
         }
         //if all entries in a diagonal are the same AND that entry is not blank,
         //then the game is over
-        else if(posDiagonal.size === 1 && !posDiagonal.has(""))
+        if(posDiagonal.size === 1 && !posDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            var lineAngle = -45
+            var startingX = game.startingX
+            var startingY = game.startingY + 15
+            var endingX = game.screenWidth + 100
+            var endingY = 800
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 120)
+            
         }
-        else if(negDiagonal.size === 1 && !negDiagonal.has(""))
+        if(negDiagonal.size === 1 && !negDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            
+            var lineAngle = -135
+            var startingX = game.startingX
+            var startingY = game.startingY + (game.squareSize * game.n)
+            var endingX = game.screenWidth + 100
+            var endingY = -100
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 120)
         }
-        else if(game.turns >= 8)
+        if(game.turns >= 8 && !gameOver)
         {
             gameOver = true;
             game.isDraw = true
@@ -507,7 +530,8 @@ var ticTacState = {
         if (game.vsAi) {
            console.log("updateTurnStatus: single player AI");
            if(game.isOver(indexX, indexY)) {
-              game.displayWinner()         
+               //game.displayWinner()  
+               game.waiting = true
            }
            else {
               game.switchTurn(indexX, indexY); 
@@ -528,7 +552,10 @@ var ticTacState = {
             console.log("updateTurnStatus: single player");
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
-                game.displayWinner()
+            {
+                //game.displayWinner()
+                game.waiting = true
+            }
             else
                 game.switchTurn(indexX, indexY)
         }
@@ -545,28 +572,44 @@ var ticTacState = {
         game.printBoard();
     },
     
-    drawWinningLine(startX, startY, endX, endY)
+    drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
     {
+        game.linesToAnimate++
         //var piece2 = game.addSpriteNoScale(startX, startY, 'cometTail');
         //game.add.tween(piece2.scale).to({  y: 2.7}, 500, Phaser.Easing.Linear.None, true);
         var piece = game.addSpriteNoScale(startX, startY, 'comet');
         piece.key = 'comet'
-        var tween = game.add.tween(piece).to( { y: 800 }, 1000,Phaser.Easing.Linear.None, true)
+        piece.angle = angle
+        var tween = game.add.tween(piece).to( { x: endX, y: endY }, 1000,Phaser.Easing.Linear.None, true)
         game.tstartX = startX
         game.tstartY = startY
-        tween.onComplete.add(function() { game.showLine(startX, startY); });
+        tween.onComplete.add(function() { game.showLine(startX, startY, angle, lineExtra); });
     },
     
-    showLine(startX, startY)
+    showLine(startX, startY, angle, lineExtra)
     {
         var piece2 = game.addSpriteNoScale(startX , startY, 'cometTail');
         piece2.key = 'cometTail'
-        piece2.height = game.squareSize*3 + 30
+        piece2.height = game.squareSize*3 + lineExtra
+        piece2.angle = angle
         console.log(startX + "," + startY)
         //console.log(this)
         piece2.alpha = 0;
+        piece2.angle = angle
+        piece2.lineExtra = lineExtra
         //console.log("complete tween")
+        
         var tween = game.add.tween(piece2).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+        //var tween = game.add.tween(line).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(game.completeDraw)
+    },
+
+    
+    completeDraw()
+    {
+        game.linesToAnimate--
+        if(game.linesToAnimate === 0)
+            game.displayWinner()
     },
     
     showSprites()
@@ -574,12 +617,14 @@ var ticTacState = {
         game.endingBoard.forEach(function(element) 
         {
 
-             if(element.key != 'text' && element.key != 'cometTail' )
+             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare')
                 game.addSprite(element.x, element.y, element.key);
              else if(element.key === 'cometTail')
              {
                 var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
-                cometTail.height = game.squareSize*3 + 30
+                cometTail.height = game.squareSize*3 + element.lineExtra
+                cometTail.angle = element.angle
+                                 
              }
          });
     },
@@ -593,6 +638,7 @@ var ticTacState = {
      */
     assignFunctions()
     {
+        game.completeDraw = this.completeDraw
         game.showSprites = this.showSprites
         game.showLine = this.showLine
         game.makeBoardOnScreen = this.makeBoardOnScreen;

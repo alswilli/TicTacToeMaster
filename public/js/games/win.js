@@ -20,7 +20,7 @@ var winState = {
         else
         {
             game.endingBoard.forEach(function(element) {
-                                     if(element.key != 'text')
+                                     if(element.key != 'text' && element.key != 'redsquare')
                                      game.addSprite(element.x, element.y, element.key);
                                      });
             }

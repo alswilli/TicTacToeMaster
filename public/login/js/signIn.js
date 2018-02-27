@@ -53,7 +53,7 @@ $(document).ready(function(){
                     var img = (snapshot.val().image);
                     console.log("Image: ", img);
                     cashMoney = (snapshot.val().cash);
-                                                 
+                                                                                 
                     firebase.storage().ref(img).getDownloadURL().then(function(url) {
                         urlVal = url;
                         sessionStorage.setItem("name", nameOfUser)
