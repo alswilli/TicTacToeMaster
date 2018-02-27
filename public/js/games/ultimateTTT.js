@@ -239,19 +239,10 @@ var ultimateTTTState = {
                 }
             }
         }
-        for (var i = 1; i < 3; i++)
-        {
-            var horzLine = game.add.graphics(game.startingX, game.startingY + i*game.squareSize*3)
-            horzLine.lineStyle(6, 0xffff0, 1);
-            horzLine.lineTo(game.squareSize*9,0);
-            horzLine.endFill();
-
-            var vertLine = game.add.graphics(game.startingX + i*game.squareSize*3, game.startingY)
-            vertLine.lineStyle(6, 0xffff0, 1);
-            vertLine.lineTo(0,game.squareSize*9);
-            vertLine.endFill();
-        }
+        game.drawLines()
     },
+    
+    
     
     /*
         places a piece on an empty square, either x or o depending whose turn it is
@@ -656,6 +647,7 @@ var ultimateTTTState = {
             // var bigPiece2 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 + game.squareSize*3/2 - game.squareSize*1/3, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'moon', game.squareSize*1.8, game.squareSize*1.8)
             // var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 - game.squareSize*1/5, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'star', game.squareSize*1.8, game.squareSize*1.8)
             var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'poopemoji', game.squareSize*3, game.squareSize*3)
+            bigPiece1.big = true
             game.bigPlacedPieces.push(bigPiece1); // might have broken the draw logic
             // game.board[bRow][bCol] = 'Draw'
         }
@@ -663,6 +655,7 @@ var ultimateTTTState = {
         {
             // var bigPiece = game.addSprite(bCol, bRow, xSprite); //put in middle of display? also needs resizaing
             var bigPiece = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'star', game.squareSize*3, game.squareSize*3)
+            bigPiece.big = true
             game.bigPlacedPieces.push(bigPiece);
             game.board[bRow][bCol] = "x"
         }
@@ -670,6 +663,7 @@ var ultimateTTTState = {
             // var bigPiece = game.addSprite(bCol, bRow, 'moon'); //put in middle of display? also needs resizing
             var bigPiece = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'moon', game.squareSize*3, game.squareSize*3)
             game.bigPlacedPieces.push(bigPiece);
+            bigPiece.big = true
             game.board[bRow][bCol] = "o";
         }
         
@@ -758,19 +752,23 @@ var ultimateTTTState = {
                 var by = game.startingY + j * game.squareSize*3;
                 if(game.board[j][i] === "x"){
                     // game.addSprite(x, y, 'star'); // needs to change to big logic
-                    game.addSpriteWithWidth(bx, by, 'star', game.squareSize*3, game.squareSize*3)
+                    var bigPiece = game.addSpriteWithWidth(bx, by, 'star', game.squareSize*3, game.squareSize*3)
+                    bigPiece.big = true
                 }
                 if(game.board[j][i] === "o"){
                     // game.addSprite(x, y, 'moon');
-                    game.addSpriteWithWidth(bx, by, 'moon', game.squareSize*3, game.squareSize*3)
+                    var bigPiece = game.addSpriteWithWidth(bx, by, 'moon', game.squareSize*3, game.squareSize*3)
+                    bigPiece.big
                 }
                 // Needs draw logic
                 if (game.board[j][i] === 'Draw')
                 {
                     // I think a poop emoji image would be best here
                     // var bigPiece = game.addDrawSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'star', 'moon', game.squareSize*3, game.squareSize*3)
-                    var bigPiece2 = game.addSpriteWithWidth(bx + game.squareSize*3/2 - game.squareSize*1/3, by + game.squareSize*1/2, 'moon', game.squareSize*1.8, game.squareSize*1.8)
-                    var bigPiece1 = game.addSpriteWithWidth(bx - game.squareSize*1/5, by + game.squareSize*1/2, 'star', game.squareSize*1.8, game.squareSize*1.8)
+                    
+                    var bigPiece1 = game.addSpriteWithWidth(bx, by, 'poopemoji', game.squareSize*3, game.squareSize*3)
+                    bigPiece1.big = true
+                    game.bigPlacedPieces.push(bigPiece1);
                 }
 
                 for (var k=0; k < game.n; k++) {
@@ -928,6 +926,34 @@ var ultimateTTTState = {
         game.printBoard();
     },
     
+    rescaleSprites()
+    {
+        
+        game.endingBoard.forEach(function(element) {
+             if(element.key != 'text' && element.key != 'redsquare' && !element.big)
+                    game.addSprite(element.x, element.y, element.key);
+             else if(element.big)
+                    game.addSpriteWithWidth(element.x, element.y, element.key, game.squareSize*3, game.squareSize*3)         
+         });
+        game.drawLines()
+    },
+    
+    drawLines()
+    {
+        for (var i = 1; i < 3; i++)
+        {
+            var horzLine = game.add.graphics(game.startingX, game.startingY + i*game.squareSize*3)
+            horzLine.lineStyle(6, 0xffff0, 1);
+            horzLine.lineTo(game.squareSize*9,0);
+            horzLine.endFill();
+            
+            var vertLine = game.add.graphics(game.startingX + i*game.squareSize*3, game.startingY)
+            vertLine.lineStyle(6, 0xffff0, 1);
+            vertLine.lineTo(0,game.squareSize*9);
+            vertLine.endFill();
+        }
+    },
+    
     
     
     /*
@@ -937,6 +963,8 @@ var ultimateTTTState = {
      */
     assignFunctions()
     {
+        game.drawLines = this.drawLines
+        game.rescaleSprites = this.rescaleSprites
         game.makeBoardOnScreen = this.makeBoardOnScreen;
         game.switchTurn = this.switchTurn;
         game.placePiece = this.placePiece

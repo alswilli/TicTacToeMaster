@@ -13,7 +13,7 @@ var winState = {
          state, so we have to save what the board looked like when the game ended so 
          it can be displayed in this winState
          */
-        if(app.gameType == "3d")
+        if(app.gameType == "3d" || app.gameType === "ultimate")
             game.rescaleSprites()
         else if(app.gameType == "original")
             game.showSprites()
