@@ -21,6 +21,7 @@ $(document).ready(function(){
  var battleText;
  var cashMoney;
  var urlVal;
+	var selected;
 
  //Login
  $('#login').on('click', function (e)
@@ -53,6 +54,8 @@ $(document).ready(function(){
                     var img = (snapshot.val().image);
                     console.log("Image: ", img);
                     cashMoney = (snapshot.val().cash);
+										console.log("Selected Customization: ", img);
+                    selected = (snapshot.val().selected);
                                                  
                     firebase.storage().ref(img).getDownloadURL().then(function(url) {
                         urlVal = url;
@@ -62,6 +65,7 @@ $(document).ready(function(){
                         sessionStorage.setItem("cash", cashMoney)
                         sessionStorage.setItem("picUrl", urlVal)
                         sessionStorage.setItem("imageName", null)
+												sessionStorage.setItem("selectedList",selected)
                         window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
                         console.log("hola");
                     })
