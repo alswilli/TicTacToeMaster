@@ -198,7 +198,7 @@ var ticTacState = {
                     console.log("j: ", j)
                     console.log("x: ", x)
                     console.log("y: ", y)
-                    game.cursorSquares[i][j].alpha = .5
+                    game.cursorSquares[i][j].alpha = .7
                     // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 else
@@ -708,8 +708,37 @@ var ai    = "o";
 function aiMakesMove() {
    var boardArr = boardToArray();
    var move = minimax(boardArr, ai);
+
+   var newBoardArr = spliceBoard(boardArr);
+
+   // Set game difficutly probability
+   if (game.difficulty == 'easy') {
+    var actualMove = (Math.random() < 0.3) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    console.log("EASY MODE")
+   }
+   else if (game.difficulty == 'medium') {
+    var actualMove = (Math.random() < 0.6) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    console.log("MEDIUM MODE")
+   }
+   else if (game.difficulty == 'hard') {
+    var actualMove = (Math.random() < 0.9) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    console.log("HARD MODE")   
+   }
+   console.log("MOVE: ", move)
+   console.log("ACTUAL MOVE: ", actualMove)
    
-   var convertedMove = convertMove(move); 
+   //    var convertedMove = convertMove(move);
+   if (actualMove == move)
+   {
+    console.log("a")
+    var convertedMove = convertMove(actualMove);
+   } 
+   else
+   {
+    console.log("b")
+    var convertedMove = convertRandMove(actualMove);   
+   } 
+//    console.log("AI's move: ", move);
    console.log("AI's move: ", move);
    console.log("convertedMove: ", convertedMove);
    
@@ -720,16 +749,29 @@ function aiMakesMove() {
    if ( gameIsWon(boardArr, human) || gameIsWon(boardArr, ai) ) {
       game.displayWinner();
    }
-} 
+}
+
+function spliceBoard(boardArr) {
+    var array = [];
+
+   for (var i=0; i < boardArr.length; i++) {
+         if (boardArr[i] != "x" && boardArr[i] != "o") {
+            array.push(boardArr[i]);
+         }
+   }
+
+   return array;
+}
 
  
 /* Draws a piece at the given index 
  */
 function placePieceAt(row , col) {
    console.log(game.screenWidth);
-   var x = 485 + (col * 115);
-   var y = 115   * (row + 1);
-   var piece = game.addSprite(x, y, 'moon');
+//    var x = 485 + (col * 115);
+//    var y = 115   * (row + 1);
+   var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'moon');
+//    var piece = game.addSprite(x, y, 'moon');
    game.placedPieces.push(piece);
    game.board[row][col] = "o";
 }
@@ -763,6 +805,16 @@ function convertMove(move) {
    loc.column = move.index % 3;
    return loc;
 }
+
+/* Converts a "arrIndex" to location{row, column}
+ */
+function convertRandMove(move) {
+    var loc = {};
+    
+    loc.row    = Math.floor(move / 3);
+    loc.column = move % 3;
+    return loc;
+ }
 
        
 /* Returns the list of indexes of empty spaces on the board
