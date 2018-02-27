@@ -653,8 +653,9 @@ var ultimateTTTState = {
         {
             // I think a poop emoji image would be best here
             // var bigPiece = game.addDrawSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'star', 'moon', game.squareSize*3, game.squareSize*3)
-            var bigPiece2 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 + game.squareSize*3/2 - game.squareSize*1/3, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'moon', game.squareSize*1.8, game.squareSize*1.8)
-            var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 - game.squareSize*1/5, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'star', game.squareSize*1.8, game.squareSize*1.8)
+            // var bigPiece2 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 + game.squareSize*3/2 - game.squareSize*1/3, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'moon', game.squareSize*1.8, game.squareSize*1.8)
+            // var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 - game.squareSize*1/5, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'star', game.squareSize*1.8, game.squareSize*1.8)
+            var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'poopemoji', game.squareSize*3, game.squareSize*3)
             game.bigPlacedPieces.push(bigPiece1); // might have broken the draw logic
             // game.board[bRow][bCol] = 'Draw'
         }
