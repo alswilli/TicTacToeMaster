@@ -115,7 +115,20 @@ var ultimateTTTState = {
         game.cursorSquares = []
         for (var i=0; i < game.n; i++) {
             game.cursorSquares[i]=new Array(game.n)
-        }  
+        } 
+        
+        game.redSquares = []
+        for (var i=0; i < game.n; i++) {
+            game.redSquares[i]=new Array(game.n)
+            for (var j=0; j < game.n; j++)
+            {
+                game.redSquares[i][j]=new Array(game.n)
+                for (var k=0; k < game.n; k++)
+                {
+                    game.redSquares[i][j][k]=new Array(game.n)
+                }
+            }
+        } 
 
         for (var i=0; i < game.n; i++)
         {
@@ -123,6 +136,14 @@ var ultimateTTTState = {
             {
                 game.cursorSquares[i][j] = game.addSpriteWithWidth(game.startingX + i*game.squareSize*3, game.startingY + j*game.squareSize*3, 'greensquare', game.squareSize*3, game.squareSize*3)
                 game.cursorSquares[i][j].alpha = 0
+                for (var k=0; k < game.n; k++)
+                {
+                    for (var l=0; l < game.n; l++)
+                    {
+                        game.redSquares[i][j][k][l] = game.addSprite(game.startingX + i*game.squareSize*3 + k*game.squareSize, game.startingY + j * game.squareSize*3 + l*game.squareSize, 'redsquare')
+                        game.redSquares[i][j][k][l].alpha = 0
+                    }
+                }
             }
         }
         game.firstTime = false
@@ -330,6 +351,22 @@ var ultimateTTTState = {
 
         // Set Logic for piece placement next time around (needs alpha changes)
         // console.log("BOARD LOGIC B4: ", game.bigBoardLogic)
+        for (var i = 0; i < 3; i++)
+        {
+            for (var j = 0; j < 3; j++)
+            {
+                for (var k = 0; k < 3; k++)
+                {
+                    for (var l = 0; l < 3; l++)
+                    {
+                        if(i == x && j == y && k == lx && l == ly)
+                            game.redSquares[i][j][k][l].alpha = .7
+                        else
+                            game.redSquares[i][j][k][l].alpha = 0
+                    }
+                }
+            }
+        }
 
         for (var i = 0; i < 3; i++)
         {
@@ -343,7 +380,7 @@ var ultimateTTTState = {
                     console.log("lx: ", lx)
                     console.log("ly: ", ly)
                     game.bigBoardLogic[i][j] = "open"
-                    game.cursorSquares[i][j].alpha = .5
+                    game.cursorSquares[i][j].alpha = .7
                     // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 // If the click on a open spot sends you to magic board
@@ -354,7 +391,7 @@ var ultimateTTTState = {
                         for (var j = 0; j < 3; j++)
                         {
                                 game.bigBoardLogic[i][j] = "open"
-                                game.cursorSquares[i][j].alpha = .5
+                                game.cursorSquares[i][j].alpha = .7
                                 // game.cursorSquares[i][j].tint = 0xffffff
                                 if (game.magicBoardLogic[i][j] === "magic")
                                     game.cursorSquares[i][j].alpha = 0
@@ -621,9 +658,10 @@ var ultimateTTTState = {
         if (game.board[bRow][bCol] === 'Draw')
         {
             // I think a poop emoji image would be best here
-            // var bigPiece = game.addDrawSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'X', 'O', game.squareSize*3, game.squareSize*3)
-            var bigPiece2 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 + game.squareSize*3/2 - game.squareSize*1/3, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'O', game.squareSize*1.8, game.squareSize*1.8)
-            var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 - game.squareSize*1/5, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'X', game.squareSize*1.8, game.squareSize*1.8)
+            // var bigPiece = game.addDrawSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'star', 'moon', game.squareSize*3, game.squareSize*3)
+            // var bigPiece2 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 + game.squareSize*3/2 - game.squareSize*1/3, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'moon', game.squareSize*1.8, game.squareSize*1.8)
+            // var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 - game.squareSize*1/5, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'star', game.squareSize*1.8, game.squareSize*1.8)
+            var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'poopemoji', game.squareSize*3, game.squareSize*3)
             game.bigPlacedPieces.push(bigPiece1); // might have broken the draw logic
             // game.board[bRow][bCol] = 'Draw'
         }

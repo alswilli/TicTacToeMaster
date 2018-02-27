@@ -41,7 +41,8 @@ var menuState = {
            game.addMenuOption('SinglePlayer', 200, function () {
                            game.singleplayer = true;
                            game.vsAi = true;
-                           game.state.start("ticTac");
+                        //    game.state.start("ticTac");
+                           game.state.start("gameDif"); 
                            });
         }
         game.addMenuOption('Local Multiplayer', 200, function () {

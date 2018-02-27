@@ -32,12 +32,12 @@ var loadState = {
 				game.load.image('square', 'imgs/board'+app.selected.charAt(0)+'.png');
 				game.load.image('O', 'imgs/pieceO'+app.selected.charAt(1)+'.png');
 				game.load.image('background','imgs/background'+app.selected.charAt(2)+'.png');
-				console.log('boardIndex: '+app.selected.charAt(0)+'piece:'+app.selected.charAt(1)+'back:'+app.selected.charAt(2));
         game.load.image('logo', 'imgs/phaser.png');
         game.load.image('board', 'imgs/angledBoard.png');
-				//game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.load.image('greensquare', 'imgs/greensquare.png')
         game.load.image('redsquare', 'imgs/redsquare.png')
+        game.load.image('poopemoji', 'imgs/poop.png')
+        game.load.image('square', prefix + 'square.png')
         console.log(prefix)
     },  
     

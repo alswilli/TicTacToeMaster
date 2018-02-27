@@ -23,6 +23,7 @@ function startGame()
     //corresponding .js files, i.e loadState is in load.js
     game.state.add('load', loadState)
     game.state.add('menu', menuState)
+    game.state.add('gameDif', gameDifficultyState)
     
     game.firstPlay = true
     
