@@ -189,7 +189,7 @@ var ticTacState = {
                     console.log("j: ", j)
                     console.log("x: ", x)
                     console.log("y: ", y)
-                    game.cursorSquares[i][j].alpha = .5
+                    game.cursorSquares[i][j].alpha = .7
                     // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 else
