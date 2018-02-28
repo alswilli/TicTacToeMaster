@@ -26,12 +26,12 @@ var ultimateTTTState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
-				//create background
-				var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
-    		background.anchor.set(0.5);
-				background.width = game.screenWidth;
+		//create background
+		var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
         background.height = 700;
-			
+        
         game.boardHeight = 102
         game.boardOffset = 15
         game.pieceWidth = 38
@@ -380,7 +380,7 @@ var ultimateTTTState = {
                     console.log("lx: ", lx)
                     console.log("ly: ", ly)
                     game.bigBoardLogic[i][j] = "open"
-                    game.cursorSquares[i][j].alpha = .7
+                    game.cursorSquares[i][j].alpha = .7 
                     // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 // If the click on a open spot sends you to magic board
@@ -391,7 +391,7 @@ var ultimateTTTState = {
                         for (var j = 0; j < 3; j++)
                         {
                                 game.bigBoardLogic[i][j] = "open"
-                                game.cursorSquares[i][j].alpha = .7
+                                game.cursorSquares[i][j].alpha = .7 
                                 // game.cursorSquares[i][j].tint = 0xffffff
                                 if (game.magicBoardLogic[i][j] === "magic")
                                     game.cursorSquares[i][j].alpha = 0
