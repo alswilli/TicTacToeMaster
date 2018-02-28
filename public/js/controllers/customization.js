@@ -231,6 +231,7 @@ function changeSelection(buttonId){
     }else{
         console.log("buttonId error: incorrectId");
     }
+		app.selected=selectedList;
     //updates the change to firebase
     selectedRef.set(
                     selectedList

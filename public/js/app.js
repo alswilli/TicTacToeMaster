@@ -59,12 +59,13 @@ var app = angular.module('TicTacToeApp', ['ngRoute']).config(function ($routePro
 //save info in session storage if user logs out, reloads page, or closes page without loggin out
 window.onbeforeunload = saveSessionInfo
 //load values from sessionStorage
-app.keyValue = sessionStorage.getItem("userkey")
+app.keyValue = sessionStorage.getItem("userkey");
 app.username = sessionStorage.getItem("name");
 app.img_url = sessionStorage.getItem("picUrl");
 app.battleText = sessionStorage.getItem("battleText");
 app.money = sessionStorage.getItem("cash");
 app.gameType = sessionStorage.getItem("gametype");
+app.selected = sessionStorage.getItem("selectedList");
 userRef = firebase.database().ref('/users/' + app.keyValue);
 //the controller for the sidebar. attaches a callback that updates the cash, username, and battletext on screen
 app.controller('SidebarCtrl', function($scope) {
@@ -110,12 +111,13 @@ function setSelected(selectedId)
 function saveSessionInfo()
 {
     console.log("beforeonunload")
-    sessionStorage.setItem("userkey",  app.keyValue)
-    sessionStorage.setItem("name", app.username)
+    sessionStorage.setItem("userkey",  app.keyValue);
+    sessionStorage.setItem("name", app.username);
     sessionStorage.setItem("picUrl", app.img_url);
     sessionStorage.setItem("battleText", app.battleText);
     sessionStorage.setItem("cash",app.money);
     sessionStorage.setItem("gametype", app.gameType);
+		sessionStorage.setItem("selectedList",app.selected);
 }
 
 /*

@@ -13,11 +13,8 @@ var threeDticTacState = {
     },
     
     preload() {
-        game.load.image('X', 'imgs/3D/X.png');
-        game.load.image('O', 'imgs/3D/O.png');
-        
-        game.load.image('redsquare', 'imgs/3D/redsquare.png');
-        game.load.image('greensquare', 'imgs/3D/greensquare.png');
+        //game.load.image('redsquare', 'imgs/3D/redsquare.png');
+        //game.load.image('greensquare', 'imgs/3D/greensquare.png');
 
     },
     
@@ -26,7 +23,10 @@ var threeDticTacState = {
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
-        
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
         
         game.boardHeight = game.cache.getImage('square').height * 4
         game.boardOffset = 15
@@ -1013,7 +1013,7 @@ var threeDticTacState = {
         game.makeBoardOnScreenBetter('square', 1)
         game.makeBoardOnScreenBetter('greensquare', 0)
         game.endingBoard.forEach(function(element) {
-            if(element.key != 'text' && element.key != 'square' && element.key != 'redsquare')
+            if(element.key != 'text' && element.key != 'square' && element.key != 'redsquare' && element.key != 'background')
                   game.addSprite(element.x, element.y, element.key);
         });
     },

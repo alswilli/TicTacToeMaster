@@ -24,8 +24,16 @@ var ticTacState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
+
         game.linesToAnimate = 0
         
+
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
+			
+
         game.squareSize = 115
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 3
@@ -158,13 +166,13 @@ var ticTacState = {
          //place either an x or o, depending whose turn it is
         if(game.isXTurn)
         {
-            var piece = game.addSprite(sprite.x, sprite.y, 'star');
+            var piece = game.addSprite(sprite.x, sprite.y, 'X');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "x"
             game.previousPiece = "x"
         }
         else{
-            var piece = game.addSprite(sprite.x, sprite.y, 'moon');
+            var piece = game.addSprite(sprite.x, sprite.y, 'O');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "o";
             game.previousPiece = "o"
@@ -390,7 +398,28 @@ var ticTacState = {
     {
         if(game.state.current==="win")
             return
-        
+
+        /*if(game.id === id)
+            return
+        //updated the game board
+        game.board = board
+        console.log(board)
+            
+        var row = coordInfo.x
+        var col = coordInfo.y
+            
+        if(game.isXTurn)
+        {
+            var coords = game.convertIndexesToCoords(row, col)
+            game.addSprite(coords[0], coords[1], 'X');
+        }
+        else
+        {
+            var coords = game.convertIndexesToCoords(row, col)
+            game.addSprite(coords[0], coords[1], 'O');
+        }
+        return*/
+
         game.board = board
         //rub out pieces, so we don't draw multiple on top of each other
         for(var i in game.placedPieces)
@@ -405,10 +434,10 @@ var ticTacState = {
                 var x = game.startingX + i*game.squareSize;
                 var y = game.startingY + j * game.squareSize;
                 if(game.board[j][i] === "x"){
-                    game.addSprite(x, y, 'star');
+                    game.addSprite(x, y, 'X');
                 }
                 if(game.board[j][i] === "o"){
-                    game.addSprite(x, y, 'moon');
+                    game.addSprite(x, y, 'O');
                 }
             }
         }
@@ -617,6 +646,7 @@ var ticTacState = {
         game.endingBoard.forEach(function(element) 
         {
 
+            console.log(element)
              if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare')
                 game.addSprite(element.x, element.y, element.key);
              else if(element.key === 'cometTail')
@@ -770,7 +800,7 @@ function placePieceAt(row , col) {
    console.log(game.screenWidth);
 //    var x = 485 + (col * 115);
 //    var y = 115   * (row + 1);
-   var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'moon');
+   var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'O');
 //    var piece = game.addSprite(x, y, 'moon');
    game.placedPieces.push(piece);
    game.board[row][col] = "o";

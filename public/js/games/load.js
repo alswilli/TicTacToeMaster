@@ -2,7 +2,6 @@
     This is where all the imgs are loaded, this doesn't need to be a whole
     separate file but will make the code a lot cleaner once we have more images
 */
-// Initialize Firebase
 
 var keyValue;
 var nameOfUser;
@@ -16,7 +15,6 @@ console.log(argumentVals);
 
 
 
-
 var loadState = {
   
     /*
@@ -27,16 +25,25 @@ var loadState = {
         var prefix = 'imgs/'
         if(app.gameType == "3d")
             prefix = 'imgs/3D/'
-         
-            
-        //game.load.image('logo', 'imgs/piece' + piceNum + '.png');
-        game.load.image('star', 'imgs/star.png');
-        //game.load.image('square', 'imgs/square.png');
-        game.load.image('moon', 'imgs/moon.png');
+
+
+        var boardIndex;
+        var pieceIndex;
+        var backgroundIndex;
+
+
+        game.load.image('X', prefix + 'pieceX'+app.selected.charAt(1)+'.png');
+        game.load.image('square', prefix + 'board'+app.selected.charAt(0)+'.png');
+        game.load.image('O', prefix + 'pieceO'+app.selected.charAt(1)+'.png');
+        game.load.image('background', 'imgs/background'+app.selected.charAt(2)+'.png');
+        
+        game.load.image('logo', 'imgs/phaser.png');
+
         game.load.image('board', 'imgs/angledBoard.png');
-        game.load.image('greensquare', 'imgs/greensquare.png')
-        game.load.image('redsquare', 'imgs/redsquare.png')
+        game.load.image('greensquare', prefix + 'greensquare.png')
+        game.load.image('redsquare', prefix + 'redsquare.png')
         game.load.image('poopemoji', 'imgs/poop.png')
+        
         game.load.image('square', prefix + 'square.png')
         console.log(prefix)
     },  
