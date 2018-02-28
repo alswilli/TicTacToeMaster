@@ -309,7 +309,7 @@ var ticTacState = {
             gameOver = true
             game.isDraw = false
             var lineAngle = -90
-            var startingY = game.startingX + (game.squareSize * (row)) - game.squareSize/4
+            var startingY = game.startingX + (game.squareSize * (row)) - game.squareSize/2 - 15
             var endingX = game.screenWidth + 100
             game.drawWinningLine(game.startingX - 15, startingY, endingX, startingY, lineAngle, 45)
         }
