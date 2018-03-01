@@ -46,14 +46,16 @@ var menuState = {
                            });
         }
 
-        if (game.gametype == "3d") {
-            game.addMenuOption('SinglePlayer', 200, function () {
-                            game.singleplayer = true;
-                            game.vs3DAi = true;
-                         //    game.state.start("ticTac");
-                            game.state.start("gameDif"); 
-                            });
-         }
+        game.vs3DAi = false
+
+        // if (game.gametype == "3d") {
+        //     game.addMenuOption('SinglePlayer', 200, function () {
+        //                     game.singleplayer = true;
+        //                     game.vs3DAi = true;
+        //                  //    game.state.start("ticTac");
+        //                     game.state.start("gameDif"); 
+        //                     });
+        //  }
         game.addMenuOption('Local Multiplayer', 200, function () {
                            game.singleplayer = true
                            game.state.start("ticTac");

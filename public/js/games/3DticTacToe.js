@@ -979,294 +979,294 @@ var threeDticTacState = {
     
 };
 
-/****************************************** 3D Tic Tac Toe AI ************************/
-var human = "x";
-var ai    = "o";
+// /****************************************** 3D Tic Tac Toe AI ************************/
+// var human = "x";
+// var ai    = "o";
 
        
-/* This is called when for the ai to make a move.
- * Converts the board to a single array for minimax to calculate where to play a move.
- * Then we place the move there for the AI.
- * We convert the board back to a single array and check for the winning condition.
- */
-function threeDaiMakesMove() {
-   var boardArr = threeDboardToArray();
-   var move = threeDminimax(boardArr, ai);
+// /* This is called when for the ai to make a move.
+//  * Converts the board to a single array for minimax to calculate where to play a move.
+//  * Then we place the move there for the AI.
+//  * We convert the board back to a single array and check for the winning condition.
+//  */
+// function threeDaiMakesMove() {
+//    var boardArr = threeDboardToArray();
+//    var move = threeDminimax(boardArr, ai);
 
-   var newBoardArr = threeDspliceBoard(boardArr);
+//    var newBoardArr = threeDspliceBoard(boardArr);
 
-   // Set game difficutly probability
-   if (game.difficulty == 'easy') {
-    var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-    console.log("EASY MODE")
-   }
-   else if (game.difficulty == 'medium') {
-    var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-    console.log("MEDIUM MODE")
-   }
-   else if (game.difficulty == 'hard') {
-    var actualMove = (Math.random() < 0.9) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-    console.log("HARD MODE")   
-   }
-   console.log("MOVE: ", move)
-   console.log("ACTUAL MOVE: ", actualMove)
+//    // Set game difficutly probability
+//    if (game.difficulty == 'easy') {
+//     var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     console.log("EASY MODE")
+//    }
+//    else if (game.difficulty == 'medium') {
+//     var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     console.log("MEDIUM MODE")
+//    }
+//    else if (game.difficulty == 'hard') {
+//     var actualMove = (Math.random() < 0.9) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     console.log("HARD MODE")   
+//    }
+//    console.log("MOVE: ", move)
+//    console.log("ACTUAL MOVE: ", actualMove)
    
-   //    var convertedMove = convertMove(move);
-   if (actualMove == move)
-   {
-    console.log("a")
-    var convertedMove = threeDconvertMove(actualMove);
-   } 
-   else
-   {
-    console.log("b")
-    var convertedMove = threeDconvertRandMove(actualMove);   
-   } 
+//    //    var convertedMove = convertMove(move);
+//    if (actualMove == move)
+//    {
+//     console.log("a")
+//     var convertedMove = threeDconvertMove(actualMove);
+//    } 
+//    else
+//    {
+//     console.log("b")
+//     var convertedMove = threeDconvertRandMove(actualMove);   
+//    } 
+// //    console.log("AI's move: ", move);
 //    console.log("AI's move: ", move);
-   console.log("AI's move: ", move);
-   console.log("convertedMove: ", convertedMove);
+//    console.log("convertedMove: ", convertedMove);
    
-   threeDplacePieceAt(convertedMove.row, convertedMove.column);
+//    threeDplacePieceAt(convertedMove.row, convertedMove.column);
    
-   boardArr = threeDboardToArray();
+//    boardArr = threeDboardToArray();
 
-   if ( threeDgameIsWon(boardArr, human) || threeDgameIsWon(boardArr, ai) ) {
-      game.displayWinner();
-   }
-}
+//    if ( threeDgameIsWon(boardArr, human) || threeDgameIsWon(boardArr, ai) ) {
+//       game.displayWinner();
+//    }
+// }
 
-function threeDspliceBoard(boardArr) {
-    var array = [];
+// function threeDspliceBoard(boardArr) {
+//     var array = [];
 
-   for (var i=0; i < boardArr.length; i++) {
-         if (boardArr[i] != "x" && boardArr[i] != "o") {
-            array.push(boardArr[i]);
-         }
-   }
+//    for (var i=0; i < boardArr.length; i++) {
+//          if (boardArr[i] != "x" && boardArr[i] != "o") {
+//             array.push(boardArr[i]);
+//          }
+//    }
 
-   return array;
-}
+//    return array;
+// }
 
  
-/* Draws a piece at the given index 
- */
-function threeDplacePieceAt(row , col) {
-   console.log(game.screenWidth);
-//    var x = 485 + (col * 115);
-//    var y = 115   * (row + 1);
-   var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'moon');
-//    var piece = game.addSprite(x, y, 'moon');
-   game.placedPieces.push(piece);
-   game.board[row][col] = "o";
-}
+// /* Draws a piece at the given index 
+//  */
+// function threeDplacePieceAt(row , col) {
+//    console.log(game.screenWidth);
+// //    var x = 485 + (col * 115);
+// //    var y = 115   * (row + 1);
+//    var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'moon');
+// //    var piece = game.addSprite(x, y, 'moon');
+//    game.placedPieces.push(piece);
+//    game.board[row][col] = "o";
+// }
 
        
-/* Converts the board to a single array 
- */
-function threeDboardToArray() {
+// /* Converts the board to a single array 
+//  */
+// function threeDboardToArray() {
    
-   var array = [];
+//    var array = [];
 
-    for (var j=0; j<3; j++) {
-      for (var k=0; k<3; k++){
-       if (game.board[0][j][k] != "") {
-          array.push(game.board[0][j][k]);
-       }else {
-          array.push(0*3 + j*3 + k);
-       }
-       console.log ("BOARD ARRAY: " + (j*3 + k), game.board[0][j][k])
-      }
+//     for (var j=0; j<3; j++) {
+//       for (var k=0; k<3; k++){
+//        if (game.board[0][j][k] != "") {
+//           array.push(game.board[0][j][k]);
+//        }else {
+//           array.push(0*3 + j*3 + k);
+//        }
+//        console.log ("BOARD ARRAY: " + (j*3 + k), game.board[0][j][k])
+//       }
 
-      alert("POOP")
- }
+//       alert("POOP")
+//  }
    
-//    for (var i=0; i<4; i++) {
-//       for (var j=0; j<4; j++) {
-//         for (var k=0; k<4; k++){
-//          if (board[i][j][k] != "") {
-//             array.push(board[i][j][k]);
-//          }else {
-//             array.push(i*3 + j*3 + k);
+// //    for (var i=0; i<4; i++) {
+// //       for (var j=0; j<4; j++) {
+// //         for (var k=0; k<4; k++){
+// //          if (board[i][j][k] != "") {
+// //             array.push(board[i][j][k]);
+// //          }else {
+// //             array.push(i*3 + j*3 + k);
+// //          }
+// //         }
+// //       }
+// //    }
+// //    console.log ("BOARD ARRAY: ", array)
+//    return array;
+// }
+
+
+// /* Converts a move{index, score} to location{row, column}
+//  */
+// function threeDconvertMove(move) {
+//    var loc = {};
+   
+//    loc.row    = Math.floor(move.index / 3);
+//    loc.column = move.index % 3;
+//    return loc;
+// }
+
+// /* Converts a "arrIndex" to location{row, column}
+//  */
+// function threeDconvertRandMove(move) {
+//     var loc = {};
+    
+//     loc.row    = Math.floor(move / 3);
+//     loc.column = move % 3;
+//     return loc;
+//  }
+
+       
+// /* Returns the list of indexes of empty spaces on the board
+//  */
+// function threeDemptyIndexies(board){
+//   return  board.filter(tile => tile != "o" && tile != "x");
+// }
+
+
+// /* Tests if the given player has won the board by checking all combinations
+//  * 0 1 2
+//  * 3 4 5
+//  * 6 7 8 
+//  */
+// function threeDgameIsWon(gboard, player) {
+//     console.log("POOOOOP")
+// //    if ( (gboard[0] == player && gboard[1] == player && gboard[2] == player && gboard[3] == player) || //Horizontals (b0)
+// //         (gboard[4] == player && gboard[5] == player && gboard[6] == player && gboard[7] == player) ||
+// //         (gboard[8] == player && gboard[9] == player && gboard[10] == player && gboard[11] == player) ||
+// //         (gboard[12] == player && gboard[13] == player && gboard[14] == player && gboard[15] == player) 
+
+// if ( (gboard[0] == player && gboard[1] == player && gboard[2] == player) || //Horizontals
+//         (gboard[3] == player && gboard[4] == player && gboard[5] == player) ||
+//         (gboard[6] == player && gboard[7] == player && gboard[8] == player) 
+
+//         // (board[0] == player && board[4] == player && board[8] == player && board[12] == player) || //Verticals (b0)
+//         // (board[1] == player && board[5] == player && board[9] == player && board[13] == player) ||
+//         // (board[2] == player && board[6] == player && board[10] == player && board[14] == player) ||
+//         // (board[3] == player && board[7] == player && board[11] == player && board[15] == player) ||
+       
+//         // (board[0] == player && board[5] == player && board[10] == player && board[15] == player) || //Diagonals (b0)
+//         // (board[3] == player && board[6] == player && board[9] == player && board[12] == player) || 
+    
+    
+//         // (board[16] == player && board[17] == player && board[18] == player && board[19] == player) || //Horizontals (b1)
+//         // (board[20] == player && board[21] == player && board[22] == player && board[23] == player) ||
+//         // (board[24] == player && board[25] == player && board[26] == player && board[27] == player) ||
+//         // (board[28] == player && board[29] == player && board[30] == player && board[31] == player) ||
+
+//         // (board[16] == player && board[20] == player && board[24] == player && board[28] == player) || //Verticals (b1)
+//         // (board[17] == player && board[21] == player && board[25] == player && board[29] == player) ||
+//         // (board[18] == player && board[22] == player && board[26] == player && board[30] == player) ||
+//         // (board[19] == player && board[23] == player && board[27] == player && board[31] == player) ||
+       
+//         // (board[16] == player && board[21] == player && board[26] == player && board[31] == player) || //Diagonals (b1)
+//         // (board[19] == player && board[22] == player && board[25] == player && board[28] == player) ||
+    
+    
+//         // (board[32] == player && board[33] == player && board[34] == player && board[35] == player) || //Horizontals (b2)
+//         // (board[36] == player && board[37] == player && board[38] == player && board[39] == player) ||
+//         // (board[40] == player && board[41] == player && board[42] == player && board[43] == player) ||
+//         // (board[44] == player && board[45] == player && board[46] == player && board[47] == player) ||
+
+//         // (board[32] == player && board[36] == player && board[40] == player && board[44] == player) || //Verticals (b2)
+//         // (board[33] == player && board[37] == player && board[41] == player && board[45] == player) ||
+//         // (board[34] == player && board[38] == player && board[42] == player && board[46] == player) ||
+//         // (board[35] == player && board[39] == player && board[43] == player && board[47] == player) ||
+       
+//         // (board[32] == player && board[37] == player && board[42] == player && board[47] == player) || //Diagonals (b2)
+//         // (board[35] == player && board[38] == player && board[41] == player && board[44] == player) || 
+    
+    
+//         // (board[48] == player && board[49] == player && board[50] == player && board[51] == player) || //Horizontals (b3)
+//         // (board[52] == player && board[53] == player && board[54] == player && board[55] == player) ||
+//         // (board[56] == player && board[57] == player && board[58] == player && board[59] == player) ||
+//         // (board[60] == player && board[61] == player && board[62] == player && board[63] == player) ||
+
+//         // (board[48] == player && board[52] == player && board[56] == player && board[60] == player) || //Verticals (b3)
+//         // (board[49] == player && board[53] == player && board[57] == player && board[61] == player) ||
+//         // (board[50] == player && board[54] == player && board[58] == player && board[62] == player) ||
+//         // (board[51] == player && board[55] == player && board[59] == player && board[63] == player) ||
+       
+//         // (board[48] == player && board[53] == player && board[58] == player && board[63] == player) || //Diagonals (b3)
+//         // (board[51] == player && board[54] == player && board[57] == player && board[60] == player)
+//      ) 
+//    {
+//        console.log("GAME OVER BASE CASE")
+//       return true;
+//    }
+//    return false;
+// }
+
+
+// /* This is the minimax algorithm that recursively chooses the best move to play for the 
+//  * ai by playing ahead. 
+//  * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
+//  */
+// function threeDminimax(newBoard, player) {
+   
+//    var availSpots = threeDemptyIndexies(newBoard);
+   
+//    if (threeDgameIsWon(newBoard, human)) {
+//       return {score: -10};
+//    }
+//    else if (threeDgameIsWon(newBoard, ai)) {
+//       return {score:  10};
+//    }
+//    else if (availSpots.length == 0) {
+//       return {score:   0};
+//    }
+   
+//    var moves = []; //Collects all the objects
+   
+//    for (var i=0; i<availSpots.length; i++) {
+      
+//       //Create an object for each and store the index of that spot 
+//       var move = {};
+//       move.index = newBoard[availSpots[i]];
+      
+//       newBoard[availSpots[i]] = player; //Set the empty spot to the current player
+      
+//       if (player == ai) {
+//          var result = threeDminimax(newBoard, human);
+//          move.score = result.score;
+//       }
+//       else {
+//          var result = threeDminimax(newBoard, ai);
+//          move.score = result.score;
+//       }
+      
+//       newBoard[availSpots[i]] = move.index; //Reset the spot to empty
+      
+//       moves.push(move); //Push the spot to empty
+//    }
+
+//    console.log("DONE")
+      
+//    //If it's the ai's turn, loop over the moves and choose the one with the highest score
+//    var bestMove;
+   
+//    if (player == ai) {
+//       var bestScore = -10000;
+      
+//       for (var i=0; i<moves.length; i++) {
+//          if (moves[i].score > bestScore) {
+//             bestScore = moves[i].score;
+//             bestMove  = i;
 //          }
-//         }
 //       }
 //    }
-//    console.log ("BOARD ARRAY: ", array)
-   return array;
-}
-
-
-/* Converts a move{index, score} to location{row, column}
- */
-function threeDconvertMove(move) {
-   var loc = {};
+//    //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
+//    else { 
+//       var bestScore = 10000;
+      
+//       for (var i=0; i<moves.length; i++) {
+//          if (moves[i].score < bestScore) {
+//             bestScore = moves[i].score;
+//             bestMove  = i;
+//          }
+//       }
+//    }
    
-   loc.row    = Math.floor(move.index / 3);
-   loc.column = move.index % 3;
-   return loc;
-}
-
-/* Converts a "arrIndex" to location{row, column}
- */
-function threeDconvertRandMove(move) {
-    var loc = {};
-    
-    loc.row    = Math.floor(move / 3);
-    loc.column = move % 3;
-    return loc;
- }
-
-       
-/* Returns the list of indexes of empty spaces on the board
- */
-function threeDemptyIndexies(board){
-  return  board.filter(tile => tile != "o" && tile != "x");
-}
-
-
-/* Tests if the given player has won the board by checking all combinations
- * 0 1 2
- * 3 4 5
- * 6 7 8 
- */
-function threeDgameIsWon(gboard, player) {
-    console.log("POOOOOP")
-//    if ( (gboard[0] == player && gboard[1] == player && gboard[2] == player && gboard[3] == player) || //Horizontals (b0)
-//         (gboard[4] == player && gboard[5] == player && gboard[6] == player && gboard[7] == player) ||
-//         (gboard[8] == player && gboard[9] == player && gboard[10] == player && gboard[11] == player) ||
-//         (gboard[12] == player && gboard[13] == player && gboard[14] == player && gboard[15] == player) 
-
-if ( (gboard[0] == player && gboard[1] == player && gboard[2] == player) || //Horizontals
-        (gboard[3] == player && gboard[4] == player && gboard[5] == player) ||
-        (gboard[6] == player && gboard[7] == player && gboard[8] == player) 
-
-        // (board[0] == player && board[4] == player && board[8] == player && board[12] == player) || //Verticals (b0)
-        // (board[1] == player && board[5] == player && board[9] == player && board[13] == player) ||
-        // (board[2] == player && board[6] == player && board[10] == player && board[14] == player) ||
-        // (board[3] == player && board[7] == player && board[11] == player && board[15] == player) ||
-       
-        // (board[0] == player && board[5] == player && board[10] == player && board[15] == player) || //Diagonals (b0)
-        // (board[3] == player && board[6] == player && board[9] == player && board[12] == player) || 
-    
-    
-        // (board[16] == player && board[17] == player && board[18] == player && board[19] == player) || //Horizontals (b1)
-        // (board[20] == player && board[21] == player && board[22] == player && board[23] == player) ||
-        // (board[24] == player && board[25] == player && board[26] == player && board[27] == player) ||
-        // (board[28] == player && board[29] == player && board[30] == player && board[31] == player) ||
-
-        // (board[16] == player && board[20] == player && board[24] == player && board[28] == player) || //Verticals (b1)
-        // (board[17] == player && board[21] == player && board[25] == player && board[29] == player) ||
-        // (board[18] == player && board[22] == player && board[26] == player && board[30] == player) ||
-        // (board[19] == player && board[23] == player && board[27] == player && board[31] == player) ||
-       
-        // (board[16] == player && board[21] == player && board[26] == player && board[31] == player) || //Diagonals (b1)
-        // (board[19] == player && board[22] == player && board[25] == player && board[28] == player) ||
-    
-    
-        // (board[32] == player && board[33] == player && board[34] == player && board[35] == player) || //Horizontals (b2)
-        // (board[36] == player && board[37] == player && board[38] == player && board[39] == player) ||
-        // (board[40] == player && board[41] == player && board[42] == player && board[43] == player) ||
-        // (board[44] == player && board[45] == player && board[46] == player && board[47] == player) ||
-
-        // (board[32] == player && board[36] == player && board[40] == player && board[44] == player) || //Verticals (b2)
-        // (board[33] == player && board[37] == player && board[41] == player && board[45] == player) ||
-        // (board[34] == player && board[38] == player && board[42] == player && board[46] == player) ||
-        // (board[35] == player && board[39] == player && board[43] == player && board[47] == player) ||
-       
-        // (board[32] == player && board[37] == player && board[42] == player && board[47] == player) || //Diagonals (b2)
-        // (board[35] == player && board[38] == player && board[41] == player && board[44] == player) || 
-    
-    
-        // (board[48] == player && board[49] == player && board[50] == player && board[51] == player) || //Horizontals (b3)
-        // (board[52] == player && board[53] == player && board[54] == player && board[55] == player) ||
-        // (board[56] == player && board[57] == player && board[58] == player && board[59] == player) ||
-        // (board[60] == player && board[61] == player && board[62] == player && board[63] == player) ||
-
-        // (board[48] == player && board[52] == player && board[56] == player && board[60] == player) || //Verticals (b3)
-        // (board[49] == player && board[53] == player && board[57] == player && board[61] == player) ||
-        // (board[50] == player && board[54] == player && board[58] == player && board[62] == player) ||
-        // (board[51] == player && board[55] == player && board[59] == player && board[63] == player) ||
-       
-        // (board[48] == player && board[53] == player && board[58] == player && board[63] == player) || //Diagonals (b3)
-        // (board[51] == player && board[54] == player && board[57] == player && board[60] == player)
-     ) 
-   {
-       console.log("GAME OVER BASE CASE")
-      return true;
-   }
-   return false;
-}
-
-
-/* This is the minimax algorithm that recursively chooses the best move to play for the 
- * ai by playing ahead. 
- * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
- */
-function threeDminimax(newBoard, player) {
-   
-   var availSpots = threeDemptyIndexies(newBoard);
-   
-   if (threeDgameIsWon(newBoard, human)) {
-      return {score: -10};
-   }
-   else if (threeDgameIsWon(newBoard, ai)) {
-      return {score:  10};
-   }
-   else if (availSpots.length == 0) {
-      return {score:   0};
-   }
-   
-   var moves = []; //Collects all the objects
-   
-   for (var i=0; i<availSpots.length; i++) {
-      
-      //Create an object for each and store the index of that spot 
-      var move = {};
-      move.index = newBoard[availSpots[i]];
-      
-      newBoard[availSpots[i]] = player; //Set the empty spot to the current player
-      
-      if (player == ai) {
-         var result = threeDminimax(newBoard, human);
-         move.score = result.score;
-      }
-      else {
-         var result = threeDminimax(newBoard, ai);
-         move.score = result.score;
-      }
-      
-      newBoard[availSpots[i]] = move.index; //Reset the spot to empty
-      
-      moves.push(move); //Push the spot to empty
-   }
-
-   console.log("DONE")
-      
-   //If it's the ai's turn, loop over the moves and choose the one with the highest score
-   var bestMove;
-   
-   if (player == ai) {
-      var bestScore = -10000;
-      
-      for (var i=0; i<moves.length; i++) {
-         if (moves[i].score > bestScore) {
-            bestScore = moves[i].score;
-            bestMove  = i;
-         }
-      }
-   }
-   //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
-   else { 
-      var bestScore = 10000;
-      
-      for (var i=0; i<moves.length; i++) {
-         if (moves[i].score < bestScore) {
-            bestScore = moves[i].score;
-            bestMove  = i;
-         }
-      }
-   }
-   
-   //Return the chosen move(object) from the moves array
-   return moves[bestMove];
-}
+//    //Return the chosen move(object) from the moves array
+//    return moves[bestMove];
+// }
