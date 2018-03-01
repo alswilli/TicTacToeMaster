@@ -18,6 +18,13 @@ var menuState = {
         called to initialize this state
     */
     create() {
+
+        //setup background
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'menubackground');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
+
         var title
         if(game.gametype === "original")
             title = 'Tic Tac Toe'
@@ -58,10 +65,12 @@ var menuState = {
         //  }
         game.addMenuOption('Local Multiplayer', 200, function () {
                            game.singleplayer = true
+                           game.vsAi = false;
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Online Multiplayer', 200,function () {
                            game.singleplayer = false
+                           game.vsAi = false;
                            game.state.start("ticTac");
                            });
         // If neither option, do the database logic with leaderboards, achievements, currency, etc. (we will add more to here later, thoughwill need to be in home page because href loads first)

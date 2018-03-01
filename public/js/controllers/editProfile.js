@@ -19,6 +19,13 @@ angular.module('TicTacToeApp')
                 $('.imageNew').attr('src', img);
                 });
               });
+
+            // $('#usernameNew').attr('value', sessionStorage.getItem("name"));
+            // $('#battleTextNew').attr('value', sessionStorage.getItem("battleText"));
+
+            $('#usernameNew').attr('value', app.username);
+            $('#battleTextNew').attr('value', app.battleText);
+              
             $('#btn-applyChanges').on('click', updateUserInfo);
             
 });
@@ -35,13 +42,32 @@ function updateUserInfo(e)
     
     const file = document.querySelector('#profile_image').files[0];
     
-    if(file === undefined)
+    if(file != null && file === undefined)
     {
         alert("Image file invalid, please enter a valid image!");
         console.log("penios");
         //break;
     }
-    else
+    else if (file == null) //Don't want to upload a new profile pic but want to change other stuff
+    {
+        
+        firebase.database().ref('/users/' + app.keyValue).once('value').then(function(snapshot) {
+
+             //get the new values
+             var newUserName = $('#usernameNew').val(); 
+             var newBattleText = $('#battleTextNew').val(); 
+
+             app.username =  newUserName
+             app.battleText =  newBattleText
+
+             //updates info on firebase
+             userRef.child("username").set(newUserName); 
+             userRef.child("battleText").set(newBattleText); 
+             window.location.href = "#/home" 
+
+             });
+    }
+    else // want to change all
     {
         console.log("file: ", file);
         

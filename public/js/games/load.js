@@ -36,6 +36,8 @@ var loadState = {
         game.load.image('square', prefix + 'board'+app.selected.charAt(0)+'.png');
         game.load.image('O', prefix + 'pieceO'+app.selected.charAt(1)+'.png');
         game.load.image('background', 'imgs/background'+app.selected.charAt(2)+'.png');
+
+        game.load.image('menubackground', 'imgs/menubackgroundtwo.png');
         
         game.load.image('logo', 'imgs/phaser.png');
 

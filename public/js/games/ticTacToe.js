@@ -241,6 +241,9 @@ var ticTacState = {
         if(game.isOver(coordInfo.x, coordInfo.y))
         {
             game.waiting = true
+            if(game.isDraw) {
+                game.displayWinner()
+            }                        
             //game.displayWinner()
             console.log(board)
         }
@@ -559,6 +562,9 @@ var ticTacState = {
         if (game.vsAi) {
            console.log("updateTurnStatus: single player AI");
            if(game.isOver(indexX, indexY)) {
+                if(game.isDraw) {
+                    game.displayWinner()
+                }
                //game.displayWinner()  
                game.waiting = true
            }
@@ -569,8 +575,9 @@ var ticTacState = {
               console.log(board);
               console.log(boardToArray());
               
-              aiMakesMove();
-              game.switchTurn(indexX, indexY);
+              var aiMoveCoords = []
+              aiMoveCoords = aiMakesMove();
+              game.switchTurn(aiMoveCoords[0], aiMoveCoords[1]); // needs to pass ai move instread
               console.log(boardToArray());
               game.waiting = false;
               
@@ -582,6 +589,9 @@ var ticTacState = {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
             {
+                if(game.isDraw) {
+                    game.displayWinner()
+                }
                 //game.displayWinner()
                 game.waiting = true
             }
@@ -780,6 +790,10 @@ function aiMakesMove() {
    if ( gameIsWon(boardArr, human) || gameIsWon(boardArr, ai) ) {
       game.displayWinner();
    }
+
+   aiCoords = [convertedMove.column, convertedMove.row]
+
+   return (aiCoords)
 }
 
 function spliceBoard(boardArr) {
@@ -921,7 +935,7 @@ function minimax(newBoard, player) {
       moves.push(move); //Push the spot to empty
    }
 
-   console.log("Done")
+//    console.log("Done")
       
    //If it's the ai's turn, loop over the moves and choose the one with the highest score
    var bestMove;

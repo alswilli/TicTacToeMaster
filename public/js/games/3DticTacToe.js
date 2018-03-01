@@ -95,7 +95,7 @@ var threeDticTacState = {
      */
     makeBoardAsArray(n)
     {
-        var board = [];
+        board = [];
         for (var i=0; i < n; i++)
         {
             board[i] = new Array(n)

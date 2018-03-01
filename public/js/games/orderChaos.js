@@ -292,6 +292,9 @@ var orderChaosState = {
         if(game.isOver(coordInfo.x, coordInfo.y))
         {
             game.waiting = true
+            if(game.isDraw) {
+                game.displayWinner()
+            }
             //game.displayWinner()
         }
         game.switchTurn(coordInfo.x, coordInfo.y)
@@ -666,6 +669,9 @@ var orderChaosState = {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
             {
+                if(game.isDraw) {
+                    game.displayWinner()
+                }
                 //game.displayWinner()
                 game.waiting = true
             }
