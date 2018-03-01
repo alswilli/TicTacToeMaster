@@ -75,8 +75,8 @@ var ultimateTTTState = {
         //the top left coordinate to place the whole board at, we will make game
         //not hardcoded in the furture to center the board, but I believe we need jQuery
         //to get window size and I didn't feel like learning that right now
-        game.startingX = 350 - ((game.cache.getImage('square').width* game.n) / 2)
-        game.startingY = 100
+        game.startingX = game.screenWidth/2 - game.cache.getImage('board').width / 1.2
+        game.startingY = 80
 
         // game.secStartingX = 400 - ((game.cache.getImage('square').width* game.n) / 2)
         // game.secStartingY = 115
@@ -368,6 +368,8 @@ var ultimateTTTState = {
             }
         }
 
+        var connectedSquare = false
+
         for (var i = 0; i < 3; i++)
         {
             for (var j = 0; j < 3; j++)
@@ -390,10 +392,237 @@ var ultimateTTTState = {
                     {
                         for (var j = 0; j < 3; j++)
                         {
-                                game.bigBoardLogic[i][j] = "open"
-                                game.cursorSquares[i][j].alpha = .7 
-                                // game.cursorSquares[i][j].tint = 0xffffff
+                                // Set all squares to closed 
+                                game.bigBoardLogic[i][j] = "closed"
+                                game.cursorSquares[i][j].alpha = 0
+                        }
+                    }
+
+                    // game.bigBoardLogic[x][y] = "closed"
+                    // game.cursorSquares[x][y].alpha = 0
+
+                    if (lx+1 < 3) {
+                        game.bigBoardLogic[lx+1][ly] = "open" // Right
+                        game.cursorSquares[lx+1][ly].alpha = .7
+                        if (lx+1 == x && ly == y)
+                            connectedSquare = true
+                    }
+
+                    if (lx-1 > -1) {
+                        game.bigBoardLogic[lx-1][ly] = "open" // Left
+                        game.cursorSquares[lx-1][ly].alpha = .7
+                        if (lx-1 == x && ly == y)
+                            connectedSquare = true
+                    }
+
+                    if (ly+1 < 3) {
+                        game.bigBoardLogic[lx][ly+1] = "open" // Bottom 
+                        game.cursorSquares[lx][ly+1].alpha = .7
+                        if (lx == x && ly+1 == y)
+                            connectedSquare = true
+                    }
+
+                    if (ly-1 > -1) {
+                        game.bigBoardLogic[lx][ly-1] = "open" // Top
+                        game.cursorSquares[lx][ly-1].alpha = .7
+                        if (lx == x && ly-1 == y)
+                            connectedSquare = true
+                    }
+
+                    if (lx+1 < 3 && ly-1 > -1) {
+                        game.bigBoardLogic[lx+1][ly-1] = "open" // Top right
+                        game.cursorSquares[lx+1][ly-1].alpha = .7
+                        if (lx+1 == x && ly-1 == y)
+                            connectedSquare = true
+                    }
+
+                    if (lx-1 > -1 && ly-1 > -1) {
+                        game.bigBoardLogic[lx-1][ly-1] = "open" // Top left
+                        game.cursorSquares[lx-1][ly-1].alpha = .7
+                        if (lx-1 == x && ly-1 == y)
+                            connectedSquare = true
+                    }
+
+                    if (lx+1 < 3 && ly+1 < 3) {
+                        game.bigBoardLogic[lx+1][ly+1] = "open" // Bottom right
+                        game.cursorSquares[lx+1][ly+1].alpha = .7
+                        if (lx+1 == x && ly+1 == y)
+                            connectedSquare = true
+                    }
+
+                    if (lx-1 > -1 && ly+1 < 3) {
+                        game.bigBoardLogic[lx-1][ly+1] = "open" // Bottom left
+                        game.cursorSquares[lx-1][ly+1].alpha = .7
+                        if (lx-1 == x && ly+1 == y)
+                            connectedSquare = true 
+                    }
+
+                    for (var i = 0; i < 3; i++)
+                    {
+                        for (var j = 0; j < 3; j++)
+                        {
+                                // Set everything but the magic square(s) to open
+                                // game.bigBoardLogic[i][j] = "open"
+                                // game.cursorSquares[i][j].alpha = .7
+        
                                 if (game.magicBoardLogic[i][j] === "magic")
+                                    // game.bigBoardLogic[i][j] = "closed"
+                                    game.cursorSquares[i][j].alpha = 0
+                        }
+                    }
+
+                    // If you get stuck, open up outer layer
+                    var stuck = true
+                    for (var i = 0; i < 3; i++)
+                    {
+                        for (var j = 0; j < 3; j++)
+                        {
+                            if (game.bigBoardLogic[i][j] === "open" && game.magicBoardLogic[i][j] != "magic")
+                                stuck = false
+                        }
+                    }
+
+                    if (stuck == true) {
+                        console.log("STUCK");
+                        if (lx+2 < 3) {
+                            console.log("A");
+                            game.bigBoardLogic[lx+2][ly] = "open" // Right
+                            game.cursorSquares[lx+2][ly].alpha = .7
+                            if (lx+2 == x && ly == y)
+                                connectedSquare = true
+                        }
+
+                        if (lx+2 < 3 && ly-1 > -1) {
+                            console.log("A1");
+                            game.bigBoardLogic[lx+2][ly-1] = "open" // Right 2 up 1
+                            game.cursorSquares[lx+2][ly-1].alpha = .7
+                            if (lx+2 == x && ly-1 == y)
+                                connectedSquare = true
+                        }
+
+                        if (lx+1 < 3 && ly-2 > -1) {
+                            console.log("A2");
+                            game.bigBoardLogic[lx+1][ly-2] = "open" // Right 1 up 2
+                            game.cursorSquares[lx+1][ly-2].alpha = .7
+                            if (lx+1 == x && ly-2 == y)
+                                connectedSquare = true
+                        }
+
+                        if (lx+1 < 3 && ly+2 < 3) {
+                            console.log("A3");
+                            game.bigBoardLogic[lx+1][ly+2] = "open" // Right 1 down 2
+                            game.cursorSquares[lx+1][ly+2].alpha = .7
+                            if (lx+1 == x && ly+2 == y)
+                                connectedSquare = true
+                        }
+
+                        if (lx+2 < 3 && ly+1 < 3) {
+                            console.log("A4");
+                            game.bigBoardLogic[lx+2][ly+1] = "open" // Right 2 down 1
+                            game.cursorSquares[lx+2][ly+1].alpha = .7
+                            if (lx+2 == x && ly+1 == y)
+                                connectedSquare = true
+                        }
+    
+                        if (lx-2 > -1) {
+                            console.log("B");
+                            game.bigBoardLogic[lx-2][ly] = "open" // Left
+                            game.cursorSquares[lx-2][ly].alpha = .7
+                            if (lx-2 == x && ly == y)
+                                connectedSquare = true
+                        }
+
+                        if (lx-2 > -1 && ly-1 > -1) {
+                            console.log("B1");
+                            game.bigBoardLogic[lx-2][ly-1] = "open" // Left 2 up 1
+                            game.cursorSquares[lx-2][ly-1].alpha = .7
+                            if (lx-2 == x && ly-1 == y)
+                                connectedSquare = true
+                        }
+
+                        if (lx-1 > -1 && ly-2 > -1) {
+                            console.log("B2");
+                            game.bigBoardLogic[lx-1][ly-2] = "open" // Left 1 up 2
+                            game.cursorSquares[lx-1][ly-2].alpha = .7
+                            if (lx-1 == x && ly-2 == y)
+                                connectedSquare = true
+                        }
+
+                        if (lx-1 > -1 && ly+2 < 3) {
+                            console.log("B3");
+                            game.bigBoardLogic[lx-1][ly+2] = "open" // Left 1 down 2
+                            game.cursorSquares[lx-1][ly+2].alpha = .7
+                            if (lx-1 == x && ly+2 == y)
+                                connectedSquare = true
+                        }
+
+                        if (lx-2 > -1 && ly+1 < 3) {
+                            console.log("B4");
+                            game.bigBoardLogic[lx-2][ly+1] = "open" // Left 2 down 1
+                            game.cursorSquares[lx-2][ly+1].alpha = .7
+                            if (lx-2 == x && ly+1 == y)
+                                connectedSquare = true
+                        }
+    
+                        if (ly+2 < 3) {
+                            console.log("C");
+                            game.bigBoardLogic[lx][ly+2] = "open" // Bottom 
+                            game.cursorSquares[lx][ly+2].alpha = .7
+                            if (lx == x && ly+2 == y)
+                                connectedSquare = true
+                        }
+    
+                        if (ly-2 > -1) {
+                            console.log("D");
+                            game.bigBoardLogic[lx][ly-2] = "open" // Top
+                            game.cursorSquares[lx][ly-2].alpha = .7
+                            if (lx == x && ly-2 == y)
+                                connectedSquare = true
+                        }
+    
+                        if (lx+2 < 3 && ly-2 > -1) {
+                            console.log("E");
+                            game.bigBoardLogic[lx+2][ly-2] = "open" // Top right
+                            game.cursorSquares[lx+2][ly-2].alpha = .7
+                            if (lx+2 == x && ly-2 == y)
+                                connectedSquare = true
+                        }
+    
+                        if (lx-2 > -1 && ly-2 > -1) {
+                            console.log("F");
+                            game.bigBoardLogic[lx-2][ly-2] = "open" // Top left
+                            game.cursorSquares[lx-2][ly-2].alpha = .7
+                            if (lx-2 == x && ly-2 == y)
+                                connectedSquare = true
+                        }
+    
+                        if (lx+2 < 3 && ly+2 < 3) {
+                            console.log("g");
+                            game.bigBoardLogic[lx+2][ly+2] = "open" // Bottom right
+                            game.cursorSquares[lx+2][ly+2].alpha = .7
+                            if (lx+2 == x && ly+2 == y)
+                                connectedSquare = true
+                        }
+    
+                        if (lx-2 > -1 && ly+2 < 3) {
+                            console.log("H");
+                            game.bigBoardLogic[lx-2][ly+2] = "open" // Bottom left
+                            game.cursorSquares[lx-2][ly+2].alpha = .7
+                            if (lx-2 == x && ly+2 == y)
+                                connectedSquare = true 
+                        }
+                    }
+
+                    for (var i = 0; i < 3; i++)
+                    {
+                        for (var j = 0; j < 3; j++)
+                        {
+                                // Set everything but the magic square(s) to open
+                                // game.bigBoardLogic[i][j] = "open"
+                                // game.cursorSquares[i][j].alpha = .7
+        
+                                if (game.magicBoardLogic[i][j] === "magic")
+                                    // game.bigBoardLogic[i][j] = "closed"
                                     game.cursorSquares[i][j].alpha = 0
                         }
                     }
@@ -432,6 +661,9 @@ var ultimateTTTState = {
             game.waiting = false
         if(game.isOver(coordInfo.bx, coordInfo.by, coordInfo.lx, coordInfo.ly))
         {
+            if(game.isDraw) {
+                game.displayWinner()
+            }
             //game.displayWinner()
             game.waiting = true
             console.log(board)
@@ -700,6 +932,7 @@ var ultimateTTTState = {
         }
         
         game.magicBoardLogic[bCol][bRow] = "magic"
+        game.bigBoardLogic[bCol][bRow] = "closed"
 
         // game.updateTurnStatus(bigIndexX, bigIndexY, littleIndexX, littleIndexY)
     },
@@ -947,6 +1180,9 @@ var ultimateTTTState = {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(bigIndexX, bigIndexY, littleIndexX, littleIndexY))
             {
+                if(game.isDraw) {
+                    game.displayWinner()
+                }
                 game.waiting = true//game.displayWinner()
             }
             else
@@ -1117,3 +1353,171 @@ function pieceChallenge(turn) {
         });
     }
 }
+
+// // console.log("AHHHHHH")
+//                     // var connectedSquare = false
+
+//                     // if (lx+1 < 3) {
+//                     //     game.bigBoardLogic[lx+1][ly] = "open" // Right
+//                     //     game.cursorSquares[lx+1][ly].alpha = .7
+//                     //     if (lx+1 == x && ly == y)
+//                     //         connectedSquare = true
+//                     // }
+
+//                     // if (lx-1 > -1) {
+//                     //     game.bigBoardLogic[lx-1][ly] = "open" // Left
+//                     //     game.cursorSquares[lx-1][ly].alpha = .7
+//                     //     if (lx-1 == x && ly == y)
+//                     //         connectedSquare = true
+//                     // }
+
+//                     // if (ly+1 < 3) {
+//                     //     game.bigBoardLogic[lx][ly+1] = "open" // Bottom 
+//                     //     game.cursorSquares[lx][ly+1].alpha = .7
+//                     //     if (lx == x && ly+1 == y)
+//                     //         connectedSquare = true
+//                     // }
+
+//                     // if (ly-1 > -1) {
+//                     //     game.bigBoardLogic[lx][ly-1] = "open" // Top
+//                     //     game.cursorSquares[lx][ly-1].alpha = .7
+//                     //     if (lx == x && ly-1 == y)
+//                     //         connectedSquare = true
+//                     // }
+
+//                     // if (lx+1 < 3 && ly-1 > -1) {
+//                     //     game.bigBoardLogic[lx+1][ly-1] = "open" // Top right
+//                     //     game.cursorSquares[lx+1][ly-1].alpha = .7
+//                     //     if (lx+1 == x && ly-1 == y)
+//                     //         connectedSquare = true
+//                     // }
+
+//                     // if (lx-1 > -1 && ly-1 > -1) {
+//                     //     game.bigBoardLogic[lx-1][ly-1] = "open" // Top left
+//                     //     game.cursorSquares[lx-1][ly-1].alpha = .7
+//                     //     if (lx-1 == x && ly-1 == y)
+//                     //         connectedSquare = true
+//                     // }
+
+//                     // if (lx+1 < 3 && ly+1 < 3) {
+//                     //     game.bigBoardLogic[lx+1][ly+1] = "open" // Bottom right
+//                     //     game.cursorSquares[lx+1][ly+1].alpha = .7
+//                     //     if (lx+1 == x && ly+1 == y)
+//                     //         connectedSquare = true
+//                     // }
+
+//                     // if (lx-1 > -1 && ly+1 < 3) {
+//                     //     game.bigBoardLogic[lx-1][ly+1] = "open" // Bottom left
+//                     //     game.cursorSquares[lx-1][ly+1].alpha = .7
+//                     //     if (lx-1 == x && ly+1 == y)
+//                     //         connectedSquare = true 
+//                     // }
+
+//                     for (var m = 0; m < 3; m++)
+//                     {
+//                         for (var n = 0; n < 3; n++)
+//                         {
+//                                 game.bigBoardLogic[i][j] = "open"
+//                                 game.cursorSquares[i][j].alpha = .7 
+        
+//                                 if (game.magicBoardLogic[m][n] === "magic")
+//                                     game.cursorSquares[m][n].alpha = 0
+//                         }
+//                     }
+
+//                     // // If you get stuck, open up outer layer
+//                     // var stuck = true
+//                     // for (var i = 0; i < 3; i++)
+//                     // {
+//                     //     for (var j = 0; j < 3; j++)
+//                     //     {
+//                     //         if (game.bigBoardLogic[i][j] === "open")
+//                     //             stuck = false
+//                     //     }
+//                     // }
+
+//                     // if (stuck == true) {
+//                     //     console.log("STUCK");
+//                     //     if (lx+2 < 3) {
+//                     //         console.log("A");
+//                     //         game.bigBoardLogic[lx+2][ly] = "open" // Right
+//                     //         game.cursorSquares[lx+2][ly].alpha = .7
+//                     //         if (lx+2 == x && ly == y)
+//                     //             connectedSquare = true
+//                     //     }
+    
+//                     //     if (lx-2 > -1) {
+//                     //         console.log("B");
+//                     //         game.bigBoardLogic[lx-2][ly] = "open" // Left
+//                     //         game.cursorSquares[lx-2][ly].alpha = .7
+//                     //         if (lx-2 == x && ly == y)
+//                     //             connectedSquare = true
+//                     //     }
+    
+//                     //     if (ly+2 < 3) {
+//                     //         console.log("C");
+//                     //         game.bigBoardLogic[lx][ly+2] = "open" // Bottom 
+//                     //         game.cursorSquares[lx][ly+2].alpha = .7
+//                     //         if (lx == x && ly+2 == y)
+//                     //             connectedSquare = true
+//                     //     }
+    
+//                     //     if (ly-2 > -1) {
+//                     //         console.log("D");
+//                     //         game.bigBoardLogic[lx][ly-2] = "open" // Top
+//                     //         game.cursorSquares[lx][ly-2].alpha = .7
+//                     //         if (lx == x && ly-2 == y)
+//                     //             connectedSquare = true
+//                     //     }
+    
+//                     //     if (lx+2 < 3 && ly-2 > -1) {
+//                     //         console.log("E");
+//                     //         game.bigBoardLogic[lx+2][ly-2] = "open" // Top right
+//                     //         game.cursorSquares[lx+2][ly-2].alpha = .7
+//                     //         if (lx+2 == x && ly-2 == y)
+//                     //             connectedSquare = true
+//                     //     }
+    
+//                     //     if (lx-2 > -1 && ly-2 > -1) {
+//                     //         console.log("F");
+//                     //         game.bigBoardLogic[lx-2][ly-2] = "open" // Top left
+//                     //         game.cursorSquares[lx-2][ly-2].alpha = .7
+//                     //         if (lx-2 == x && ly-2 == y)
+//                     //             connectedSquare = true
+//                     //     }
+    
+//                     //     if (lx+2 < 3 && ly+2 < 3) {
+//                     //         console.log("g");
+//                     //         game.bigBoardLogic[lx+2][ly+2] = "open" // Bottom right
+//                     //         game.cursorSquares[lx+2][ly+2].alpha = .7
+//                     //         if (lx+2 == x && ly+2 == y)
+//                     //             connectedSquare = true
+//                     //     }
+    
+//                     //     if (lx-2 > -1 && ly+2 < 3) {
+//                     //         console.log("H");
+//                     //         game.bigBoardLogic[lx-2][ly+2] = "open" // Bottom left
+//                     //         game.cursorSquares[lx-2][ly+2].alpha = .7
+//                     //         if (lx-2 == x && ly+2 == y)
+//                     //             connectedSquare = true 
+//                     //     }
+//                     // }
+
+//                     // console.log("HOLAHOLAHOLA: ", connectedSquare);
+//                     // if (connectedSquare == false) {  // The square is not inside adjacent radius (both) so delete iots open status
+//                     //     console.log("NO CONNECTED SQUARE");
+//                     //     game.bigBoardLogic[x][y] = "closed"
+//                     //     game.cursorSquares[x][y].alpha = 0
+//                     // }
+
+//                     // for (var i = 0; i < 3; i++)
+//                     // {
+//                     //     for (var j = 0; j < 3; j++)
+//                     //     {
+//                     //             // game.bigBoardLogic[i][j] = "open"
+//                     //             // game.cursorSquares[i][j].alpha = .7 
+        
+//                     //             if (game.magicBoardLogic[i][j] === "magic")
+//                     //                 game.cursorSquares[i][j].alpha = 0
+//                     //     }
+//                     // }
