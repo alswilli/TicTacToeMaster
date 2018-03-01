@@ -14,11 +14,23 @@ var ultimateTTTState = {
     update() {
     },
     
+    preload() {
+        game.load.image('comet', 'imgs/comet.png');
+        game.load.image('cometTail', 'imgs/cometTail.png');
+    },
+    
+    
     /*
      called when the game starts
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
+        
+		//create background
+		var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
         
         game.boardHeight = 102
         game.boardOffset = 15
@@ -32,6 +44,8 @@ var ultimateTTTState = {
         game.isDraw = false
         game.magicSquare = false
         game.firstTime = true
+        
+        
         // game.boardIsDraw = {}
 
         // game.boardIsDraw = [];
@@ -41,6 +55,7 @@ var ultimateTTTState = {
 
          
         game.turns = 0
+        game.linesToAnimate = 0
 
         game.boardTurns = [];
         for (var i=0; i < game.n; i++) {
@@ -239,19 +254,10 @@ var ultimateTTTState = {
                 }
             }
         }
-        for (var i = 1; i < 3; i++)
-        {
-            var horzLine = game.add.graphics(game.startingX, game.startingY + i*game.squareSize*3)
-            horzLine.lineStyle(6, 0xffff0, 1);
-            horzLine.lineTo(game.squareSize*9,0);
-            horzLine.endFill();
-
-            var vertLine = game.add.graphics(game.startingX + i*game.squareSize*3, game.startingY)
-            vertLine.lineStyle(6, 0xffff0, 1);
-            vertLine.lineTo(0,game.squareSize*9);
-            vertLine.endFill();
-        }
+        game.drawLines()
     },
+    
+    
     
     /*
         places a piece on an empty square, either x or o depending whose turn it is
@@ -315,13 +321,13 @@ var ultimateTTTState = {
          //place either an x or o, depending whose turn it is
         if(game.isXTurn)
         {
-            var piece = game.addSprite(sprite.x, sprite.y, 'star');
+            var piece = game.addSprite(sprite.x, sprite.y, 'X');
             game.placedPieces.push(piece);
             game.board[bigIndexY][bigIndexX][littleIndexY][littleIndexX] = "x"
             game.previousPiece = "x";
         }
         else{
-            var piece = game.addSprite(sprite.x, sprite.y, 'moon');
+            var piece = game.addSprite(sprite.x, sprite.y, 'O');
             game.placedPieces.push(piece);
             game.board[bigIndexY][bigIndexX][littleIndexY][littleIndexX] = "o";
             game.previousPiece = "o";
@@ -374,7 +380,7 @@ var ultimateTTTState = {
                     console.log("lx: ", lx)
                     console.log("ly: ", ly)
                     game.bigBoardLogic[i][j] = "open"
-                    game.cursorSquares[i][j].alpha = .7
+                    game.cursorSquares[i][j].alpha = .7 
                     // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 // If the click on a open spot sends you to magic board
@@ -385,7 +391,7 @@ var ultimateTTTState = {
                         for (var j = 0; j < 3; j++)
                         {
                                 game.bigBoardLogic[i][j] = "open"
-                                game.cursorSquares[i][j].alpha = .7
+                                game.cursorSquares[i][j].alpha = .7 
                                 // game.cursorSquares[i][j].tint = 0xffffff
                                 if (game.magicBoardLogic[i][j] === "magic")
                                     game.cursorSquares[i][j].alpha = 0
@@ -426,7 +432,8 @@ var ultimateTTTState = {
             game.waiting = false
         if(game.isOver(coordInfo.bx, coordInfo.by, coordInfo.lx, coordInfo.ly))
         {
-            game.displayWinner()
+            //game.displayWinner()
+            game.waiting = true
             console.log(board)
         }
         var bx = coordInfo.bx
@@ -570,13 +577,19 @@ var ultimateTTTState = {
         {
             gameOver = true
             game.isDraw = false
-            console.log("bH won")
+            var lineAngle = -90
+            var startingY = game.startingX + (game.squareSize * 3* (bRow)) - game.squareSize/4
+            var endingX = game.screenWidth + 100
+            game.drawWinningLine(game.startingX - 15, startingY, endingX, startingY, lineAngle, 350)
         }
         else if(bVertical.size === 1 && !bVertical.has("Draw"))
         {
             gameOver = true
             game.isDraw = false
-            console.log("bV won")
+            
+            var lineAngle = 0
+            var startingX = game.startingX + (game.squareSize * 3 * (bCol+1)) - (game.squareSize*3/2)
+            game.drawWinningLine(startingX, game.startingY - 15, startingX, 800, lineAngle, 330)
         }
         //if all entries in a diagonal are the same AND that entry is not blank,
         //then the game is over
@@ -584,13 +597,23 @@ var ultimateTTTState = {
         {
             gameOver = true
             game.isDraw = false
-            console.log("bPosD won")
+            var lineAngle = -45
+            var startingX = game.startingX
+            var startingY = game.startingY + 15
+            var endingX = game.screenWidth + 100
+            var endingY = 800
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 480)
         }
         else if(bNegDiagonal.size === 1 && !bNegDiagonal.has("")  && !bNegDiagonal.has("Draw"))
         {
             gameOver = true
             game.isDraw = false
-            console.log("bNegD won")
+            var lineAngle = -135
+            var startingX = game.startingX
+            var startingY = game.startingY + (game.squareSize * 3 * game.n)
+            var endingX = game.screenWidth + 100
+            var endingY = -100
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 480)
         }
         else if(game.turns >= 80 || game.bigPlacedPieces.length == 9)
         {
@@ -656,20 +679,23 @@ var ultimateTTTState = {
             // var bigPiece2 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 + game.squareSize*3/2 - game.squareSize*1/3, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'moon', game.squareSize*1.8, game.squareSize*1.8)
             // var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 - game.squareSize*1/5, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'star', game.squareSize*1.8, game.squareSize*1.8)
             var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'poopemoji', game.squareSize*3, game.squareSize*3)
+            bigPiece1.big = true
             game.bigPlacedPieces.push(bigPiece1); // might have broken the draw logic
             // game.board[bRow][bCol] = 'Draw'
         }
         else if(game.isXTurn)
         {
-            // var bigPiece = game.addSprite(bCol, bRow, xSprite); //put in middle of display? also needs resizaing
-            var bigPiece = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'star', game.squareSize*3, game.squareSize*3)
+            // var bigPiece = game.addSprite(bCol, bRow, 'O'); //put in middle of display? also needs resizing
+            var bigPiece = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'X', game.squareSize*3, game.squareSize*3)
             game.bigPlacedPieces.push(bigPiece);
-            game.board[bRow][bCol] = "x"
+            bigPiece.big = true
+            game.board[bRow][bCol] = "x";
         }
         else{
-            // var bigPiece = game.addSprite(bCol, bRow, 'moon'); //put in middle of display? also needs resizing
-            var bigPiece = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'moon', game.squareSize*3, game.squareSize*3)
+            // var bigPiece = game.addSprite(bCol, bRow, 'O'); //put in middle of display? also needs resizing
+            var bigPiece = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'O', game.squareSize*3, game.squareSize*3)
             game.bigPlacedPieces.push(bigPiece);
+            bigPiece.big = true
             game.board[bRow][bCol] = "o";
         }
         
@@ -731,12 +757,12 @@ var ultimateTTTState = {
         if(game.isXTurn)
         {
             var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'star');
+            game.addSprite(coords[0], coords[1], 'X');
         }
         else
         {
             var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'moon');
+            game.addSprite(coords[0], coords[1], 'O');
         }
         return*/
 
@@ -758,19 +784,27 @@ var ultimateTTTState = {
                 var by = game.startingY + j * game.squareSize*3;
                 if(game.board[j][i] === "x"){
                     // game.addSprite(x, y, 'star'); // needs to change to big logic
-                    game.addSpriteWithWidth(bx, by, 'star', game.squareSize*3, game.squareSize*3)
+                    var bigPiece = game.addSpriteWithWidth(bx, by, 'star', game.squareSize*3, game.squareSize*3)
+                    bigPiece.big = true
                 }
                 if(game.board[j][i] === "o"){
                     // game.addSprite(x, y, 'moon');
-                    game.addSpriteWithWidth(bx, by, 'moon', game.squareSize*3, game.squareSize*3)
+                    var bigPiece = game.addSpriteWithWidth(bx, by, 'moon', game.squareSize*3, game.squareSize*3)
+                    bigPiece.big
+
                 }
                 // Needs draw logic
                 if (game.board[j][i] === 'Draw')
                 {
                     // I think a poop emoji image would be best here
+
                     // var bigPiece = game.addDrawSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'star', 'moon', game.squareSize*3, game.squareSize*3)
-                    var bigPiece2 = game.addSpriteWithWidth(bx + game.squareSize*3/2 - game.squareSize*1/3, by + game.squareSize*1/2, 'moon', game.squareSize*1.8, game.squareSize*1.8)
-                    var bigPiece1 = game.addSpriteWithWidth(bx - game.squareSize*1/5, by + game.squareSize*1/2, 'star', game.squareSize*1.8, game.squareSize*1.8)
+                    
+                    var bigPiece1 = game.addSpriteWithWidth(bx, by, 'poopemoji', game.squareSize*3, game.squareSize*3)
+                    bigPiece1.big = true
+                    game.bigPlacedPieces.push(bigPiece1);
+
+
                 }
 
                 for (var k=0; k < game.n; k++) {
@@ -783,11 +817,11 @@ var ultimateTTTState = {
                             //Do nothing (continue)
                         }
                         else if(game.board[j][i][l][k] === "x"){
-                            game.addSprite(lx, ly, 'star');
+                            game.addSprite(lx, ly, 'X');
                             
                         }
                         else if(game.board[j][i][l][k] === "o"){
-                            game.addSprite(lx, ly, 'moon');
+                            game.addSprite(lx, ly, 'O');
                         }
                     }
                 }
@@ -912,7 +946,9 @@ var ultimateTTTState = {
         {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(bigIndexX, bigIndexY, littleIndexX, littleIndexY))
-                game.displayWinner()
+            {
+                game.waiting = true//game.displayWinner()
+            }
             else
                 game.switchTurn(bigIndexX, bigIndexY, littleIndexX, littleIndexY)
         }
@@ -928,6 +964,87 @@ var ultimateTTTState = {
         game.printBoard();
     },
     
+    rescaleSprites()
+    {
+        
+        game.endingBoard.forEach(function(element) {
+             if(element.key != 'text' && element.key != 'redsquare' && !element.big && element.key != 'cometTail' && element.key != 'greensquare')
+                    game.addSprite(element.x, element.y, element.key);
+             else if(element.big)
+                    game.addSpriteWithWidth(element.x, element.y, element.key, game.squareSize*3, game.squareSize*3)
+             else if(element.key === 'cometTail')
+             {
+                 var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
+                 cometTail.height = game.squareSize*3 + element.lineExtra
+                 cometTail.angle = element.angle
+
+             }
+         });
+        game.drawLines()
+    },
+    
+    drawLines()
+    {
+        for (var i = 1; i < 3; i++)
+        {
+            var horzLine = game.add.graphics(game.startingX, game.startingY + i*game.squareSize*3)
+            horzLine.lineStyle(6, 0xffff0, 1);
+            horzLine.lineTo(game.squareSize*9,0);
+            horzLine.endFill();
+            
+            var vertLine = game.add.graphics(game.startingX + i*game.squareSize*3, game.startingY)
+            vertLine.lineStyle(6, 0xffff0, 1);
+            vertLine.lineTo(0,game.squareSize*9);
+            vertLine.endFill();
+        }
+    },
+    
+    drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
+    {
+        game.linesToAnimate++
+        //var piece2 = game.addSpriteNoScale(startX, startY, 'cometTail');
+        //game.add.tween(piece2.scale).to({  y: 2.7}, 500, Phaser.Easing.Linear.None, true);
+        var piece = game.addSpriteNoScale(startX, startY, 'comet');
+        piece.key = 'comet'
+        piece.angle = angle
+        var tween = game.add.tween(piece).to( { x: endX, y: endY }, 1000,Phaser.Easing.Linear.None, true)
+        game.tstartX = startX
+        game.tstartY = startY
+        tween.onComplete.add(function() { game.showLine(startX, startY, angle, lineExtra); });
+    },
+    
+    showLine(startX, startY, angle, lineExtra)
+    {
+        var piece2 = game.addSpriteNoScale(startX , startY, 'cometTail');
+        piece2.key = 'cometTail'
+        piece2.height = game.squareSize*3 + lineExtra
+        piece2.angle = angle
+        console.log(startX + "," + startY)
+        //console.log(this)
+        piece2.alpha = 0;
+        piece2.angle = angle
+        piece2.lineExtra = lineExtra
+        //console.log("complete tween")
+        
+        var tween = game.add.tween(piece2).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+        //var tween = game.add.tween(line).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(game.completeDraw)
+    },
+    
+    
+    completeDraw()
+    {
+        game.linesToAnimate--
+        console.log("lines left: " + game.linesToAnimate)
+        if(game.linesToAnimate === 0)
+            game.displayWinner()
+            },
+    
+    addSpriteNoScale(x, y, name) {
+        var sprite = game.add.sprite(x, y, name);
+        
+        return sprite
+    },
     
     
     /*
@@ -937,6 +1054,14 @@ var ultimateTTTState = {
      */
     assignFunctions()
     {
+        game.showSprites = this.showSprites
+        game.addSpriteNoScale = this.addSpriteNoScale
+        game.drawWinningLine = this.drawWinningLine
+        game.completeDraw = this.completeDraw
+        game.showSprites = this.showSprites
+        game.showLine = this.showLine
+        game.drawLines = this.drawLines
+        game.rescaleSprites = this.rescaleSprites
         game.makeBoardOnScreen = this.makeBoardOnScreen;
         game.switchTurn = this.switchTurn;
         game.placePiece = this.placePiece

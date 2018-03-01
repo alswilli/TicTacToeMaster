@@ -13,15 +13,24 @@ var winState = {
          state, so we have to save what the board looked like when the game ended so 
          it can be displayed in this winState
          */
-        if(app.gameType == "3d")
+        //setup background
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
+        if(app.gameType == "3d" || app.gameType === "ultimate")
             game.rescaleSprites()
+        else if(app.gameType == "original" || app.gameType == "orderChaos")
+            game.showSprites()
         else
         {
             game.endingBoard.forEach(function(element) {
-                                     if(element.key != 'text')
+                                     if(element.key != 'text' && element.key != 'redsquare')
                                      game.addSprite(element.x, element.y, element.key);
                                      });
             }
+		
+			
         var message
         var submessage = ""
         //display that the game ended in a draw or display the winner

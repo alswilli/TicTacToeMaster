@@ -13,12 +13,27 @@ var ticTacState = {
     update() {
     },
     
+    preload() {
+        game.load.image('comet', 'imgs/comet.png');
+        game.load.image('cometTail', 'imgs/cometTail.png');
+    },
+    
     /*
      called when the game starts
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
+
+        game.linesToAnimate = 0
+        
+
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
+			
+
         game.squareSize = 115
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 3
@@ -63,6 +78,8 @@ var ticTacState = {
         this.addTexts()
         
         game.previousPiece = ""
+        
+        //game.drawWinningLine(game.screenWidth/2, game.startingY - 15, game.screenWidth/2, 400)
         //folloowing logic is for multiplayer games
         if(game.singleplayer || game.vsAi)
             return
@@ -149,13 +166,13 @@ var ticTacState = {
          //place either an x or o, depending whose turn it is
         if(game.isXTurn)
         {
-            var piece = game.addSprite(sprite.x, sprite.y, 'star');
+            var piece = game.addSprite(sprite.x, sprite.y, 'X');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "x"
             game.previousPiece = "x"
         }
         else{
-            var piece = game.addSprite(sprite.x, sprite.y, 'moon');
+            var piece = game.addSprite(sprite.x, sprite.y, 'O');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "o";
             game.previousPiece = "o"
@@ -223,7 +240,8 @@ var ticTacState = {
             game.waiting = false
         if(game.isOver(coordInfo.x, coordInfo.y))
         {
-            game.displayWinner()
+            game.waiting = true
+            //game.displayWinner()
             console.log(board)
         }
         game.switchTurn(coordInfo.x, coordInfo.y)
@@ -238,6 +256,16 @@ var ticTacState = {
         sprite.scale.setTo(0.5, 0.5);
         sprite.width = game.squareSize
         sprite.height = game.squareSize
+        return sprite
+    },
+    
+    /*
+     adds a sprite to the screen and returns a reference to it, scales image down
+     to half its size, we can change game later
+     */
+    addSpriteNoScale(x, y, name) {
+        var sprite = game.add.sprite(x, y, name);
+        
         return sprite
     },
     
@@ -280,25 +308,46 @@ var ticTacState = {
         {
             gameOver = true
             game.isDraw = false
+            var lineAngle = -90
+            var startingY = game.startingX + (game.squareSize * (row)) - game.squareSize/2 - 15
+            var endingX = game.screenWidth + 100
+            game.drawWinningLine(game.startingX - 15, startingY, endingX, startingY, lineAngle, 45)
         }
-        else if(vertical.size === 1)
+        if(vertical.size === 1)
         {
             gameOver = true
             game.isDraw = false
+            var lineAngle = 0
+            var startingX = game.startingX + (game.squareSize * (col+1)) - game.squareSize/2
+            game.drawWinningLine(startingX, game.startingY - 15, startingX, 800, lineAngle, 45)
         }
         //if all entries in a diagonal are the same AND that entry is not blank,
         //then the game is over
-        else if(posDiagonal.size === 1 && !posDiagonal.has(""))
+        if(posDiagonal.size === 1 && !posDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            var lineAngle = -45
+            var startingX = game.startingX
+            var startingY = game.startingY + 15
+            var endingX = game.screenWidth + 100
+            var endingY = 800
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 120)
+            
         }
-        else if(negDiagonal.size === 1 && !negDiagonal.has(""))
+        if(negDiagonal.size === 1 && !negDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            
+            var lineAngle = -135
+            var startingX = game.startingX
+            var startingY = game.startingY + (game.squareSize * game.n)
+            var endingX = game.screenWidth + 100
+            var endingY = -100
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 120)
         }
-        else if(game.turns >= 8)
+        if(game.turns >= 8 && !gameOver)
         {
             gameOver = true;
             game.isDraw = true
@@ -349,6 +398,7 @@ var ticTacState = {
     {
         if(game.state.current==="win")
             return
+
         /*if(game.id === id)
             return
         //updated the game board
@@ -361,14 +411,15 @@ var ticTacState = {
         if(game.isXTurn)
         {
             var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'star');
+            game.addSprite(coords[0], coords[1], 'X');
         }
         else
         {
             var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'moon');
+            game.addSprite(coords[0], coords[1], 'O');
         }
         return*/
+
         game.board = board
         //rub out pieces, so we don't draw multiple on top of each other
         for(var i in game.placedPieces)
@@ -383,10 +434,10 @@ var ticTacState = {
                 var x = game.startingX + i*game.squareSize;
                 var y = game.startingY + j * game.squareSize;
                 if(game.board[j][i] === "x"){
-                    game.addSprite(x, y, 'star');
+                    game.addSprite(x, y, 'X');
                 }
                 if(game.board[j][i] === "o"){
-                    game.addSprite(x, y, 'moon');
+                    game.addSprite(x, y, 'O');
                 }
             }
         }
@@ -508,7 +559,8 @@ var ticTacState = {
         if (game.vsAi) {
            console.log("updateTurnStatus: single player AI");
            if(game.isOver(indexX, indexY)) {
-              game.displayWinner()         
+               //game.displayWinner()  
+               game.waiting = true
            }
            else {
               game.switchTurn(indexX, indexY); 
@@ -529,7 +581,10 @@ var ticTacState = {
             console.log("updateTurnStatus: single player");
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
-                game.displayWinner()
+            {
+                //game.displayWinner()
+                game.waiting = true
+            }
             else
                 game.switchTurn(indexX, indexY)
         }
@@ -546,6 +601,64 @@ var ticTacState = {
         game.printBoard();
     },
     
+    drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
+    {
+        game.linesToAnimate++
+        //var piece2 = game.addSpriteNoScale(startX, startY, 'cometTail');
+        //game.add.tween(piece2.scale).to({  y: 2.7}, 500, Phaser.Easing.Linear.None, true);
+        var piece = game.addSpriteNoScale(startX, startY, 'comet');
+        piece.key = 'comet'
+        piece.angle = angle
+        var tween = game.add.tween(piece).to( { x: endX, y: endY }, 1000,Phaser.Easing.Linear.None, true)
+        game.tstartX = startX
+        game.tstartY = startY
+        tween.onComplete.add(function() { game.showLine(startX, startY, angle, lineExtra); });
+    },
+    
+    showLine(startX, startY, angle, lineExtra)
+    {
+        var piece2 = game.addSpriteNoScale(startX , startY, 'cometTail');
+        piece2.key = 'cometTail'
+        piece2.height = game.squareSize*3 + lineExtra
+        piece2.angle = angle
+        console.log(startX + "," + startY)
+        //console.log(this)
+        piece2.alpha = 0;
+        piece2.angle = angle
+        piece2.lineExtra = lineExtra
+        //console.log("complete tween")
+        
+        var tween = game.add.tween(piece2).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+        //var tween = game.add.tween(line).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(game.completeDraw)
+    },
+
+    
+    completeDraw()
+    {
+        game.linesToAnimate--
+        if(game.linesToAnimate === 0)
+            game.displayWinner()
+    },
+    
+    showSprites()
+    {
+        game.endingBoard.forEach(function(element) 
+        {
+
+            console.log(element)
+             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare')
+                game.addSprite(element.x, element.y, element.key);
+             else if(element.key === 'cometTail')
+             {
+                var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
+                cometTail.height = game.squareSize*3 + element.lineExtra
+                cometTail.angle = element.angle
+                                 
+             }
+         });
+    },
+    
     
     
     /*
@@ -555,6 +668,9 @@ var ticTacState = {
      */
     assignFunctions()
     {
+        game.completeDraw = this.completeDraw
+        game.showSprites = this.showSprites
+        game.showLine = this.showLine
         game.makeBoardOnScreen = this.makeBoardOnScreen;
         game.switchTurn = this.switchTurn;
         game.placePiece = this.placePiece
@@ -574,6 +690,8 @@ var ticTacState = {
         game.askForRematch = this.askForRematch
         game.updateTurnStatus = this.updateTurnStatus
         game.convertIndexesToCoords = this.convertIndexesToCoords
+        game.addSpriteNoScale = this.addSpriteNoScale
+        game.drawWinningLine = this.drawWinningLine
     }
 
 
@@ -683,7 +801,7 @@ function placePieceAt(row , col) {
    console.log(game.screenWidth);
 //    var x = 485 + (col * 115);
 //    var y = 115   * (row + 1);
-   var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'moon');
+   var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'O');
 //    var piece = game.addSprite(x, y, 'moon');
    game.placedPieces.push(piece);
    game.board[row][col] = "o";

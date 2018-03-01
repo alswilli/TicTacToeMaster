@@ -13,8 +13,9 @@ var threeDticTacState = {
     },
     
     preload() {
-        game.load.image('X', 'imgs/3D/X.png');
-        game.load.image('O', 'imgs/3D/O.png');
+        //game.load.image('redsquare', 'imgs/3D/redsquare.png');
+        //game.load.image('greensquare', 'imgs/3D/greensquare.png');
+
     },
     
     /*
@@ -22,11 +23,17 @@ var threeDticTacState = {
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
         
         game.boardHeight = game.cache.getImage('square').height * 4
         game.boardOffset = 15
         game.pieceWidth = 50
         game.pieceHeight = 50
+        game.squareSize = 50
+        game.boardHeightScaled = game.squareSize * 4 * 0.6
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 4
         game.isXTurn = true
@@ -47,16 +54,21 @@ var threeDticTacState = {
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
         
+        game.cursorSquares = game.makeBoardAsArray(game.n)
+        game.makeBoardOnScreenBetter('redsquare', 0)
+        
+        game.winningSquares = game.makeBoardAsArray(game.n)
+
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         
         console.log(game.board)
         //create the board on screen and makes each square clickable
-        game.makeBoardOnScreenBetter()
+        game.makeBoardOnScreenBetter('square', 1)
         //add messages that display turn status, connection statuses
         this.addTexts()
         
-        
+                
         //folloowing logic is for multiplayer games
         if(game.singleplayer || game.vs3DAi)
             return
@@ -132,7 +144,7 @@ var threeDticTacState = {
      creates the board on the screen using individual squares, rather than four entire board sprites,
      so now each square will have its own callback function. Will make adding custom tiles easier
      */
-    makeBoardOnScreenBetter()
+    makeBoardOnScreenBetter(name, alpha)
     {
         var xScale = 0.9;
         var yScale = 0.6;
@@ -155,21 +167,30 @@ var threeDticTacState = {
                     var worldY = sheared[0] + adjustmentY
                     //87 X 50 is the dimension of the image, hardcoded so when we add future custom tiles
                     //they will also fit the screen
-                    var square = game.addSpriteWithWidth(worldX, worldY, 'square', 87, 50);
+                    var square = game.addSpriteWithWidth(worldX, worldY, name, 87, 50);
+                    square.alpha = alpha
                     //adjust coordinates after scaling so there are no gaps between tiles
                     game.adjustForScale(square, xScale, yScale, k, j)
                     game.addPolygonBounds(square, xScale, yScale)
                     //enable input in game, don't if this is being called in winState
-                    if(game.state.current==="ticTac")
+                    if(game.state.current==="ticTac" && name === 'square')
                     {
                         square.inputEnabled = true
                         square.events.onInputDown.add(game.placePiece, game)
                     }
                     square.indexX = indexX
                     square.indexY = indexY
-                    square.key = 'square'
+                    square.key = name
                     square.boardNum = i
-                    game.spriteSquares[i][j][k] = square
+                    if(name === 'square')
+                        game.spriteSquares[i][j][k] = square
+                    else if(name === 'redsquare')
+                        game.cursorSquares[i][j][k] = square
+                    else if(name === 'greensquare')
+                    {
+                        if(game.winningSquares[i][j][k] != "")
+                            square.alpha = 0.7
+                    }
                 }
             }
         }
@@ -274,10 +295,11 @@ var threeDticTacState = {
     /*
      switch current turn, and display whose turn it is
      */
-    switchTurn(){
+    switchTurn(boardNum, indexX, indexY){
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
         game.turns++
+        game.updateHilightedSquare(boardNum, indexX, indexY)
         var turn = game.isXTurn ? "x" : "o"
         if(game.singleplayer || game.vs3DAi)
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
@@ -285,6 +307,33 @@ var threeDticTacState = {
             game.turnStatusText.setText("Your Turn")
         else
             game.turnStatusText.setText(game.opponent + "'s turn")
+    },
+    
+    updateHilightedSquare(boardNum, x, y)
+    {
+        for(var i = 0; i < game.n; i++)
+        {
+            for (var j = 0; j < game.n; j++)
+            {
+                for (var k = 0; k < game.n;k++)
+                {
+                    //Normal functionality, just assign one open spot
+                    if(i == boardNum && j == x && k == y)
+                    {
+                        console.log("i: ", i)
+                        console.log("j: ", j)
+                        console.log("x: ", x)
+                        console.log("y: ", y)
+                        game.cursorSquares[i][j][k].alpha = .7
+                        // game.cursorSquares[i][j].tint = 0xffffff
+                    }
+                    else
+                    {
+                        game.cursorSquares[i][j][k].alpha = 0
+                    }
+                }
+            }
+        }
     },
     
     /*
@@ -299,7 +348,7 @@ var threeDticTacState = {
             game.waiting = false
         if(game.isOver(coordInfo.boardNum, coordInfo.x, coordInfo.y))
             game.displayWinner()
-        game.switchTurn()
+        game.switchTurn(coordInfo.boardNum, coordInfo.x, coordInfo.y)
     },
     
     /*
@@ -342,6 +391,18 @@ var threeDticTacState = {
         console.log("");
     },
     
+    addWinningSquares(winningSquares)
+    {
+        
+        winningSquares.forEach(function(winningSquare)
+        {
+               var i = winningSquare[0]
+               var k = winningSquare[1]
+               var j = winningSquare[2]
+               game.winningSquares[i][j][k] = true
+        });
+    },
+    
     /*
      check if the game is over, given the index of the piece that was just placed
      */
@@ -352,20 +413,29 @@ var threeDticTacState = {
         //create Sets for each direction. Since a Set has unique entries, if there
         //is only one entry and it is not an empty string, that entry is the winner
         var horizontal = new Set()
+        var horCoords = []
         var vertical = new Set()
+        var vertCoords = []
         
         var posDiagonal = new Set()
+        var posCoords = []
         var negDiagonal = new Set()
+        var negCoords = []
         
         for (var y=0; y < game.n; y++){
             //check the possible horizontal and vertical wins for the given placement
             horizontal.add(game.board[num][row][y])
+            horCoords.push([num, row, y])
             vertical.add(game.board[num][y][col])
+            vertCoords.push([num, y, col])
             //check the possible diagonal wins by checking the main diagonals
             posDiagonal.add(game.board[num][y][y])
+            posCoords.push([num, y, y])
             negDiagonal.add(game.board[num][game.n-1-y][y])
+            negCoords.push([num, game.n-1-y, y])
         }
         var gameOver = false;
+        console.log(horCoords)
         //if all entries in a row or column are the same, then the game is over
         //we don't need to check that the only entry is not a blank string, since
         //these Sets will include the piece that was just placed, which cannot possibly be blank
@@ -373,26 +443,30 @@ var threeDticTacState = {
         {
             gameOver = true
             game.isDraw = false
+            game.addWinningSquares(horCoords)
         }
-        else if(vertical.size === 1)
+        if(vertical.size === 1)
         {
             gameOver = true
             game.isDraw = false
+            game.addWinningSquares(vertCoords)
         }
         //if all entries in a diagonal are the same AND that entry is not blank,
         //then the game is over
-        else if(posDiagonal.size === 1 && !posDiagonal.has(""))
+        if(posDiagonal.size === 1 && !posDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            game.addWinningSquares(posCoords)
         }
-        else if(negDiagonal.size === 1 && !negDiagonal.has(""))
+        if(negDiagonal.size === 1 && !negDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            game.addWinningSquares(negCoords)
         }
         //check 3D game ending conditions
-        else if(game.checkIfOver3D(num, col, row))
+        if(game.checkIfOver3D(num, col, row))
         {
             gameOver = true
             game.isDraw = false
@@ -414,13 +488,15 @@ var threeDticTacState = {
      */
     checkIfOver3D(board, col, row)
     {
+        var gameOver = false
         if(game.checkIfVertical3D(col, row))
-            return true
+            gameOver = true
         if(game.checkLocalDiagonals3D(board, col, row))
-            return true
+            gameOver =  true
         if(game.checkMainDiagonals3D(board, col, row))
-            return true
-        return false
+            gameOver = true
+        console.log("CHECKIFOVER3D: " + gameOver)
+        return gameOver
     },
     
     /*
@@ -429,14 +505,19 @@ var threeDticTacState = {
     checkIfVertical3D(col, row)
     {
         var vertical = new Set()
+        var vertCoords = []
         for(var i = 0; i < game.board.length; i++)
         {
             vertical.add(game.board[i][row][col])
+            vertCoords.push([i, row, col])
         }
         
-        gameOver = false
+        var gameOver = false
         if(vertical.size === 1)
+        {
+            game.addWinningSquares(vertCoords)
             gameOver = true
+        }
         return gameOver
     },
     
@@ -446,9 +527,13 @@ var threeDticTacState = {
     checkLocalDiagonals3D(board, fixedCol, fixedRow)
     {
         var positiveHorizontal = new Set()
+        var posHorCoords = []
         var negativeHorizontal = new Set()
+        var negHorCoords = []
         var positiveVertical= new Set()
+        var posVertCoords = []
         var negativeVertical= new Set()
+        var negVertCoords = []
         
         for(var col = 0, row=0, k=0; k < game.board.length; col++, row++, k++)
         {
@@ -461,6 +546,7 @@ var threeDticTacState = {
             {
 
                 negativeHorizontal.add(game.board[k][fixedRow][col])
+                negHorCoords.push([k, fixedRow, col])
             }
             
         }
@@ -475,6 +561,7 @@ var threeDticTacState = {
             {
                 
                 positiveHorizontal.add(game.board[k][fixedRow][col])
+                posHorCoords.push([k, fixedRow, col])
             }
         }
         for(var col = 0, row=0, k=0; k < game.board.length; col++, row++, k++)
@@ -488,6 +575,7 @@ var threeDticTacState = {
             {
                 
                 positiveVertical.add(game.board[k][row][fixedCol] )
+                posVertCoords.push([k, row, fixedCol])
             }
         }
         for(var col = 0, row=0, k=game.n-1; k >= 0; col++, row++, k--)
@@ -501,28 +589,33 @@ var threeDticTacState = {
             {
                 
                 negativeVertical.add(game.board[k][row][fixedCol])
+                negVertCoords.push([k, row, fixedCol])
             }
         }
     
-        gameOver = false
+        var gameOver = false
         if(negativeHorizontal.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(negHorCoords)
             console.log("neg horizontal, game ovah!")
         }
-        else if(positiveHorizontal.size === 1)
+        if(positiveHorizontal.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(posHorCoords)
             console.log("pos horizontal, game ovah!")
         }
-        else if(positiveVertical.size === 1)
+        if(positiveVertical.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(posVertCoords)
             console.log("pos vertical, game ovah!")
         }
-        else if(negativeVertical.size === 1)
+        if(negativeVertical.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(negVertCoords)
             console.log("neg vertical, game ovah!")
         }
         
@@ -535,9 +628,13 @@ var threeDticTacState = {
     checkMainDiagonals3D()
     {
         var mainTopLeft= new Set()
+        var topLeftCoords = []
         var mainTopRight= new Set()
+        var topRightCoords = []
         var mainBottomLeft= new Set()
+        var bottomLeftCoords = []
         var mainBottomRight= new Set()
+        var bottomRightCoords = []
         for(var col = 0, row=0, k=0; k < game.board.length; col++, row++, k++)
         {
             //if the coords are out of bounds or contain an empty square, mark it as invalid
@@ -548,6 +645,7 @@ var threeDticTacState = {
             else
             {
                 mainTopLeft.add(game.board[k][row][col])
+                topLeftCoords.push([k, row, col])
             }
         }
         for(var col = game.n-1, row=0, k=0; k < game.board.length; col--, row++, k++)
@@ -561,6 +659,7 @@ var threeDticTacState = {
             {
                 
                 mainTopRight.add(game.board[k][row][col])
+                topRightCoords.push([k, row, col])
             }
         }
         //
@@ -574,6 +673,7 @@ var threeDticTacState = {
             else
             {
                 mainBottomLeft.add(game.board[k][row][col])
+                bottomLeftCoords.push([k, row, col])
             }
         }
         for(var col = game.n-1, row=game.n-1, k=0; k < game.board.length; col--, row--, k++)
@@ -586,27 +686,32 @@ var threeDticTacState = {
             else
             {
                 mainBottomRight.add(game.board[k][row][col])
+                bottomRightCoords.push([k, row, col])
             }
         }
         var gameOver = false
         if(mainTopLeft.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(topLeftCoords)
             console.log("mainTopLeft, game ovah!")
         }
-        else if(mainTopRight.size === 1)
+        if(mainTopRight.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(topRightCoords)
             console.log("mainTopRight, game ovah!")
         }
-        else if(mainBottomLeft.size === 1)
+        if(mainBottomLeft.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(bottomLeftCoords)
             console.log("mainBottomLeft, game ovah!")
         }
-        else if(mainBottomRight.size === 1)
+        if(mainBottomRight.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(bottomRightCoords)
             console.log("mainBottomRight, game ovah!")
         }
         
@@ -841,7 +946,7 @@ var threeDticTacState = {
             if(game.isOver(boardNum, indexX, indexY))
                 game.displayWinner()
             else
-                game.switchTurn()
+                game.switchTurn(boardNum, indexX, indexY)
         }
         //if multiplayer, set waiting to true so that you can't place two pieces in one turn
         else
@@ -924,12 +1029,15 @@ var threeDticTacState = {
      */
     rescaleSprites()
     {
-        game.makeBoardOnScreenBetter()
+        game.makeBoardOnScreenBetter('square', 1)
+        game.makeBoardOnScreenBetter('greensquare', 0)
         game.endingBoard.forEach(function(element) {
-            if(element.key != 'text' && element.key != 'square')
+            if(element.key != 'text' && element.key != 'square' && element.key != 'redsquare' && element.key != 'background')
                   game.addSprite(element.x, element.y, element.key);
         });
     },
+    
+    
     
     
     /*
@@ -975,6 +1083,8 @@ var threeDticTacState = {
         game.placePieceNoPointer = this.placePieceNoPointer
         game.rescaleSprites = this.rescaleSprites
         game.checkAdjacentShears = this.checkAdjacentShears
+        game.updateHilightedSquare = this.updateHilightedSquare
+        game.addWinningSquares = this.addWinningSquares
     }
     
 };
