@@ -625,15 +625,16 @@ function aiMakesMove() {
 
    // Set game difficutly probability
    if (game.difficulty == 'easy') {
-    var actualMove = (Math.random() < 0.3) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
     console.log("EASY MODE")
    }
    else if (game.difficulty == 'medium') {
-    var actualMove = (Math.random() < 0.6) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
     console.log("MEDIUM MODE")
    }
    else if (game.difficulty == 'hard') {
-    var actualMove = (Math.random() < 0.9) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    var actualMove = (Math.random() < 0.98) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    // var actualMove = move
     console.log("HARD MODE")   
    }
    console.log("MOVE: ", move)
@@ -695,13 +696,14 @@ function boardToArray() {
    
    var array = [];
    
-   for (var i=0; i<board.length; i++) {
-      for (var j=0; j<board[i].length; j++) {
+   for (var i=0; i<3; i++) {
+      for (var j=0; j<3; j++) {
          if (board[i][j] != "") {
             array.push(board[i][j]);
          }else {
             array.push(i*3 + j);
          }
+         console.log ("BOARD ARRAY: " + (i*3 + j), board[i][j])
       }
    }
    return array;
@@ -742,15 +744,15 @@ function emptyIndexies(board){
  * 6 7 8 
  */
 function gameIsWon(board, player) {
-   if ( (board[0] == player && board[1] == player && board[2] == player) ||
+   if ( (board[0] == player && board[1] == player && board[2] == player) || //Horizontals
         (board[3] == player && board[4] == player && board[5] == player) ||
         (board[6] == player && board[7] == player && board[8] == player) ||
         
-        (board[0] == player && board[3] == player && board[6] == player) ||
+        (board[0] == player && board[3] == player && board[6] == player) || //Verticals
         (board[1] == player && board[4] == player && board[7] == player) ||
         (board[2] == player && board[5] == player && board[8] == player) ||
        
-        (board[0] == player && board[4] == player && board[8] == player) ||
+        (board[0] == player && board[4] == player && board[8] == player) || //Diagonals
         (board[2] == player && board[4] == player && board[6] == player) ) 
    {
       return true;
@@ -800,6 +802,8 @@ function minimax(newBoard, player) {
       
       moves.push(move); //Push the spot to empty
    }
+
+   console.log("Done")
       
    //If it's the ai's turn, loop over the moves and choose the one with the highest score
    var bestMove;
