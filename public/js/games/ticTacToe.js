@@ -921,7 +921,7 @@ function minimax(newBoard, player) {
       moves.push(move); //Push the spot to empty
    }
 
-   console.log("Done")
+   //console.log("Done")
       
    //If it's the ai's turn, loop over the moves and choose the one with the highest score
    var bestMove;
