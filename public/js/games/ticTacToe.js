@@ -813,10 +813,10 @@ function boardToArray() {
    
    var array = [];
    
-   for (var i=0; i<board.length; i++) {
-      for (var j=0; j<board[i].length; j++) {
-         if (board[i][j] != "") {
-            array.push(board[i][j]);
+   for (var i=0; i<game.board.length; i++) {
+      for (var j=0; j<game.board[i].length; j++) {
+         if (game.board[i][j] != "") {
+            array.push(game.board[i][j]);
          }else {
             array.push(i*3 + j);
          }

@@ -18,6 +18,7 @@ var menuState = {
         called to initialize this state
     */
     create() {
+        console.log("IN MENU")
         var title
         if(game.gametype === "original")
             title = 'Tic Tac Toe'

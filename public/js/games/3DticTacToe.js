@@ -12,12 +12,7 @@ var threeDticTacState = {
     update() {
     },
     
-    preload() {
-        //game.load.image('redsquare', 'imgs/3D/redsquare.png');
-        //game.load.image('greensquare', 'imgs/3D/greensquare.png');
 
-    },
-    
     /*
      called when the game starts
      */

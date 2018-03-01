@@ -1,3 +1,0 @@
-git add .
-git commit -m "push <whatever you did> to heroku site"
-git push heroku master
