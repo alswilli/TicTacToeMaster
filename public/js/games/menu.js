@@ -18,7 +18,14 @@ var menuState = {
         called to initialize this state
     */
     create() {
+
         console.log("IN MENU")
+        //setup background
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'menubackground');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
+
         var title
         if(game.gametype === "original")
             title = 'Tic Tac Toe'
@@ -46,12 +53,25 @@ var menuState = {
                            game.state.start("gameDif"); 
                            });
         }
+
+        game.vs3DAi = false
+
+        // if (game.gametype == "3d") {
+        //     game.addMenuOption('SinglePlayer', 200, function () {
+        //                     game.singleplayer = true;
+        //                     game.vs3DAi = true;
+        //                  //    game.state.start("ticTac");
+        //                     game.state.start("gameDif"); 
+        //                     });
+        //  }
         game.addMenuOption('Local Multiplayer', 200, function () {
                            game.singleplayer = true
+                           game.vsAi = false;
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Online Multiplayer', 200,function () {
                            game.singleplayer = false
+                           game.vsAi = false;
                            game.state.start("ticTac");
                            });
         // If neither option, do the database logic with leaderboards, achievements, currency, etc. (we will add more to here later, thoughwill need to be in home page because href loads first)

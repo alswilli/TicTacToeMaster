@@ -132,7 +132,7 @@ $(function(){
     $('#profile_image').change( function(e) {
         
         var img = URL.createObjectURL(e.target.files[0]);
-        $('.image2').attr('src', img);
+        $('.image').attr('src', img);
     });
 });
 
