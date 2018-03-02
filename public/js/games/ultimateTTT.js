@@ -849,6 +849,7 @@ var ultimateTTTState = {
         }
         else if(game.turns >= 80 || game.bigPlacedPieces.length == 9)
         {
+            console.log("IN isOver, length of game.bigPlacedPieces = " + game.bigPlacedPieces.length)
             gameOver = true;
             game.isDraw = true
             console.log("bDraw")
@@ -906,10 +907,7 @@ var ultimateTTTState = {
 
         if (game.board[bRow][bCol] === 'Draw')
         {
-            // I think a poop emoji image would be best here
-            // var bigPiece = game.addDrawSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'star', 'moon', game.squareSize*3, game.squareSize*3)
-            // var bigPiece2 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 + game.squareSize*3/2 - game.squareSize*1/3, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'moon', game.squareSize*1.8, game.squareSize*1.8)
-            // var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3 - game.squareSize*1/5, game.startingY + bRow*game.squareSize*3 + game.squareSize*1/2, 'star', game.squareSize*1.8, game.squareSize*1.8)
+
             var bigPiece1 = game.addSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'poopemoji', game.squareSize*3, game.squareSize*3)
             bigPiece1.big = true
             game.bigPlacedPieces.push(bigPiece1); // might have broken the draw logic
@@ -933,7 +931,7 @@ var ultimateTTTState = {
         
         game.magicBoardLogic[bCol][bRow] = "magic"
         game.bigBoardLogic[bCol][bRow] = "closed"
-
+        console.log("IN updateBigBoard, length of game.bigPlacedPieces = " + game.bigPlacedPieces.length)
         // game.updateTurnStatus(bigIndexX, bigIndexY, littleIndexX, littleIndexY)
     },
     
@@ -1019,13 +1017,13 @@ var ultimateTTTState = {
                     // game.addSprite(x, y, 'star'); // needs to change to big logic
                     var bigPiece = game.addSpriteWithWidth(bx, by, 'X', game.squareSize*3, game.squareSize*3)
                     bigPiece.big = true
-                    game.bigPlacedPieces.push(bigPiece)
+                    //game.bigPlacedPieces.push(bigPiece)
                 }
                 if(game.board[j][i] === "o"){
                     // game.addSprite(x, y, 'moon');
                     var bigPiece = game.addSpriteWithWidth(bx, by, 'O', game.squareSize*3, game.squareSize*3)
                     bigPiece.big = true
-                    game.bigPlacedPieces.push(bigPiece1)
+                    //game.bigPlacedPieces.push(bigPiece1)
 
                 }
                 // Needs draw logic
@@ -1037,7 +1035,7 @@ var ultimateTTTState = {
                     
                     var bigPiece1 = game.addSpriteWithWidth(bx, by, 'poopemoji', game.squareSize*3, game.squareSize*3)
                     bigPiece1.big = true
-                    game.bigPlacedPieces.push(bigPiece1);
+                    //game.bigPlacedPieces.push(bigPiece1);
 
 
                 }
