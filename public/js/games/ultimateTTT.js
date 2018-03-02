@@ -1019,11 +1019,13 @@ var ultimateTTTState = {
                     // game.addSprite(x, y, 'star'); // needs to change to big logic
                     var bigPiece = game.addSpriteWithWidth(bx, by, 'X', game.squareSize*3, game.squareSize*3)
                     bigPiece.big = true
+                    game.bigPlacedPieces.push(bigPiece)
                 }
                 if(game.board[j][i] === "o"){
                     // game.addSprite(x, y, 'moon');
                     var bigPiece = game.addSpriteWithWidth(bx, by, 'O', game.squareSize*3, game.squareSize*3)
-                    bigPiece.big
+                    bigPiece.big = true
+                    game.bigPlacedPieces.push(bigPiece1)
 
                 }
                 // Needs draw logic
