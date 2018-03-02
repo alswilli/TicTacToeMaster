@@ -825,20 +825,20 @@ function placePieceAt(row , col) {
 /* Converts the board to a single array 
  */
 function boardToArray() {
-   
-   var array = [];
-   
-   for (var i=0; i<3; i++) {
-      for (var j=0; j<3; j++) {
-         if (board[i][j] != "") {
-            array.push(board[i][j]);
-         }else {
-            array.push(i*3 + j);
-         }
-         console.log ("BOARD ARRAY: " + (i*3 + j), board[i][j])
-      }
-   }
-   return array;
+    
+    var array = [];
+    
+    for (var i=0; i<3; i++) {
+        for (var j=0; j<3; j++) {
+            if (board[i][j] != "") {
+                array.push(board[i][j]);
+            }else {
+                array.push(i*3 + j);
+            }
+            console.log ("BOARD ARRAY: " + (i*3 + j), board[i][j])
+        }
+    }
+    return array;
 }
 
 
@@ -935,7 +935,6 @@ function minimax(newBoard, player) {
       moves.push(move); //Push the spot to empty
    }
 
-//    console.log("Done")
       
    //If it's the ai's turn, loop over the moves and choose the one with the highest score
    var bestMove;

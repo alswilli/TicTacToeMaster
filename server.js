@@ -162,7 +162,7 @@ io.on('connection',function(socket)
                     io.sockets.in(socket.player.roomName).emit('playerLeft')
                 });*/
                 
-                socket.on('disconnect',function(){
+                socket.on('disconnect',function(){ //change this
                           // sending to all clients in 'game'
                           io.sockets.in(socket.player.roomName).emit('playerLeft')
                           updateRoomStatus(socket.player)

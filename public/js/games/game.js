@@ -27,6 +27,8 @@ function startGame()
     
     game.firstPlay = true
     
+   
+    
     game.state.add('win', winState)
     game.state.add('waitingRoom', waitingRoomState)
     if(app.gameType == "original")
@@ -42,6 +44,8 @@ function startGame()
                     
                     game.optionCount = 0;
     game.addMenuOption = function(text, startY, callback) {
+        console.log("MAKE MENU")
+        
         var optionStyle = { font: '30pt TheMinion', fill: 'white', align: 'left', stroke: 'rgba(0,0,0,0)', srokeThickness: 4};
         var txt = game.add.text(game.world.centerX, (game.optionCount * 80) + startY, text, optionStyle);
         txt.anchor.setTo(0.5);
