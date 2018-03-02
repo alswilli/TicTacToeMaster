@@ -21,6 +21,7 @@ var waitingRoomState = {
         });
         
         game.addMenuOption('Main Menu', 200, function () {
+                    document.getElementById("chat-box").style.visibility = "hidden";
                     Client.notifyQuit()
                     game.state.start("menu");
         });

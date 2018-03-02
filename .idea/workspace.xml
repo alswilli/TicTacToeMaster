@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3e607df3-ad05-4db3-bd91-938af6a2fe3d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/games/3DticTacToe.js" afterPath="$PROJECT_DIR$/public/js/games/3DticTacToe.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/games/menu.js" afterPath="$PROJECT_DIR$/public/js/games/menu.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/login/js/createProfile.js" afterPath="$PROJECT_DIR$/public/login/js/createProfile.js" />
-    </list>
+    <list default="true" id="3e607df3-ad05-4db3-bd91-938af6a2fe3d" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +15,8 @@
       <file leaf-file-name="ticTacToe.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/js/games/ticTacToe.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="109" column="47" lean-forward="true" selection-start-line="109" selection-start-column="47" selection-end-line="109" selection-end-column="47" />
+            <state relative-caret-position="739">
+              <caret line="126" column="47" lean-forward="false" selection-start-line="126" selection-start-column="47" selection-end-line="126" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -40,7 +36,7 @@
         <entry file="file://$PROJECT_DIR$/public/login/createProfile.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="221">
-              <caret line="13" column="52" lean-forward="true" selection-start-line="13" selection-start-column="52" selection-end-line="13" selection-end-column="52" />
+              <caret line="13" column="52" lean-forward="false" selection-start-line="13" selection-start-column="52" selection-end-line="13" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -59,8 +55,8 @@
       <file leaf-file-name="menu.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/js/games/menu.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="39" column="42" lean-forward="false" selection-start-line="39" selection-start-column="42" selection-end-line="39" selection-end-column="42" />
+            <state relative-caret-position="425">
+              <caret line="46" column="42" lean-forward="false" selection-start-line="46" selection-start-column="42" selection-end-line="46" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -97,8 +93,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="271" />
-    <option name="y" value="86" />
+    <option name="x" value="247" />
+    <option name="y" value="40" />
     <option name="width" value="1013" />
     <option name="height" value="902" />
   </component>
@@ -284,7 +280,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="271" y="86" width="1013" height="902" extended-state="0" />
+    <frame x="247" y="40" width="1013" height="902" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.40320963" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -341,8 +337,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/games/menu.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="39" column="42" lean-forward="false" selection-start-line="39" selection-start-column="42" selection-end-line="39" selection-end-column="42" />
+        <state relative-caret-position="425">
+          <caret line="46" column="42" lean-forward="false" selection-start-line="46" selection-start-column="42" selection-end-line="46" selection-end-column="42" />
           <folding />
         </state>
       </provider>
@@ -357,8 +353,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/games/ticTacToe.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="109" column="47" lean-forward="true" selection-start-line="109" selection-start-column="47" selection-end-line="109" selection-end-column="47" />
+        <state relative-caret-position="739">
+          <caret line="126" column="47" lean-forward="false" selection-start-line="126" selection-start-column="47" selection-end-line="126" selection-end-column="47" />
           <folding />
         </state>
       </provider>
@@ -366,7 +362,7 @@
     <entry file="file://$PROJECT_DIR$/public/login/createProfile.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="13" column="52" lean-forward="true" selection-start-line="13" selection-start-column="52" selection-end-line="13" selection-end-column="52" />
+          <caret line="13" column="52" lean-forward="false" selection-start-line="13" selection-start-column="52" selection-end-line="13" selection-end-column="52" />
           <folding />
         </state>
       </provider>

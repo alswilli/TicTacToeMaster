@@ -132,6 +132,7 @@ var winState = {
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Return to TicTacToe Menu', 400, function () {
+                            document.getElementById("chat-box").style.visibility = "hidden";
                            game.firstPlay = true
                            Client.notifyQuit()
                            if(!game.opponentLeft)

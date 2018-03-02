@@ -6,6 +6,17 @@ function makeClient()
     Client.socket = io.connect();
     //Client.socket = io.connect();
 
+    Client.chatMessage = function(data){
+        console.log("sending new message!")
+        console.log("Message at client: ", data.message)
+        // $('form').submit(function(){
+        //     socket.emit('chat message', $('#m').val());
+        //     $('#m').val('');
+        //     return false;
+        //     });
+        Client.socket.emit('postChatMessage', data);
+    };
+
 
     /*functions that can be called directly form the game to communicate with the server*/
     Client.makeNewPlayer = function(data){
@@ -35,6 +46,11 @@ function makeClient()
         //Client.socket.emit('manualDisconnect');
     };
 
+    Client.socket.on('chatMessage', function(msg){
+        console.log("back in client!")
+        // $('#messages').append($('<li>').text(msg.message));
+        $('#messages').append($('<li>').text(msg.user + ": " + msg.message));
+    });
 
     /*Callbacks that are called when the server sends a signal with the given name*/
     Client.socket.on('startGame',function(data){

@@ -53,8 +53,15 @@ io.on('connection',function(socket)
       console.log("new connection!")
       
       
-     
-      
+      socket.on('postChatMessage', function(data){
+        console.log("message: " + data.message);
+        console.log("user: " + "banger") //why is this printing?
+        data.user = socket.player.username; //app.username
+        // socket.emit('chatMessage', msg);
+        io.sockets.in(socket.player.roomName).emit('chatMessage', data)  
+        // io.emit('chatMessage', data) 
+      });
+         
       socket.on('makeNewPlayer',function(data){
             //create new player
                 //Increase roomno if 2 clients are present in a room.

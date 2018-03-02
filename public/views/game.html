@@ -23,6 +23,105 @@
 <!-- Notice the URL, this is handled by socket.io on the server automatically, via express-->
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
+    <script>
+    $(function () {
+        // var socket = io();
+        $('form').submit(function(){
+            console.log("Chat worked")
+            var message = $('#m').val()
+            console.log("Message: ", message) 
+            Client.chatMessage({"message": message, "user": null});
+            // socket.emit('chat message', $('#m').val());
+            $('#m').val('');
+            return false;
+        });
+    //         socket.on('chat message', function(msg){
+    //             $('#messages').append($('<li>').text(msg));
+    // });
+    });
+    </script>
+    <style>
+        .chat-box{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    visibility: hidden;
+}
+.box{
+    transition: height .6s ease-out;
+    width: 300px;
+    height: 20px;
+    margin-bottom: 20px;
+    /* bottom: 30px; */
+    background: rgb(248, 248, 248);
+    z-index: 9999;
+    color: #03030a;
+    overflow: scroll;
+    text-align: left;
+}
+.open:hover>.box{
+  height:350px;
+      transition: height .6s ease-out;
+}
+.open {
+    text-align: center;
+    font-size: 20px;
+    border: 1px solid #3F51B5;
+    background: #673AB7;
+    color: #eaeaea;
+}
+
+form {background: #000; padding: 3px; position: fixed; bottom: 0; }
+form input {bottom: 0; border: 0; padding: 3px; width: 77.5%; margin-right: .5%; }
+form button { width: 22%; background: rgb(130, 224, 255); border: none; padding: 3px; }
+#messages { list-style-type: none; margin: 0; padding: 0; }
+#messages li { padding: 5px 10px; }
+#messages li:nth-child(odd) { background: #eee; }
+   /*.LiveChat{
+   position:absolute;
+   bottom:0%;
+   height:10%;
+   background-color:rgb(204, 0, 255); 
+   }*/
+   </style>
+   <!-- <script>
+   $(document).ready(function()
+   {
+      $("#chatBtn").click(function()
+      {
+          $(".LiveChat").css("height","30%");
+      });
+   });
+   </script> -->
+  </head>
+  <body>
+  <!-- <div class="LiveChat">
+  <button id="chatBtn">Live chat</button>
+  <p>rest of details below</p>
+  </div> -->
+  <div class="chat-box" id="chat-box">
+    <div class="open">Chat
+    <div class="box">
+
+      <ul id="messages"></ul>
+      <form action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+      <div>
+  <div>
+        <!-- <ul id="messages"></ul>
+        <form action="">
+          <input id="m" autocomplete="off" /><button>Send</button>
+        </form> -->
+  
+  </body>
+
 
 
 

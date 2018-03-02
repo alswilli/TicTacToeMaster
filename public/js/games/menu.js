@@ -19,6 +19,7 @@ var menuState = {
     */
     create() {
 
+        document.getElementById("chat-box").style.visibility = "hidden";
         //setup background
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'menubackground');
         background.anchor.set(0.5);
@@ -69,6 +70,7 @@ var menuState = {
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Online Multiplayer', 200,function () {
+                            document.getElementById("chat-box").style.visibility = "visible";
                            game.singleplayer = false
                            game.vsAi = false;
                            game.state.start("ticTac");
