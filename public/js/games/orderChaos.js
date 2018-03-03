@@ -541,7 +541,7 @@ var orderChaosState = {
                 
                 var x = game.startingX + i*game.squareSize;
                 var y = game.startingY + j * game.squareSize;
-                if(game.board[j][i] === "X"){
+                if(game.board[j][i] === "x"){
                     game.addSprite(x, y, 'X');
                 }
                 if(game.board[j][i] === "o"){
@@ -549,6 +549,7 @@ var orderChaosState = {
                 }
             }
         }
+
     },
     
     
