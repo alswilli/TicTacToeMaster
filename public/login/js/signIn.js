@@ -86,7 +86,7 @@ $(document).ready(function(){
 $('#guestlogin').on('click', function (e){
     e.preventDefault();
 
-    firebase.database().ref('/users/C3LPVheToUZYC8PvIGn74kOdJym2').once('value').then(function(snapshot) {
+    firebase.database().ref('/users/bRfjYiEy7iWn67IHnrqh0ksUjLY2').once('value').then(function(snapshot) {
         nameOfUser = (snapshot.val().username);
         console.log("Name of user: ", nameOfUser);
         battleText = (snapshot.val().battleText);
@@ -94,15 +94,17 @@ $('#guestlogin').on('click', function (e){
         var img = (snapshot.val().image);
         console.log("Image: ", img);
         cashMoney = (snapshot.val().cash);
+				selected = (snapshot.val().selected);
                                      
         firebase.storage().ref(img).getDownloadURL().then(function(url) {
             urlVal = url;
             sessionStorage.setItem("name", nameOfUser)
-            sessionStorage.setItem("userkey", keyValue)
+            sessionStorage.setItem("userkey", 'bRfjYiEy7iWn67IHnrqh0ksUjLY2')
             sessionStorage.setItem("battleText", battleText)
             sessionStorage.setItem("cash", cashMoney)
             sessionStorage.setItem("picUrl", urlVal)
             sessionStorage.setItem("imageName", null)
+						sessionStorage.setItem("selectedList",selected)
             window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
             console.log("holaGuest");
         })
