@@ -4,6 +4,7 @@ function makeClient()
 {
     Client = {};
     Client.socket = io.connect();
+    var notificationCount = 0;
     //Client.socket = io.connect();
 
     Client.chatMessage = function(data){
@@ -17,6 +18,23 @@ function makeClient()
         Client.socket.emit('postChatMessage', data);
     };
 
+    Client.connectedToChat = function(data){
+        console.log("Opponent connected: ", data.opponent)
+        Client.socket.emit('chatConnected', data);
+        // $('#messages').append($('<li>').text(data.opponent + " connected!"));
+    }
+
+    Client.disconnectedFromChat = function(data){
+        console.log("Opponent disconnected: ", data.opponent)
+        Client.socket.emit('chatDisconnected', data);
+    }
+
+    // Client.updateNotificationCount = function(data){
+    //     console.log("In notification reseter")
+    //     notificationCount = 0;
+    //     // Client.socket.emit('chatConnected', data);
+    //     // $('#messages').append($('<li>').text(data.opponent + " connected!"));
+    // }
 
     /*functions that can be called directly form the game to communicate with the server*/
     Client.makeNewPlayer = function(data){
@@ -49,7 +67,48 @@ function makeClient()
     Client.socket.on('chatMessage', function(msg){
         console.log("back in client!")
         // $('#messages').append($('<li>').text(msg.message));
+        notificationCount = msg.notificationCount;
+        console.log("Notification Count: ", msg.notificationCount)
+        notificationCount++
+        console.log("Notification Count After: ", notificationCount)
+        var strNotif = notificationCount.toString()
+        document.getElementById("notifications").innerHTML = "(" + strNotif + ")";
+        // document.getElementById("notifications").value = "(" + strNotif + ")";
+        document.getElementById("notifications").style.visibility = "visible";
+        document.getElementById("notifications").style.color = "red";
+        if (document.getElementById("inputBox").style.visibility == "visible"){
+            document.getElementById("notifications").style.visibility = "hidden";
+        }
+        // document.getElementById("open").style.backgroundColor = "red";
         $('#messages').append($('<li>').text(msg.user + ": " + msg.message));
+    });
+
+    Client.socket.on('chatConnection', function(msg){
+        console.log("connection in chat!")
+        // $('#messages').append($('<li>').text(msg.message));
+        // document.getElementById("messages").style.color = "magenta";
+        // var coloredText = msg.opponent.fontcolor("green");
+        // $('#messages').append($('<ul>').text(" "));
+        $('#messages').append($('<ul>').text(msg.opponent + " connected!"));
+        // $('#messages').append($('<ul>').text(" "));
+        // var str = msg.opponent + " connected!";
+        // var result = str.fontcolor("green");
+        // document.getElementById("messages").child.innerHTML = result;
+
+    });
+
+    Client.socket.on('chatDisconnection', function(msg){
+        console.log("disconnection from chat!")
+        // $('#messages').append($('<li>').text(msg.message));
+        // document.getElementById("messages").style.color = "magenta";
+        // var coloredText = msg.opponent.fontcolor("green");
+        // $('#messages').append($('<ul>').text(" "));
+        $('#messages').append($('<ul>').text(msg.opponent + " disconnected!"));
+        // $('#messages').append($('<ul>').text(" "));
+        // var str = msg.opponent + " connected!";
+        // var result = str.fontcolor("green");
+        // document.getElementById("messages").child.innerHTML = result;
+
     });
 
     /*Callbacks that are called when the server sends a signal with the given name*/

@@ -55,11 +55,20 @@ io.on('connection',function(socket)
       
       socket.on('postChatMessage', function(data){
         console.log("message: " + data.message);
-        console.log("user: " + "banger") //why is this printing?
         data.user = socket.player.username; //app.username
         // socket.emit('chatMessage', msg);
         io.sockets.in(socket.player.roomName).emit('chatMessage', data)  
         // io.emit('chatMessage', data) 
+      });
+
+      socket.on('chatConnected', function(data){
+        // console.log("message: " + data.message);
+        io.sockets.in(socket.player.roomName).emit('chatConnection', data)  
+      });
+
+      socket.on('chatDisconnected', function(data){
+        // console.log("message: " + data.message);
+        io.sockets.in(socket.player.roomName).emit('chatDisconnection', data)  
       });
          
       socket.on('makeNewPlayer',function(data){

@@ -1092,7 +1092,7 @@ var ultimateTTTState = {
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
             game.opponentKey = data.challengerkey
-            
+            Client.connectedToChat({"opponent": game.opponent});
         }
         else
         {
@@ -1103,6 +1103,7 @@ var ultimateTTTState = {
             game.opponent = data.username
             game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
+            Client.connectedToChat({"opponent": game.opponent});
         }
         //game.showOpponent();
         console.log("you are challenged by " + game.opponent)

@@ -575,7 +575,7 @@ var orderChaosState = {
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
             game.opponentKey = data.challengerkey
-
+            Client.connectedToChat({"opponent": game.opponent});
         }
         else
         {
@@ -586,6 +586,7 @@ var orderChaosState = {
             game.opponent = data.username
             game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
+            Client.connectedToChat({"opponent": game.opponent});
         }
         console.log("you are challenged by " + game.opponent)
         console.log("you are challenged by key " + game.opponentKey)

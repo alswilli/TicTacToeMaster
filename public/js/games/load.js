@@ -78,7 +78,10 @@ var loadState = {
     {
         console.log("opponent left")
         if(game.state.current==="ticTac")
-            game.state.start("waitingRoom");
+            {
+                Client.disconnectedFromChat({"opponent": game.opponent});
+                game.state.start("waitingRoom");
+            }
         else
             game.firstPlay = true
         game.opponentLeft = true;
