@@ -70,18 +70,30 @@ io.on('connection',function(socket)
         // console.log("message: " + data.message);
         io.sockets.in(socket.player.roomName).emit('chatDisconnection', data)  
       });
+      
+      //check for accepting a friend's challenge
+      socket.on('checkForFriend'), function(data){
+      {
+          console.log("check for the room named " + data.name)
+          if(io.sockets.adapter.rooms[data.name])
+          console.log(data.name + " exists as a room!")
+      });
          
       socket.on('makeNewPlayer',function(data){
             //create new player
                 //Increase roomno if 2 clients are present in a room.
                 var roomName = getRoomName(data)
-                if(needNewRoom(data.gametype))
+                if(data.friend === undefined && needNewRoom(data.gametype))
                 //(io.nsps['/'].adapter.rooms[roomName] && io.nsps['/'].adapter.rooms[roomName].length >= server.roomSize)
                 {
                     roomsNo[data.gametype].num++
                     roomName = getRoomName(data)
                 }
-                roomsNo[data.gametype].total++
+                if(data.friend === undefined)
+                {
+                    roomsNo[data.gametype].total++
+                    
+                }
                 console.log("there are now " + roomsNo[data.gametype].total + " players")
                 socket.join(roomName);
                 
@@ -194,6 +206,7 @@ io.on('connection',function(socket)
                  });
                 
                 
+                
             }
                 
         );
@@ -213,7 +226,11 @@ function needNewRoom(gametype)
 }
 function getRoomName(data)
 {
-    return "room-"+data.gametype+roomsNo[data.gametype].num//server.roomno
+    if(data.friend === undefined)
+        return "room-"+data.gametype+roomsNo[data.gametype].num//server.roomno
+    else        
+        return data.friend
+    
 }
 
 function updateRoomStatus(data)

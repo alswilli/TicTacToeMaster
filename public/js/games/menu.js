@@ -78,6 +78,13 @@ var menuState = {
                            game.vsAi = false;
                            game.state.start("ticTac");
                            });
+        game.addMenuOption('Challenge Friend', 200,function () {
+                           document.getElementById("chat-box").style.visibility = "visible";
+                           document.getElementById("open-box").style.visibility = "visible";
+                           game.singleplayer = false
+                           game.vsAi = false;
+                           game.state.start("challengeFriend");
+                           });
         // If neither option, do the database logic with leaderboards, achievements, currency, etc. (we will add more to here later, thoughwill need to be in home page because href loads first)
         game.addMenuOption('Exit to Home Page', 250, function () {
 

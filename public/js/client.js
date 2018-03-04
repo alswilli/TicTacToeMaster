@@ -63,6 +63,13 @@ function makeClient()
         Client.socket.io.reconnect()
         //Client.socket.emit('manualDisconnect');
     };
+    
+    Client.checkForFriendChallenge  = function(){
+        Client.socket.emit('checkForFriend', data)
+        //Client.socket.emit('manualDisconnect');
+    };
+    
+
 
     Client.socket.on('chatMessage', function(msg){
         console.log("back in client!")
@@ -147,4 +154,5 @@ function makeClient()
     Client.socket.on('playerLeft',function(data) {
         game.handleOpponentLeaving()
     });
+    
 }

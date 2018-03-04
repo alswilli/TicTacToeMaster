@@ -1,7 +1,20 @@
 
-        
 
-<div id="gameDiv" style="width:80%; margin:0 auto;float:left;height:600px"></div>
+    <div id="gameDiv" style="width:80%; margin:0 auto;height:700px; float:left;"></div>
+        <div class="overlay" id="challengeFriend">
+            
+            <form action="" id="challengeFriendForm">
+                <input type="text" id="friendName">  
+                    
+                <button>Submit</button>
+            </form>
+        </div>
+
+
+
+
+
+
 
 
 <div class="gameCard" id="opponentCard" style="float:right;">
@@ -18,186 +31,12 @@
             </div>
     </div>
 </div>
-<div id="test" style="width:75%; height:700px;background-color:black;">
+<div id="loading" style="width:75%; height:700px;background-color:black;">
 </div>
-<!-- Notice the URL, this is handled by socket.io on the server automatically, via express-->
-<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
-    <!-- <script>
-    $(function () {
-        // var socket = io();
-        var notificationCount = 0;
-        $('form').submit(function(){
-            console.log("Chat worked")
-            var message = $('#m').val()
-            console.log("Message: ", message) 
-            Client.chatMessage({"message": message, "user": null, "notificationCount": notificationCount});
-            // socket.emit('chat message', $('#m').val());
-            $('#m').val('');
-            return false;
-        });
-    //         socket.on('chat message', function(msg){
-    //             $('#messages').append($('<li>').text(msg));
-    // });
-    });
-    </script> -->
-    <style>
-        .chat-box{
-    position: fixed;
-    bottom: 25px;
-    right: 0;
-    visibility: hidden;
-}
 
-.open-box{
-    position: fixed;
-    bottom: 0px;
-    right: 0;
-}
 
-.box{
-    /* transition: height .6s ease-out; */
-    width: 298px;
-    height: 0px;
-    background: rgb(248, 248, 248);
-    z-index: 9999;
-    color: #03030a;
-    overflow: scroll;
-    text-align: left;
-}
-/* .open:hover>.box{
-  height:350px;
-      transition: height .6s ease-out;
-} */
-.open {
-    /* transition: height .6s ease-out; */
-    height: 40px;
-    text-align: center;
-    font-size: 20px;
-    border: 1px solid #3F51B5;
-    background: #673AB7;
-    color: #eaeaea;
-}
 
-.closeBox {
-    
-    visibility: hidden;
-}
-
-.form-box {
-    width: 300px;
-}
-
-#notifications {
-    visibility: hidden;
-}
-
-form {background: #000; padding: 3px; position: fixed; bottom: 0; visibility: hidden; width: 301px;}
-form input {bottom: 0; border: 0; padding: 3px; width: 77.5%; height:35px;}
-form button { width: 22%; background: rgb(130, 224, 255); border: none; padding: 3px; height:35px;}
-#messages { list-style-type: none; margin: 0; padding: 0; }
-#messages li { padding: 5px 10px; }
-#messages li:nth-child(odd) { background: #eee; }
-   /*.LiveChat{
-   position:absolute;
-   bottom:0%;
-   height:10%;
-   background-color:rgb(204, 0, 255); 
-   }*/
-   </style>
-   <script>
-    $(document).ready(function() {
-        var clicked = false;
-        var checked = null;
-        var notificationCount = 0; //different for both clients
-
-        $('form').submit(function(){
-            console.log("Chat worked")
-            var message = $('#m').val()
-            console.log("Message: ", message) 
-            Client.chatMessage({"message": message, "user": null, "notificationCount": notificationCount});
-            notificationCount++;
-            // socket.emit('chat message', $('#m').val());
-            $('#m').val('');
-            return false;
-        });
-
-        // $('.notif').on('change', function() {
-        //     console.log("I CHANGED");
-        // });
-
-        $('.open').click(function(){
-            // $('.open').style.height = "350px";
-            if(checked == 'justClicked') {
-                checked = 'clickAgain'
-            }
-            else if (checked == 'clickAgain') {
-                clicked = false;
-            }
-            if(clicked == false) {
-                // document.getElementById("open-box").style.height = "350px";
-                document.getElementById("open-box").style.bottom = "350px";
-                // document.getElementById("open-box").style.height = "50px";
-                document.getElementById("box").style.height = "325px";
-                document.getElementById("inputBox").style.visibility = "visible";
-                document.getElementById("closeBox").style.visibility = "visible";
-                clicked = true;
-                if (document.getElementById("notifications").style.visibility == "visible") {
-                    document.getElementById("notifications").style.visibility = "hidden"; 
-                }
-            }
-            // else{
-            //     // console.log('poop')
-            //     // document.getElementById("box").style.height = "20px";
-            //     // document.getElementById("open").style.height = "30px";
-            //     // document.getElementById("inputBox").style.visibility = "hidden";
-            //     // document.getElementById("closeBox").style.visibility = "hidden";
-            //     // clicked = false
-            // }
-        });
-        document.getElementById("closeBox").onclick = function() {closeChat()};
-
-        function closeChat() {
-            if(clicked == true) {
-                console.log("hola");
-                document.getElementById("open-box").style.bottom = "0px";
-                document.getElementById("box").style.height = "0px";
-                // document.getElementById("open").style.height = "30px";
-                document.getElementById("inputBox").style.visibility = "hidden";
-                document.getElementById("closeBox").style.visibility = "hidden";
-                // clicked = false;
-                checked = 'justClicked'
-                console.log("balls");
-                // Client.updateNotificationCount({"notificationCount": notificationCount});
-            }
-        }
-        // $('.closeBox').click(function(){
-                //     console.log("hola")
-                //     // document.getElementById("box").style.height = "20px";
-                //     // document.getElementById("open").style.height = "30px";
-                //     // document.getElementById("inputBox").style.visibility = "hidden";
-                //     document.getElementById("closeBox").style.visibility = "hidden";
-                //     clicked = false
-                // });
-    }
-);
-   </script>
-   <!-- <script>
-   $(document).ready(function()
-   {
-      $("#chatBtn").click(function()
-      {
-          $(".LiveChat").css("height","30%");
-      });
-   });
-   </script> -->
-  </head>
-  <body>
   <!-- <div class="LiveChat">
   <button id="chatBtn">Live chat</button>
   <p>rest of details below</p>
@@ -214,7 +53,7 @@ form button { width: 22%; background: rgb(130, 224, 255); border: none; padding:
     </div>
   </div>
   <div class="form-box">
-        <form action="" id="inputBox">
+      <form action="" id="inputBox" class="chatForm">
                 <input id="m" autocomplete="off" /><button>Send</button>
               </form>
   </div>
@@ -223,14 +62,15 @@ form button { width: 22%; background: rgb(130, 224, 255); border: none; padding:
           <input id="m" autocomplete="off" /><button>Send</button>
         </form> -->
   
-  </body>
 
 
 
-
+<!-- Notice the URL, this is handled by socket.io on the server automatically, via express-->
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
 <!-- Load the js scripts that will make the game playable -->
 <script src="js/games/win.js"></script>
+<script src="js/games/challengeFriend.js"></script>
 <script src="js/games/load.js"></script>
 <script src="js/games/menu.js"></script>
 <script src="js/games/ticTacToe.js"></script>

@@ -24,13 +24,15 @@ function startGame()
     game.state.add('load', loadState)
     game.state.add('menu', menuState)
     game.state.add('gameDif', gameDifficultyState)
+    game.state.add('challengeFriend',challengeFriendState)
+    game.state.add('win', winState)
+    game.state.add('waitingRoom', waitingRoomState)
     
     game.firstPlay = true
     
    
     
-    game.state.add('win', winState)
-    game.state.add('waitingRoom', waitingRoomState)
+    
     if(app.gameType == "original")
         game.state.add('ticTac', ticTacState)
     else if(app.gameType == "3d")
