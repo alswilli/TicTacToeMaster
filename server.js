@@ -104,6 +104,8 @@ io.on('connection',function(socket)
             //create new player
                 //Increase roomno if 2 clients are present in a room.
                 var roomName = getRoomName(data)
+                console.log("incoming data")
+                console.log(data)
                 if(data.friend === undefined && needNewRoom(data.gametype) && data.challengedByFriend != true)
                 //(io.nsps['/'].adapter.rooms[roomName] && io.nsps['/'].adapter.rooms[roomName].length >= server.roomSize)
                 {
@@ -111,6 +113,8 @@ io.on('connection',function(socket)
                     roomsNo[data.gametype].num++
                     roomName = getRoomName(data)
                 }
+                if(data.friend === undefined && data.challengedByFriend != true)
+                     roomsNo[data.gametype].total++
 
                 console.log("there are now " + roomsNo[data.gametype].total + " players")
                 socket.join(roomName);
@@ -243,6 +247,7 @@ function initGameRoom(gametype)
 
 function needNewRoom(gametype)
 {
+    console.log("roomsNo[" + gametype + "] total = " + roomsNo[gametype].total)
     return roomsNo[gametype].total % server.roomSize === 0
 }
 function getRoomName(data)
