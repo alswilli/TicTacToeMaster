@@ -1344,170 +1344,232 @@ function pieceChallenge(turn) {
     }
 }
 
-// // console.log("AHHHHHH")
-//                     // var connectedSquare = false
+// /****************************************** Tic Tac Toe AI ************************/
+// var human = "x";
+// var ai    = "o";
 
-//                     // if (lx+1 < 3) {
-//                     //     game.bigBoardLogic[lx+1][ly] = "open" // Right
-//                     //     game.cursorSquares[lx+1][ly].alpha = .7
-//                     //     if (lx+1 == x && ly == y)
-//                     //         connectedSquare = true
-//                     // }
+       
+// /* This is called when for the ai to make a move.
+//  * Converts the board to a single array for minimax to calculate where to play a move.
+//  * Then we place the move there for the AI.
+//  * We convert the board back to a single array and check for the winning condition.
+//  */
+// function aiMakesMove() {
+//    var boardArr = boardToArray();
+//    var move = minimax(boardArr, ai);
 
-//                     // if (lx-1 > -1) {
-//                     //     game.bigBoardLogic[lx-1][ly] = "open" // Left
-//                     //     game.cursorSquares[lx-1][ly].alpha = .7
-//                     //     if (lx-1 == x && ly == y)
-//                     //         connectedSquare = true
-//                     // }
+//    var newBoardArr = spliceBoard(boardArr);
 
-//                     // if (ly+1 < 3) {
-//                     //     game.bigBoardLogic[lx][ly+1] = "open" // Bottom 
-//                     //     game.cursorSquares[lx][ly+1].alpha = .7
-//                     //     if (lx == x && ly+1 == y)
-//                     //         connectedSquare = true
-//                     // }
+//    // Set game difficutly probability
+//    if (game.difficulty == 'easy') {
+//     var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     console.log("EASY MODE")
+//    }
+//    else if (game.difficulty == 'medium') {
+//     var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     console.log("MEDIUM MODE")
+//    }
+//    else if (game.difficulty == 'hard') {
+//     var actualMove = (Math.random() < 0.98) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     // var actualMove = move
+//     console.log("HARD MODE")   
+//    }
+//    console.log("MOVE: ", move)
+//    console.log("ACTUAL MOVE: ", actualMove)
+   
+//    //    var convertedMove = convertMove(move);
+//    if (actualMove == move)
+//    {
+//     console.log("a")
+//     var convertedMove = convertMove(actualMove);
+//    } 
+//    else
+//    {
+//     console.log("b")
+//     var convertedMove = convertRandMove(actualMove);   
+//    } 
+// //    console.log("AI's move: ", move);
+//    console.log("AI's move: ", move);
+//    console.log("convertedMove: ", convertedMove);
+   
+//    placePieceAt(convertedMove.row, convertedMove.column);
+   
+//    boardArr = boardToArray();
 
-//                     // if (ly-1 > -1) {
-//                     //     game.bigBoardLogic[lx][ly-1] = "open" // Top
-//                     //     game.cursorSquares[lx][ly-1].alpha = .7
-//                     //     if (lx == x && ly-1 == y)
-//                     //         connectedSquare = true
-//                     // }
+//    if ( gameIsWon(boardArr, human) || gameIsWon(boardArr, ai) ) {
+//       game.displayWinner();
+//    }
 
-//                     // if (lx+1 < 3 && ly-1 > -1) {
-//                     //     game.bigBoardLogic[lx+1][ly-1] = "open" // Top right
-//                     //     game.cursorSquares[lx+1][ly-1].alpha = .7
-//                     //     if (lx+1 == x && ly-1 == y)
-//                     //         connectedSquare = true
-//                     // }
+//    aiCoords = [convertedMove.column, convertedMove.row]
 
-//                     // if (lx-1 > -1 && ly-1 > -1) {
-//                     //     game.bigBoardLogic[lx-1][ly-1] = "open" // Top left
-//                     //     game.cursorSquares[lx-1][ly-1].alpha = .7
-//                     //     if (lx-1 == x && ly-1 == y)
-//                     //         connectedSquare = true
-//                     // }
+//    return (aiCoords)
+// }
 
-//                     // if (lx+1 < 3 && ly+1 < 3) {
-//                     //     game.bigBoardLogic[lx+1][ly+1] = "open" // Bottom right
-//                     //     game.cursorSquares[lx+1][ly+1].alpha = .7
-//                     //     if (lx+1 == x && ly+1 == y)
-//                     //         connectedSquare = true
-//                     // }
+// function spliceBoard(boardArr) {
+//     var array = [];
 
-//                     // if (lx-1 > -1 && ly+1 < 3) {
-//                     //     game.bigBoardLogic[lx-1][ly+1] = "open" // Bottom left
-//                     //     game.cursorSquares[lx-1][ly+1].alpha = .7
-//                     //     if (lx-1 == x && ly+1 == y)
-//                     //         connectedSquare = true 
-//                     // }
+//    for (var i=0; i < boardArr.length; i++) {
+//          if (boardArr[i] != "x" && boardArr[i] != "o") {
+//             array.push(boardArr[i]);
+//          }
+//    }
 
-//                     for (var m = 0; m < 3; m++)
-//                     {
-//                         for (var n = 0; n < 3; n++)
-//                         {
-//                                 game.bigBoardLogic[i][j] = "open"
-//                                 game.cursorSquares[i][j].alpha = .7 
+//    return array;
+// }
+
+ 
+// /* Draws a piece at the given index 
+//  */
+// function placePieceAt(row , col) {
+//    console.log(game.screenWidth);
+// //    var x = 485 + (col * 115);
+// //    var y = 115   * (row + 1);
+//    var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'O');
+// //    var piece = game.addSprite(x, y, 'moon');
+//    game.placedPieces.push(piece);
+//    game.board[row][col] = "o";
+// }
+
+       
+// /* Converts the board to a single array 
+//  */
+// function boardToArray() {
+    
+//     var array = [];
+    
+//     for (var i=0; i<3; i++) {
+//         for (var j=0; j<3; j++) {
+//             if (board[i][j] != "") {
+//                 array.push(board[i][j]);
+//             }else {
+//                 array.push(i*3 + j);
+//             }
+//             console.log ("BOARD ARRAY: " + (i*3 + j), board[i][j])
+//         }
+//     }
+//     return array;
+// }
+
+
+// /* Converts a move{index, score} to location{row, column}
+//  */
+// function convertMove(move) {
+//    var loc = {};
+   
+//    loc.row    = Math.floor(move.index / 3);
+//    loc.column = move.index % 3;
+//    return loc;
+// }
+
+// /* Converts a "arrIndex" to location{row, column}
+//  */
+// function convertRandMove(move) {
+//     var loc = {};
+    
+//     loc.row    = Math.floor(move / 3);
+//     loc.column = move % 3;
+//     return loc;
+//  }
+
+       
+// /* Returns the list of indexes of empty spaces on the board
+//  */
+// function emptyIndexies(board){
+//   return  board.filter(tile => tile != "o" && tile != "x");
+// }
+
+
+// /* Tests if the given player has won the board by checking all combinations
+//  * 0 1 2
+//  * 3 4 5
+//  * 6 7 8 
+//  */
+// function gameIsWon(board, player) {
+//    if ( (board[0] == player && board[1] == player && board[2] == player) || //Horizontals
+//         (board[3] == player && board[4] == player && board[5] == player) ||
+//         (board[6] == player && board[7] == player && board[8] == player) ||
         
-//                                 if (game.magicBoardLogic[m][n] === "magic")
-//                                     game.cursorSquares[m][n].alpha = 0
-//                         }
-//                     }
+//         (board[0] == player && board[3] == player && board[6] == player) || //Verticals
+//         (board[1] == player && board[4] == player && board[7] == player) ||
+//         (board[2] == player && board[5] == player && board[8] == player) ||
+       
+//         (board[0] == player && board[4] == player && board[8] == player) || //Diagonals
+//         (board[2] == player && board[4] == player && board[6] == player) ) 
+//    {
+//       return true;
+//    }
+//    return false;
+// }
 
-//                     // // If you get stuck, open up outer layer
-//                     // var stuck = true
-//                     // for (var i = 0; i < 3; i++)
-//                     // {
-//                     //     for (var j = 0; j < 3; j++)
-//                     //     {
-//                     //         if (game.bigBoardLogic[i][j] === "open")
-//                     //             stuck = false
-//                     //     }
-//                     // }
 
-//                     // if (stuck == true) {
-//                     //     console.log("STUCK");
-//                     //     if (lx+2 < 3) {
-//                     //         console.log("A");
-//                     //         game.bigBoardLogic[lx+2][ly] = "open" // Right
-//                     //         game.cursorSquares[lx+2][ly].alpha = .7
-//                     //         if (lx+2 == x && ly == y)
-//                     //             connectedSquare = true
-//                     //     }
-    
-//                     //     if (lx-2 > -1) {
-//                     //         console.log("B");
-//                     //         game.bigBoardLogic[lx-2][ly] = "open" // Left
-//                     //         game.cursorSquares[lx-2][ly].alpha = .7
-//                     //         if (lx-2 == x && ly == y)
-//                     //             connectedSquare = true
-//                     //     }
-    
-//                     //     if (ly+2 < 3) {
-//                     //         console.log("C");
-//                     //         game.bigBoardLogic[lx][ly+2] = "open" // Bottom 
-//                     //         game.cursorSquares[lx][ly+2].alpha = .7
-//                     //         if (lx == x && ly+2 == y)
-//                     //             connectedSquare = true
-//                     //     }
-    
-//                     //     if (ly-2 > -1) {
-//                     //         console.log("D");
-//                     //         game.bigBoardLogic[lx][ly-2] = "open" // Top
-//                     //         game.cursorSquares[lx][ly-2].alpha = .7
-//                     //         if (lx == x && ly-2 == y)
-//                     //             connectedSquare = true
-//                     //     }
-    
-//                     //     if (lx+2 < 3 && ly-2 > -1) {
-//                     //         console.log("E");
-//                     //         game.bigBoardLogic[lx+2][ly-2] = "open" // Top right
-//                     //         game.cursorSquares[lx+2][ly-2].alpha = .7
-//                     //         if (lx+2 == x && ly-2 == y)
-//                     //             connectedSquare = true
-//                     //     }
-    
-//                     //     if (lx-2 > -1 && ly-2 > -1) {
-//                     //         console.log("F");
-//                     //         game.bigBoardLogic[lx-2][ly-2] = "open" // Top left
-//                     //         game.cursorSquares[lx-2][ly-2].alpha = .7
-//                     //         if (lx-2 == x && ly-2 == y)
-//                     //             connectedSquare = true
-//                     //     }
-    
-//                     //     if (lx+2 < 3 && ly+2 < 3) {
-//                     //         console.log("g");
-//                     //         game.bigBoardLogic[lx+2][ly+2] = "open" // Bottom right
-//                     //         game.cursorSquares[lx+2][ly+2].alpha = .7
-//                     //         if (lx+2 == x && ly+2 == y)
-//                     //             connectedSquare = true
-//                     //     }
-    
-//                     //     if (lx-2 > -1 && ly+2 < 3) {
-//                     //         console.log("H");
-//                     //         game.bigBoardLogic[lx-2][ly+2] = "open" // Bottom left
-//                     //         game.cursorSquares[lx-2][ly+2].alpha = .7
-//                     //         if (lx-2 == x && ly+2 == y)
-//                     //             connectedSquare = true 
-//                     //     }
-//                     // }
+// /* This is the minimax algorithm that recursively chooses the best move to play for the 
+//  * ai by playing ahead. 
+//  * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
+//  */
+// function minimax(newBoard, player) {
+   
+//    var availSpots = emptyIndexies(newBoard);
+   
+//    if (gameIsWon(newBoard, human)) {
+//       return {score: -10};
+//    }
+//    else if (gameIsWon(newBoard, ai)) {
+//       return {score:  10};
+//    }
+//    else if (availSpots.length == 0) {
+//       return {score:   0};
+//    }
+   
+//    var moves = []; //Collects all the objects
+   
+//    for (var i=0; i<availSpots.length; i++) {
+      
+//       //Create an object for each and store the index of that spot 
+//       var move = {};
+//       move.index = newBoard[availSpots[i]];
+      
+//       newBoard[availSpots[i]] = player; //Set the empty spot to the current player
+      
+//       if (player == ai) {
+//          var result = minimax(newBoard, human);
+//          move.score = result.score;
+//       }
+//       else {
+//          var result = minimax(newBoard, ai);
+//          move.score = result.score;
+//       }
+      
+//       newBoard[availSpots[i]] = move.index; //Reset the spot to empty
+      
+//       moves.push(move); //Push the spot to empty
+//    }
 
-//                     // console.log("HOLAHOLAHOLA: ", connectedSquare);
-//                     // if (connectedSquare == false) {  // The square is not inside adjacent radius (both) so delete iots open status
-//                     //     console.log("NO CONNECTED SQUARE");
-//                     //     game.bigBoardLogic[x][y] = "closed"
-//                     //     game.cursorSquares[x][y].alpha = 0
-//                     // }
-
-//                     // for (var i = 0; i < 3; i++)
-//                     // {
-//                     //     for (var j = 0; j < 3; j++)
-//                     //     {
-//                     //             // game.bigBoardLogic[i][j] = "open"
-//                     //             // game.cursorSquares[i][j].alpha = .7 
-        
-//                     //             if (game.magicBoardLogic[i][j] === "magic")
-//                     //                 game.cursorSquares[i][j].alpha = 0
-//                     //     }
-//                     // }
+      
+//    //If it's the ai's turn, loop over the moves and choose the one with the highest score
+//    var bestMove;
+   
+//    if (player == ai) {
+//       var bestScore = -10000;
+      
+//       for (var i=0; i<moves.length; i++) {
+//          if (moves[i].score > bestScore) {
+//             bestScore = moves[i].score;
+//             bestMove  = i;
+//          }
+//       }
+//    }
+//    //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
+//    else { 
+//       var bestScore = 10000;
+      
+//       for (var i=0; i<moves.length; i++) {
+//          if (moves[i].score < bestScore) {
+//             bestScore = moves[i].score;
+//             bestMove  = i;
+//          }
+//       }
+//    }
+   
+//    //Return the chosen move(object) from the moves array
+//    return moves[bestMove];
+// }
