@@ -94,6 +94,7 @@ function initChat()
             // clicked = false;
             checked = 'justClicked'
             console.log("balls");
+            notificationCount = 0
             // Client.updateNotificationCount({"notificationCount": notificationCount});
             }
         }

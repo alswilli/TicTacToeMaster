@@ -47,15 +47,15 @@ var menuState = {
         
         game.optionCount = 0;
        
-        if (game.gametype == "original") {
-           game.addMenuOption('SinglePlayer', 200, function () {
-                           game.singleplayer = true;
-                           game.vsAi = true;
-                           game.challengingFriend = false
-                        //    game.state.start("ticTac");
-                           game.state.start("gameDif"); 
-                           });
-        }
+        // if (game.gametype == "original") {
+        game.addMenuOption('SinglePlayer', 200, function () {
+                        game.singleplayer = true;
+                        game.vsAi = true;
+                        game.challengingFriend = false
+                    //    game.state.start("ticTac");
+                        game.state.start("gameDif"); 
+                        });
+        // }
 
         game.vs3DAi = false
 
