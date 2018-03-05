@@ -35,6 +35,7 @@ var roomsNo = {}
 initGameRoom("original")
 initGameRoom("3d")
 initGameRoom("orderChaos")
+initGameRoom("ultimate")
 
 
 
@@ -52,22 +53,73 @@ io.on('connection',function(socket)
       console.log("new connection!")
       
       
-     
+      socket.on('postChatMessage', function(data){
+        console.log("message: " + data.message);
+        data.user = socket.player.username; //app.username
+        // socket.emit('chatMessage', msg);
+        io.sockets.in(socket.player.roomName).emit('chatMessage', data)  
+        // io.emit('chatMessage', data) 
+      });
+
+      socket.on('chatConnected', function(data){
+        // console.log("message: " + data.message);
+        io.sockets.in(socket.player.roomName).emit('chatConnection', data)  
+      });
+
+      socket.on('chatDisconnected', function(data){
+        // console.log("message: " + data.message);
+        if(socket.player != undefined)
+                io.sockets.in(socket.player.roomName).emit('chatDisconnection', data)  
+      });
       
+      //check for accepting a friend's challenge
+      socket.on('checkForFriend', function(data){
+          console.log("check for the room named " + data.name)
+          if(io.sockets.adapter.rooms[data.name] && io.sockets.adapter.rooms[data.name].length > 0)
+          {
+                console.log(data.name + " exists as a room!")
+                var user = data
+                user.name = io.sockets.adapter.rooms[data.name].friendName
+                socket.emit('confirmChallenge',user);
+           }
+          else{
+                socket.emit('promptFriendChallenge',data);
+            }
+      });
+      
+      socket.on('denyChallenge', function(username){
+                // console.log("message: " + data.message);
+                denyChallenge(username)  
+        });
+      
+      socket.on('friendDenied', function(roomName){
+                console.log("everyone leave " + roomName)
+                socket.disconnect();
+                /*io.sockets.clients(roomName).forEach(function(s){
+                      s.leave(roomName);
+                 });*/
+      })
+         
       socket.on('makeNewPlayer',function(data){
             //create new player
                 //Increase roomno if 2 clients are present in a room.
                 var roomName = getRoomName(data)
-                if(needNewRoom(data.gametype))
+                console.log("incoming data")
+                console.log(data)
+                if(data.friend === undefined && needNewRoom(data.gametype) && data.challengedByFriend != true)
                 //(io.nsps['/'].adapter.rooms[roomName] && io.nsps['/'].adapter.rooms[roomName].length >= server.roomSize)
                 {
+                    console.log("increment rooms")
                     roomsNo[data.gametype].num++
                     roomName = getRoomName(data)
                 }
-                roomsNo[data.gametype].total++
+                if(data.friend === undefined && data.challengedByFriend != true)
+                     roomsNo[data.gametype].total++
+
                 console.log("there are now " + roomsNo[data.gametype].total + " players")
                 socket.join(roomName);
-                
+                if(data.friend != undefined)
+                    io.sockets.adapter.rooms[roomName].friendName = data.name
                 
                 
                 //Send this event to everyone in the room. Fore debugging
@@ -101,6 +153,14 @@ io.on('connection',function(socket)
                           console.log('wut')
                           return
                           }
+                    console.log("sent by " + data.id)
+                    if(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid === data.id)
+                    {
+                          console.log('wut duh')
+                          console.log(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid + " " + data.id)
+                          return
+                    }
+                    io.nsps['/'].adapter.rooms[socket.player.roomName].lastid = data.id
                     socket.player.lastboard = data.board
                     socket.player.board = data.board
                     io.sockets.in(socket.player.roomName).emit('switchTurn',socket.player,data);
@@ -137,6 +197,7 @@ io.on('connection',function(socket)
                 {
                     io.nsps['/'].adapter.rooms[socket.player.roomName].challenger = socket.player.username
                     io.nsps['/'].adapter.rooms[socket.player.roomName].challengerkey = socket.player.userkey
+                    io.nsps['/'].adapter.rooms[socket.player.roomName].lastid = -1
                     console.log(socket.player.roomName + "challenger is " +socket.player.username)
                 }
                 
@@ -145,16 +206,18 @@ io.on('connection',function(socket)
                     io.sockets.in(socket.player.roomName).emit('playerLeft')
                 });*/
                 
-                socket.on('disconnect',function(){
+                socket.on('disconnect',function(){ //change this
                           // sending to all clients in 'game'
                           io.sockets.in(socket.player.roomName).emit('playerLeft')
                           updateRoomStatus(socket.player)
+                          socket.disconnect();
                 });
                 
                 socket.on('playerQuit',function(){
                           // sending to all clients in 'game' room, including sender
                           socket.to(socket.player.roomName).emit('playerLeft')
                           updateRoomStatus(socket.player)
+                          socket.disconnect();
                 });
                 
                 socket.on('markRoomFull',function(){
@@ -166,6 +229,7 @@ io.on('connection',function(socket)
                           console.log(socket.player.username + " disconnecting")
                           socket.disconnect()
                  });
+                
                 
                 
             }
@@ -183,11 +247,19 @@ function initGameRoom(gametype)
 
 function needNewRoom(gametype)
 {
+    console.log("roomsNo[" + gametype + "] total = " + roomsNo[gametype].total)
     return roomsNo[gametype].total % server.roomSize === 0
 }
 function getRoomName(data)
 {
-    return "room-"+data.gametype+roomsNo[data.gametype].num//server.roomno
+    console.log("friend of " + data.name + ": " + data.friend)
+    if(data.friend === undefined)
+        return "room-"+data.gametype+roomsNo[data.gametype].num//server.roomno
+    else if(data.friend === data.name)
+        return data.name
+    else
+        return data.friend
+    
 }
 
 function updateRoomStatus(data)
@@ -203,6 +275,8 @@ function updateRoomStatus(data)
 }
 
 
-function randomInt (low, high) {
-    return Math.floor(Math.random() * (high - low) + low);
+function denyChallenge(name) {
+    io.sockets.in(name).emit('playerLeft') 
 }
+
+

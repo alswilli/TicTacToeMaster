@@ -10,7 +10,7 @@ messagingSenderId: "1050901435462"
 firebase.initializeApp(config);
 
 var game = null;
-
+var MAX_GAME_NUM = 1
 
 /*
     app is the main object that controlls the website. The routeProvider controlls which page to 
@@ -56,15 +56,18 @@ var app = angular.module('TicTacToeApp', ['ngRoute']).config(function ($routePro
                       });
 });
 
+app.numGames = 0
+
 //save info in session storage if user logs out, reloads page, or closes page without loggin out
 window.onbeforeunload = saveSessionInfo
 //load values from sessionStorage
-app.keyValue = sessionStorage.getItem("userkey")
+app.keyValue = sessionStorage.getItem("userkey");
 app.username = sessionStorage.getItem("name");
 app.img_url = sessionStorage.getItem("picUrl");
 app.battleText = sessionStorage.getItem("battleText");
 app.money = sessionStorage.getItem("cash");
 app.gameType = sessionStorage.getItem("gametype");
+app.selected = sessionStorage.getItem("selectedList");
 userRef = firebase.database().ref('/users/' + app.keyValue);
 //the controller for the sidebar. attaches a callback that updates the cash, username, and battletext on screen
 app.controller('SidebarCtrl', function($scope) {
@@ -79,6 +82,8 @@ app.controller('SidebarCtrl', function($scope) {
                           //update cash on screen
                           if(document.getElementById("cash"))
                             document.getElementById("cash").innerHTML = "$" + app.money;
+                          if($("#player_img"))
+                            $("#player_img").attr("src", app.img_url);
                           console.log("update dat user " + app.money)
                           setSelected(link);
                           });
@@ -108,12 +113,13 @@ function setSelected(selectedId)
 function saveSessionInfo()
 {
     console.log("beforeonunload")
-    sessionStorage.setItem("userkey",  app.keyValue)
-    sessionStorage.setItem("name", app.username)
+    sessionStorage.setItem("userkey",  app.keyValue);
+    sessionStorage.setItem("name", app.username);
     sessionStorage.setItem("picUrl", app.img_url);
     sessionStorage.setItem("battleText", app.battleText);
     sessionStorage.setItem("cash",app.money);
     sessionStorage.setItem("gametype", app.gameType);
+		sessionStorage.setItem("selectedList",app.selected);
 }
 
 /*

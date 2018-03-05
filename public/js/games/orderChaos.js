@@ -9,6 +9,10 @@ var orderChaosState = {
      */
     update() {
     },
+    preload() {
+        game.load.image('comet', 'imgs/comet.png');
+        game.load.image('cometTail', 'imgs/cometTail.png');
+    },
     
     /*
      called when the game starts
@@ -16,6 +20,12 @@ var orderChaosState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
+				var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+    		background.anchor.set(0.5);
+				background.width = game.screenWidth;
+        background.height = 700;
+			
+        game.linesToAnimate = 0
         game.squareSize = 80
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 6
@@ -23,7 +33,7 @@ var orderChaosState = {
         game.isDraw = false
         game.turns = 0
         game.XPicked = true;
-        //game.pickedPiece = 'star'
+        //game.pickedPiece = 'X'
         
         game.PPOffset = 60;
         console.log("we PP");
@@ -45,6 +55,20 @@ var orderChaosState = {
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
         
+        game.cursorSquares = []
+        for (var i=0; i < game.n; i++) {
+            game.cursorSquares[i]=new Array(game.n)
+        }  
+
+        for (var i=0; i < game.n; i++)
+        {
+            for (var j=0; j < game.n; j++)
+            {
+                game.cursorSquares[i][j] = game.addSprite(game.startingX + i*game.squareSize, game.startingY + j*game.squareSize, 'redsquare')
+                game.cursorSquares[i][j].alpha = 0
+            }
+        }
+
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         //create the board on screen and makes each square clickable
@@ -58,19 +82,10 @@ var orderChaosState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer)
             return
+        
+        game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
-        if(typeof game.firstPlay)
-        {
-            makeClient();
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
-            console.log("firstPlay!")
-            game.firstPlay = false
-            game.waiting = true
-        }
-        else
-        {
-            game.askForRematch()
-        }
+        game.startMultiplayer()
         
     },
     
@@ -139,12 +154,12 @@ var orderChaosState = {
                 //initialize 2D array board to be empty strings
                 if (j == 0) {
                     game.pickPieceBoard[i][j] = square;
-                    var pieceImg = game.addSprite(square.x, square.y, 'star');
+                    var pieceImg = game.addSprite(square.x, square.y, 'X');
                     //game.placedPieces.push(pieceImg);
                 }
                 if (j == 1) {
                     game.pickPieceBoard[i][j] = square;
-                    var pieceImg = game.addSprite(square.x, square.y, 'moon');
+                    var pieceImg = game.addSprite(square.x, square.y, 'O');
                     //game.placedPieces.push(pieceImg);
                     square.alpha = 0.4; 
                 }
@@ -181,6 +196,8 @@ var orderChaosState = {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
+        if(game.multiplayer && game.checkForDoubleClick())
+            return
         // if(!game.piecePicked){
         //     game.pickPiece();
         // }
@@ -194,19 +211,20 @@ var orderChaosState = {
         //string, don't do anything
         if(game.board[indexY][indexX] != "")
             return
-           
+        if(game.multiplayer)
+            game.waiting = true
          //place either an x or o, depending on which piece is picked
         if(game.XPicked){
-            var piece = game.addSprite(sprite.x, sprite.y, 'star');
+            var piece = game.addSprite(sprite.x, sprite.y, 'X');
             game.pickedPieces.push(piece);
             game.board[indexY][indexX] = "x"
         }
         else{
-            var piece = game.addSprite(sprite.x, sprite.y, 'moon');
+            var piece = game.addSprite(sprite.x, sprite.y, 'O');
             game.pickedPieces.push(piece);
             game.board[indexY][indexX] = "o";
         }
-        
+        game.previousPiece = game.isXTurn ?  "order" : "chaos"
 
         game.updateTurnStatus(indexX, indexY)
     },
@@ -214,10 +232,32 @@ var orderChaosState = {
     /*
         switch current turn, and display whose turn it is
      */
-    switchTurn(){
+    switchTurn(x,y){
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
         game.turns++
+
+        for (var i = 0; i < 3; i++)
+        {
+            for (var j = 0; j < 3; j++)
+            {
+                //Normal functionality, just assign one open spot
+                if(i == x && j == y)
+                {
+                    console.log("i: ", i)
+                    console.log("j: ", j)
+                    console.log("x: ", x)
+                    console.log("y: ", y)
+                    game.cursorSquares[i][j].alpha = .7
+                    // game.cursorSquares[i][j].tint = 0xffffff
+                }
+                else
+                {
+                    game.cursorSquares[i][j].alpha = 0
+                }
+            }
+        }
+
         var turn = game.isXTurn ?  "order" : "chaos"
         if(game.singleplayer)
             game.turnStatusText.setText("Current Turn: " + turn)
@@ -239,8 +279,14 @@ var orderChaosState = {
         else
             game.waiting = false
         if(game.isOver(coordInfo.x, coordInfo.y))
-            game.displayWinner()
-        game.switchTurn()
+        {
+            game.waiting = true
+            if(game.isDraw) {
+                game.displayWinner()
+            }
+            //game.displayWinner()
+        }
+        game.switchTurn(coordInfo.x, coordInfo.y)
     },
     
     /*
@@ -316,12 +362,36 @@ var orderChaosState = {
             console.log("horz")
             gameOver = true
             game.isDraw = false
+            var lineAngle = -90
+            
+            var extraSpace
+            if(horizontal.size === 1)
+                extraSpace = 0
+            else
+                extraSpace = game.squareSize
+            
+            var startingX = game.startingX - 15  + extraSpace
+            var startingY = game.startingX + (game.squareSize * (row)) - game.squareSize/4
+            var endingX = game.screenWidth + 100
+            game.drawWinningLine(startingX, startingY, endingX, startingY, lineAngle, 180)
         }
         else if((vertical.size === 1 && !vertical.has("")) || (verticalExt.size === 1 && !verticalExt.has("")))
         {
             console.log("vert")
             gameOver = true
             game.isDraw = false
+            var extraSpace
+            if(vertical.size === 1)
+                extraSpace = 0
+            else
+                extraSpace = game.squareSize
+            
+            var lineAngle = 0
+            var startingX = game.startingX + (game.squareSize * (col+1)) - game.squareSize/2
+            var startingY = game.startingY - 15 + extraSpace
+            
+            game.drawWinningLine(startingX, startingY, startingX, 800, lineAngle, 180)
+
         }
         //if all entries in a diagonal are the same AND that entry is not blank,
         //then the game is over
@@ -330,12 +400,51 @@ var orderChaosState = {
             console.log("posD")
             gameOver = true
             game.isDraw = false
+            var extraXSpace =  0
+            var extraYSpace = 0
+            if(posDiagonal.size === 1 && !posDiagonal.has(""))
+                extraXSpace = extraYSpace = 0
+            else if(posDiagonalExt.size === 1 && !posDiagonalExt.has(""))
+                    extraXSpace = extraYSpace = game.squareSize
+            else if(posDiagonalLow.size === 1 && !posDiagonalLow.has(""))
+                extraYSpace = game.squareSize
+            else if(posDiagonalHigh.size === 1 && !posDiagonalHigh.has(""))
+                extraXSpace = game.squareSize
+            
+            var lineAngle = -45
+            var startingX = game.startingX + extraXSpace
+            var startingY = game.startingY + 15 + extraYSpace
+            var endingX = game.screenWidth + 100  + extraYSpace
+            var endingY = 800  + extraYSpace
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 300)
+            
         }
         else if(negDiagonal.size === 1 && !negDiagonal.has("") || negDiagonalLow.size === 1 && !negDiagonalLow.has("") || negDiagonalHigh.size === 1 && !negDiagonalHigh.has("") || negDiagonalExt.size === 1 && !negDiagonalExt.has(""))
         {
             console.log("negD")
             gameOver = true
             game.isDraw = false
+            
+            
+            var extraXSpace =  0
+            var extraYSpace = 0
+            if(negDiagonal.size === 1 && !negDiagonal.has(""))
+                extraXSpace = extraYSpace = 0
+            else if(negDiagonalExt.size === 1 && !negDiagonalExt.has(""))
+            {
+                extraYSpace = -game.squareSize
+                extraXSpace = game.squareSize
+            }
+            else if(negDiagonalLow.size === 1 && !negDiagonalLow.has(""))
+                extraYSpace = -game.squareSize
+            else if(negDiagonalHigh.size === 1 && !negDiagonalHigh.has(""))
+                extraXSpace = game.squareSize
+            var lineAngle = -135
+            var startingX = game.startingX  + extraXSpace
+            var startingY = game.startingY + (game.squareSize * game.n) + extraYSpace
+            var endingX = game.screenWidth + 100  + extraXSpace
+            var endingY = -100  + extraYSpace
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 300)
         }
         else if(game.turns >= 35)
         {
@@ -400,12 +509,12 @@ var orderChaosState = {
          if(game.isXTurn)
          {
          var coords = game.convertIndexesToCoords(row, col)
-         game.addSprite(coords[0], coords[1], 'star');
+         game.addSprite(coords[0], coords[1], 'X');
          }
          else
          {
          var coords = game.convertIndexesToCoords(row, col)
-         game.addSprite(coords[0], coords[1], 'moon');
+         game.addSprite(coords[0], coords[1], 'O');
          }
          return*/
             game.board = board
@@ -422,13 +531,14 @@ var orderChaosState = {
                 var x = game.startingX + i*game.squareSize;
                 var y = game.startingY + j * game.squareSize;
                 if(game.board[j][i] === "x"){
-                    game.addSprite(x, y, 'star');
+                    game.addSprite(x, y, 'X');
                 }
                 if(game.board[j][i] === "o"){
-                    game.addSprite(x, y, 'moon');
+                    game.addSprite(x, y, 'O');
                 }
             }
         }
+
     },
     
     
@@ -454,7 +564,7 @@ var orderChaosState = {
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
             game.opponentKey = data.challengerkey
-
+            Client.connectedToChat({"opponent": game.opponent});
         }
         else
         {
@@ -465,6 +575,7 @@ var orderChaosState = {
             game.opponent = data.username
             game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
+            Client.connectedToChat({"opponent": game.opponent});
         }
         console.log("you are challenged by " + game.opponent)
         console.log("you are challenged by key " + game.opponentKey)
@@ -548,9 +659,15 @@ var orderChaosState = {
         {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
-                game.displayWinner()
+            {
+                if(game.isDraw) {
+                    game.displayWinner()
+                }
+                //game.displayWinner()
+                game.waiting = true
+            }
             else
-                game.switchTurn()
+                game.switchTurn(indexX, indexY)
         }
         //if multiplayer, set waiting to true so that you can't place two pieces in one turn
         else
@@ -565,6 +682,70 @@ var orderChaosState = {
         game.printBoard();
     },
     
+    drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
+    {
+        game.linesToAnimate++
+        //var piece2 = game.addSpriteNoScale(startX, startY, 'cometTail');
+        //game.add.tween(piece2.scale).to({  y: 2.7}, 500, Phaser.Easing.Linear.None, true);
+        var piece = game.addSpriteNoScale(startX, startY, 'comet');
+        piece.key = 'comet'
+        piece.angle = angle
+        var tween = game.add.tween(piece).to( { x: endX, y: endY }, 1000,Phaser.Easing.Linear.None, true)
+        game.tstartX = startX
+        game.tstartY = startY
+        tween.onComplete.add(function() { game.showLine(startX, startY, angle, lineExtra); });
+    },
+    
+    showLine(startX, startY, angle, lineExtra)
+    {
+        var piece2 = game.addSpriteNoScale(startX , startY, 'cometTail');
+        piece2.key = 'cometTail'
+        piece2.height = game.squareSize*3 + lineExtra
+        piece2.angle = angle
+        console.log(startX + "," + startY)
+        //console.log(this)
+        piece2.alpha = 0;
+        piece2.angle = angle
+        piece2.lineExtra = lineExtra
+        //console.log("complete tween")
+        
+        var tween = game.add.tween(piece2).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+        //var tween = game.add.tween(line).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(game.completeDraw)
+    },
+    
+    
+    completeDraw()
+    {
+        game.linesToAnimate--
+        console.log("lines left: " + game.linesToAnimate)
+        if(game.linesToAnimate === 0)
+            game.displayWinner()
+        },
+    
+    addSpriteNoScale(x, y, name) {
+        var sprite = game.add.sprite(x, y, name);
+        
+        return sprite
+    },
+    
+    showSprites()
+    {
+        game.endingBoard.forEach(function(element) 
+         {
+         
+         console.log(element)
+         if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background')
+         game.addSprite(element.x, element.y, element.key);
+         else if(element.key === 'cometTail')
+         {
+             var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
+             cometTail.height = game.squareSize*3 + element.lineExtra
+             cometTail.angle = element.angle
+         
+         }
+         });
+},
     
     /*
         asign functions ot the game object, so they can be called by the client
@@ -573,6 +754,12 @@ var orderChaosState = {
      */
     assignFunctions()
     {
+        game.showSprites = this.showSprites
+        game.addSpriteNoScale = this.addSpriteNoScale
+        game.drawWinningLine = this.drawWinningLine
+        game.completeDraw = this.completeDraw
+        game.showSprites = this.showSprites
+        game.showLine = this.showLine
         game.makeBoardOnScreen = this.makeBoardOnScreen;
         game.makePPBoardOnScreen = this.makePPBoardOnScreen;
         game.switchTurn = this.switchTurn;

@@ -35,7 +35,7 @@ angular.module('TicTacToeApp')
               
               app.gameType = "ultimate";
               sessionStorage.setItem("gameType", "ultimate")
-              //$window.location.href = "#/game";
+              $window.location.href = "#/game";
                               
             });
 });

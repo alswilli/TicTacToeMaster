@@ -11,37 +11,49 @@ console.log("In Game Page");
 function startGame()
 {
     var width = document.getElementById('gameDiv').offsetWidth
-    game = new Phaser.Game(width, 600, Phaser.AUTO, 'gameDiv') 
+    var height = 700
+    game = new Phaser.Game(width, height, Phaser.AUTO, 'gameDiv') 
     game.screenWidth = width;
+    game.screenHeight = height;
     
     
-    console.log("In Game Page "+ game.gametype);
+    console.log("In Game Page "+ app.gametype);
     
     //add all the different states to the game, these states are defined in all the 
     //corresponding .js files, i.e loadState is in load.js
     game.state.add('load', loadState)
     game.state.add('menu', menuState)
+    game.state.add('gameDif', gameDifficultyState)
+    game.state.add('challengeFriend',challengeFriendState)
+    game.state.add('win', winState)
+    game.state.add('waitingRoom', waitingRoomState)
     
     game.firstPlay = true
     
-    game.state.add('win', winState)
-    game.state.add('waitingRoom', waitingRoomState)
+   
+    
+    
     if(app.gameType == "original")
         game.state.add('ticTac', ticTacState)
     else if(app.gameType == "3d")
         game.state.add('ticTac', threeDticTacState)
     else if(app.gameType == "orderChaos")
         game.state.add('ticTac', orderChaosState)
+    else if(app.gameType == "ultimate")
+        game.state.add('ticTac', ultimateTTTState)
     else
         console.log("unknown gametype: ", game.gametype)
                     
                     game.optionCount = 0;
     game.addMenuOption = function(text, startY, callback) {
+        console.log("MAKE MENU")
+        
         var optionStyle = { font: '30pt TheMinion', fill: 'white', align: 'left', stroke: 'rgba(0,0,0,0)', srokeThickness: 4};
         var txt = game.add.text(game.world.centerX, (game.optionCount * 80) + startY, text, optionStyle);
         txt.anchor.setTo(0.5);
         txt.stroke = "rgba(0,0,0,0)";
         txt.strokeThickness = 4;
+        txt.key = 'text'
         var onOver = function (target) {
             target.fill = "#FEFFD5";
             target.stroke = "rgba(200,200,200,0.5)";

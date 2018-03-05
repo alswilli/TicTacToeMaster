@@ -107,7 +107,7 @@ $('#btn-submit').on('click', function (e) {
                     .set(data)
                     .then(function () {
                         console.log("User Information Saved:", user.uid);
-                        document.location.href = "index.html";
+                        document.location.href = "../../index.html";
                     })
     
               .catch(function (error) {
@@ -132,7 +132,7 @@ $(function(){
     $('#profile_image').change( function(e) {
         
         var img = URL.createObjectURL(e.target.files[0]);
-        $('.image2').attr('src', img);
+        $('.image').attr('src', img);
     });
 });
 
@@ -155,4 +155,4 @@ function passwordRetrieval(){
 
 
 
-board[0][0][0]
+

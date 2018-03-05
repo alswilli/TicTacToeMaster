@@ -12,21 +12,23 @@ var threeDticTacState = {
     update() {
     },
     
-    preload() {
-        game.load.image('X', 'imgs/3D/X.png');
-        game.load.image('O', 'imgs/3D/O.png');
-    },
-    
+
     /*
      called when the game starts
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
         
-        game.boardHeight = 102
+        game.boardHeight = game.cache.getImage('square').height * 4
         game.boardOffset = 15
-        game.pieceWidth = 38
-        game.pieceHeight = 25
+        game.pieceWidth = 50
+        game.pieceHeight = 50
+        game.squareSize = 50
+        game.boardHeightScaled = game.squareSize * 4 * 0.6
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 4
         game.isXTurn = true
@@ -47,32 +49,28 @@ var threeDticTacState = {
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
         
+        game.cursorSquares = game.makeBoardAsArray(game.n)
+        game.makeBoardOnScreenBetter('redsquare', 0)
+        
+        game.winningSquares = game.makeBoardAsArray(game.n)
+
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         
         console.log(game.board)
         //create the board on screen and makes each square clickable
-        game.makeBoardOnScreen()
+        game.makeBoardOnScreenBetter('square', 1)
         //add messages that display turn status, connection statuses
         this.addTexts()
         
-        
+                
         //folloowing logic is for multiplayer games
-        if(game.singleplayer)
+        if(game.singleplayer || game.vs3DAi)
             return
+            
+        game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
-        if(game.firstPlay === true)
-        {
-            makeClient();
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
-            console.log("firstPlay!")
-            game.firstPlay = false
-            game.waiting = true
-        }
-        else
-        {
-            game.askForRematch()
-        }
+        game.startMultiplayer()
         
     },
     
@@ -104,94 +102,222 @@ var threeDticTacState = {
         return board;
     },
     
+    // /*
+    //  creates the board on screen with clickable squares, game.n, game.board, and
+    //  game.startingX and Y must be defined before calling game function
+    //  */
+    // makeBoardOnScreen(){
+    //     //  Here we'll create a new Group
+    //     var width = game.cache.getImage('board').width
+    //     var height = game.cache.getImage('board').height
+    //     for (var i=0; i < game.n; i++)
+    //     {
+    //         var y = game.startingY + i * (game.boardHeight + game.boardOffset)
+    //         //create square
+    //         var board = game.addSprite(game.startingX, y, 'board');
+    //         //allow square to respond to input
+    //         board.inputEnabled = true
+    //         //indices used for the 2D array
+    //         board.boardNum = i
+    //         //make have placePiece be called when a square is clicked
+    //         board.events.onInputDown.add(game.placePiece, game)
+    //     }
+    // },
+    
     /*
-     creates the board on screen with clickable squares, game.n, game.board, and
-     game.startingX and Y must be defined before calling game function
+     creates the board on the screen using individual squares, rather than four entire board sprites,
+     so now each square will have its own callback function. Will make adding custom tiles easier
      */
-    makeBoardOnScreen(){
-        //  Here we'll create a new Group
-        var width = game.cache.getImage('board').width
-        var height = game.cache.getImage('board').height
+    makeBoardOnScreenBetter(name, alpha)
+    {
+        var xScale = 0.9;
+        var yScale = 0.6;
+        game.spriteSquares = game.makeBoardAsArray(game.n)
         for (var i=0; i < game.n; i++)
         {
-            var y = game.startingY + i * (game.boardHeight + game.boardOffset)
-            //create square
-            var board = game.addSprite(game.startingX, y, 'board');
-            //allow square to respond to input
-            board.inputEnabled = true
-            //indices used for the 2D array
-            board.boardNum = i
-            //make have placePiece be called when a square is clicked
-            board.events.onInputDown.add(game.placePiece, game)
+            var adjustmentY = game.startingY + (i * (game.boardHeight + game.boardOffset) * 0.6)
+            for (var j=0; j < game.n; j++)
+            {
+                for (var k=0; k < game.n; k++)
+                {
+                    indexX = j
+                    indexY = k
+                    //convert the indexes to actual coordinates on the screen
+                    var sheared = game.convertToShearCoords(indexX * game.pieceWidth, indexY * game.pieceHeight)
+                    //adjust the x and y values to where they should appear on the screen, this number seems to
+                    //adjust tiles well
+                    var width = 32
+                    var worldX = game.startingX + sheared[1] * xScale + (j * width * xScale/2)
+                    var worldY = sheared[0] + adjustmentY
+                    //87 X 50 is the dimension of the image, hardcoded so when we add future custom tiles
+                    //they will also fit the screen
+                    var square = game.addSpriteWithWidth(worldX, worldY, name, 87, 50);
+                    square.alpha = alpha
+                    //adjust coordinates after scaling so there are no gaps between tiles
+                    game.adjustForScale(square, xScale, yScale, k, j)
+                    game.addPolygonBounds(square, xScale, yScale)
+                    //enable input in game, don't if this is being called in winState
+                    if(game.state.current==="ticTac" && name === 'square')
+                    {
+                        square.inputEnabled = true
+                        square.events.onInputDown.add(game.placePiece, game)
+                    }
+                    square.indexX = indexX
+                    square.indexY = indexY
+                    square.key = name
+                    square.boardNum = i
+                    if(name === 'square')
+                        game.spriteSquares[i][j][k] = square
+                    else if(name === 'redsquare')
+                        game.cursorSquares[i][j][k] = square
+                    else if(name === 'greensquare')
+                    {
+                        if(game.winningSquares[i][j][k] != "")
+                            square.alpha = 0.7
+                    }
+                }
+            }
+        }
+        
+        
+
+    },
+    
+    /*
+        After scaling an image, move its x and y coordinates accordingly so tiles still are next to each 
+        other without any gaps
+     */
+    adjustForScale(square, xScale, yScale, k, j)
+    {
+        //not sure why but this number seems to make squares adjust perfectly
+        var height = 32
+        var width = 32 
+        square.scale.setTo(xScale, yScale);
+        //add 0.01 to adjust for nonoverlapping tiles
+        square.y -=  k * height * (yScale + 0.01)
+        square.x -=  j * width * xScale/2
+    },
+    
+    /*
+        Every square is given bounds to check if a click on a sprite is actually inside of the square
+     */
+    addPolygonBounds(square, xScale, yScale)
+    {
+        var topLeft = new Phaser.Point((37 * xScale) + square.x, square.y)
+        var topRight = new Phaser.Point(square.x + square.width, square.y)
+        var bottomRight = new Phaser.Point((51 * xScale) + square.x, square.y + square.height)
+        var bottomLeft = new Phaser.Point(square.x, square.y + square.height)
+        square.poly = new Phaser.Polygon([ topLeft, topRight, bottomRight, bottomLeft ]);
+        square.poly.topLeft = topLeft.x
+    },
+    
+    /*
+        Checks if the square to the left of a sprite is clicked, since images overlap now 
+     */
+    checkAdjacentShears(sprite, pointer)
+    {
+        if(pointer.worldX < sprite.poly.topLeft)
+        {
+            //make sure this isn't a corner square
+            if(sprite.indexX > 0)
+            {
+                var indexX = sprite.indexX
+                var indexY = sprite.indexY
+                var boardNum = sprite.boardNum
+                var leftSquare = game.spriteSquares[boardNum][indexX-1][indexY]
+                game.placePieceNoPointer(leftSquare)
+            }
         }
     },
     
     /*
-     places a piece on an empty square, either x or o depending whose turn it is
+        places a piece on an empty square, either x or o depending whose turn it is, given a pointer9i.e mouse click)
      */
     placePiece(sprite, pointer)
     {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
-        //the board that was clicked on, 0 is on top, 3 is on bottom
-        var boardNum = sprite.boardNum
-
-        //used to adjust y value for space between boards
-        var adjustmentY = game.startingY + (boardNum * (game.boardHeight + game.boardOffset))
-        //used to adjust x value for centering the boards
-        var adjustmentX = game.screenWidth/2 - game.cache.getImage('board').width / 2
-        var y = pointer.worldY - adjustmentY
-        var x = pointer.worldX - adjustmentX
-        var point = [x, y]
-        //get the indexes that were clicked on
-        var placement = game.convertToIndexes(point)
-            
-        var indexX =placement[1]
-        var indexY =placement[0]
-        //check to make sure index is in bounds, since board is sheared, its possible to click out of bounds
-        if(indexX < 0 || indexX >= game.n )
+        if(game.multiplayer && game.checkForDoubleClick())
             return
-        //check if there is already something placed at this position
-        if(game.board[boardNum][indexY][indexX] != "")
-            return
-        
-        //convert the indexes to actual coordinates on the screen
-        var sheared = game.convertToShearCoords(indexX * game.pieceWidth, indexY * game.pieceHeight)
-        //get width of images to adjust placements
-        var width = game.cache.getImage('X').width
-        //adjust the x and y values to where they should appear on the screen
-        var worldX = game.startingX + sheared[1] - width/2
-        var worldY = sheared[0] + adjustmentY
-        //place appropriate piece, depending whose turn it is
-        if(game.isXTurn)
-        {
-            var piece = game.addSprite(worldX, worldY, 'X');
-            game.board[boardNum][indexY][indexX] = "x"
-        }
+        if(sprite.poly.contains(pointer.worldX, pointer.worldY))
+            game.placePieceNoPointer(sprite)
         else
-        {
-            var piece = game.addSprite(worldX, worldY, 'O');
-            game.board[boardNum][indexY][indexX] = "o"
-        }
-        game.updateTurnStatus(boardNum, indexX, indexY)
+            game.checkAdjacentShears(sprite, pointer)
+        
     },
+     /*
+        called when a mouse click has been verified to actually be on a square
+      */
+    placePieceNoPointer(sprite)
+    {
+       var indexX = sprite.indexX
+       var indexY = sprite.indexY
+       var boardNum = sprite.boardNum
+       if(game.board[boardNum][indexY][indexX] != "")
+            return 
+           
+       var Ypadding = 3
+       var Xpadding = 15
+       if(game.isXTurn)
+       {
+           var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'X');
+           game.board[boardNum][indexY][indexX] = "x"
+           game.previousPiece = "x"
+       }
+       else
+       {
+           var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'O');
+           game.board[boardNum][indexY][indexX] = "o"
+           game.previousPiece = "o"
+       }
+       game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
+    },
+
     
     
     /*
      switch current turn, and display whose turn it is
      */
-    switchTurn(){
+    switchTurn(boardNum, indexX, indexY){
         console.log("switching current turn")
         game.isXTurn = !game.isXTurn
         game.turns++
+        game.updateHilightedSquare(boardNum, indexX, indexY)
         var turn = game.isXTurn ? "x" : "o"
-        if(game.singleplayer)
+        if(game.singleplayer || game.vs3DAi)
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
         else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
         else
             game.turnStatusText.setText(game.opponent + "'s turn")
+    },
+    
+    updateHilightedSquare(boardNum, x, y)
+    {
+        for(var i = 0; i < game.n; i++)
+        {
+            for (var j = 0; j < game.n; j++)
+            {
+                for (var k = 0; k < game.n;k++)
+                {
+                    //Normal functionality, just assign one open spot
+                    if(i == boardNum && j == x && k == y)
+                    {
+                        console.log("i: ", i)
+                        console.log("j: ", j)
+                        console.log("x: ", x)
+                        console.log("y: ", y)
+                        game.cursorSquares[i][j][k].alpha = .7
+                        // game.cursorSquares[i][j].tint = 0xffffff
+                    }
+                    else
+                    {
+                        game.cursorSquares[i][j][k].alpha = 0
+                    }
+                }
+            }
+        }
     },
     
     /*
@@ -206,7 +332,7 @@ var threeDticTacState = {
             game.waiting = false
         if(game.isOver(coordInfo.boardNum, coordInfo.x, coordInfo.y))
             game.displayWinner()
-        game.switchTurn()
+        game.switchTurn(coordInfo.boardNum, coordInfo.x, coordInfo.y)
     },
     
     /*
@@ -215,11 +341,14 @@ var threeDticTacState = {
      */
     addSprite(x, y, name) {
         var sprite = game.add.sprite(x, y, name);
-        //sprite.scale.setTo(0.5, 0.5);
+        
         var width = game.cache.getImage(name).width
         var height = game.cache.getImage(name).height
-        sprite.width = width
-        sprite.height = height
+        sprite.width = width 
+        sprite.height = height 
+        //sprite.scale.setTo(0.75, 0.75);
+        //sprite.x -= width * 1.75
+        //sprite.y -= height * 1.75
         return sprite
     },
     
@@ -230,7 +359,7 @@ var threeDticTacState = {
     addSpriteWithWidth(x, y, name, width, height)
     {
         var sprite = game.add.sprite(x, y, name);
-        //sprite.scale.setTo(0.5, 0.5);
+        //sprite.scale.setTo(0.75, 0.75);
         sprite.width = width
         sprite.height = height
         return sprite
@@ -246,6 +375,18 @@ var threeDticTacState = {
         console.log("");
     },
     
+    addWinningSquares(winningSquares)
+    {
+        
+        winningSquares.forEach(function(winningSquare)
+        {
+               var i = winningSquare[0]
+               var k = winningSquare[1]
+               var j = winningSquare[2]
+               game.winningSquares[i][j][k] = true
+        });
+    },
+    
     /*
      check if the game is over, given the index of the piece that was just placed
      */
@@ -256,20 +397,29 @@ var threeDticTacState = {
         //create Sets for each direction. Since a Set has unique entries, if there
         //is only one entry and it is not an empty string, that entry is the winner
         var horizontal = new Set()
+        var horCoords = []
         var vertical = new Set()
+        var vertCoords = []
         
         var posDiagonal = new Set()
+        var posCoords = []
         var negDiagonal = new Set()
+        var negCoords = []
         
         for (var y=0; y < game.n; y++){
             //check the possible horizontal and vertical wins for the given placement
             horizontal.add(game.board[num][row][y])
+            horCoords.push([num, row, y])
             vertical.add(game.board[num][y][col])
+            vertCoords.push([num, y, col])
             //check the possible diagonal wins by checking the main diagonals
             posDiagonal.add(game.board[num][y][y])
+            posCoords.push([num, y, y])
             negDiagonal.add(game.board[num][game.n-1-y][y])
+            negCoords.push([num, game.n-1-y, y])
         }
         var gameOver = false;
+        console.log(horCoords)
         //if all entries in a row or column are the same, then the game is over
         //we don't need to check that the only entry is not a blank string, since
         //these Sets will include the piece that was just placed, which cannot possibly be blank
@@ -277,26 +427,30 @@ var threeDticTacState = {
         {
             gameOver = true
             game.isDraw = false
+            game.addWinningSquares(horCoords)
         }
-        else if(vertical.size === 1)
+        if(vertical.size === 1)
         {
             gameOver = true
             game.isDraw = false
+            game.addWinningSquares(vertCoords)
         }
         //if all entries in a diagonal are the same AND that entry is not blank,
         //then the game is over
-        else if(posDiagonal.size === 1 && !posDiagonal.has(""))
+        if(posDiagonal.size === 1 && !posDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            game.addWinningSquares(posCoords)
         }
-        else if(negDiagonal.size === 1 && !negDiagonal.has(""))
+        if(negDiagonal.size === 1 && !negDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            game.addWinningSquares(negCoords)
         }
         //check 3D game ending conditions
-        else if(game.checkIfOver3D(num, col, row))
+        if(game.checkIfOver3D(num, col, row))
         {
             gameOver = true
             game.isDraw = false
@@ -318,13 +472,15 @@ var threeDticTacState = {
      */
     checkIfOver3D(board, col, row)
     {
+        var gameOver = false
         if(game.checkIfVertical3D(col, row))
-            return true
+            gameOver = true
         if(game.checkLocalDiagonals3D(board, col, row))
-            return true
+            gameOver =  true
         if(game.checkMainDiagonals3D(board, col, row))
-            return true
-        return false
+            gameOver = true
+        console.log("CHECKIFOVER3D: " + gameOver)
+        return gameOver
     },
     
     /*
@@ -333,14 +489,19 @@ var threeDticTacState = {
     checkIfVertical3D(col, row)
     {
         var vertical = new Set()
+        var vertCoords = []
         for(var i = 0; i < game.board.length; i++)
         {
             vertical.add(game.board[i][row][col])
+            vertCoords.push([i, row, col])
         }
         
-        gameOver = false
+        var gameOver = false
         if(vertical.size === 1)
+        {
+            game.addWinningSquares(vertCoords)
             gameOver = true
+        }
         return gameOver
     },
     
@@ -350,9 +511,13 @@ var threeDticTacState = {
     checkLocalDiagonals3D(board, fixedCol, fixedRow)
     {
         var positiveHorizontal = new Set()
+        var posHorCoords = []
         var negativeHorizontal = new Set()
+        var negHorCoords = []
         var positiveVertical= new Set()
+        var posVertCoords = []
         var negativeVertical= new Set()
+        var negVertCoords = []
         
         for(var col = 0, row=0, k=0; k < game.board.length; col++, row++, k++)
         {
@@ -365,6 +530,7 @@ var threeDticTacState = {
             {
 
                 negativeHorizontal.add(game.board[k][fixedRow][col])
+                negHorCoords.push([k, fixedRow, col])
             }
             
         }
@@ -379,6 +545,7 @@ var threeDticTacState = {
             {
                 
                 positiveHorizontal.add(game.board[k][fixedRow][col])
+                posHorCoords.push([k, fixedRow, col])
             }
         }
         for(var col = 0, row=0, k=0; k < game.board.length; col++, row++, k++)
@@ -392,6 +559,7 @@ var threeDticTacState = {
             {
                 
                 positiveVertical.add(game.board[k][row][fixedCol] )
+                posVertCoords.push([k, row, fixedCol])
             }
         }
         for(var col = 0, row=0, k=game.n-1; k >= 0; col++, row++, k--)
@@ -405,28 +573,33 @@ var threeDticTacState = {
             {
                 
                 negativeVertical.add(game.board[k][row][fixedCol])
+                negVertCoords.push([k, row, fixedCol])
             }
         }
     
-        gameOver = false
+        var gameOver = false
         if(negativeHorizontal.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(negHorCoords)
             console.log("neg horizontal, game ovah!")
         }
-        else if(positiveHorizontal.size === 1)
+        if(positiveHorizontal.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(posHorCoords)
             console.log("pos horizontal, game ovah!")
         }
-        else if(positiveVertical.size === 1)
+        if(positiveVertical.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(posVertCoords)
             console.log("pos vertical, game ovah!")
         }
-        else if(negativeVertical.size === 1)
+        if(negativeVertical.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(negVertCoords)
             console.log("neg vertical, game ovah!")
         }
         
@@ -439,9 +612,13 @@ var threeDticTacState = {
     checkMainDiagonals3D()
     {
         var mainTopLeft= new Set()
+        var topLeftCoords = []
         var mainTopRight= new Set()
+        var topRightCoords = []
         var mainBottomLeft= new Set()
+        var bottomLeftCoords = []
         var mainBottomRight= new Set()
+        var bottomRightCoords = []
         for(var col = 0, row=0, k=0; k < game.board.length; col++, row++, k++)
         {
             //if the coords are out of bounds or contain an empty square, mark it as invalid
@@ -452,6 +629,7 @@ var threeDticTacState = {
             else
             {
                 mainTopLeft.add(game.board[k][row][col])
+                topLeftCoords.push([k, row, col])
             }
         }
         for(var col = game.n-1, row=0, k=0; k < game.board.length; col--, row++, k++)
@@ -465,6 +643,7 @@ var threeDticTacState = {
             {
                 
                 mainTopRight.add(game.board[k][row][col])
+                topRightCoords.push([k, row, col])
             }
         }
         //
@@ -478,6 +657,7 @@ var threeDticTacState = {
             else
             {
                 mainBottomLeft.add(game.board[k][row][col])
+                bottomLeftCoords.push([k, row, col])
             }
         }
         for(var col = game.n-1, row=game.n-1, k=0; k < game.board.length; col--, row--, k++)
@@ -490,27 +670,32 @@ var threeDticTacState = {
             else
             {
                 mainBottomRight.add(game.board[k][row][col])
+                bottomRightCoords.push([k, row, col])
             }
         }
         var gameOver = false
         if(mainTopLeft.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(topLeftCoords)
             console.log("mainTopLeft, game ovah!")
         }
-        else if(mainTopRight.size === 1)
+        if(mainTopRight.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(topRightCoords)
             console.log("mainTopRight, game ovah!")
         }
-        else if(mainBottomLeft.size === 1)
+        if(mainBottomLeft.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(bottomLeftCoords)
             console.log("mainBottomLeft, game ovah!")
         }
-        else if(mainBottomRight.size === 1)
+        if(mainBottomRight.size === 1)
         {
             gameOver = true
+            game.addWinningSquares(bottomRightCoords)
             console.log("mainBottomRight, game ovah!")
         }
         
@@ -543,7 +728,7 @@ var threeDticTacState = {
      */
     displayWinner() {
         var winningPiece = game.isXTurn ? 'x' : 'o'
-        if(game.singleplayer)
+        if(game.singleplayer || game.vs3DAi)
             game.winner = winningPiece
         else
         {
@@ -587,19 +772,18 @@ var threeDticTacState = {
         console.log(board)
         
         var boardNum = coordInfo.boardNum
-        var row = coordInfo.x
-        var col = coordInfo.y
-            
-            
+        var x = coordInfo.worldX
+        var y = coordInfo.worldY
+
+        var Ypadding = 3
+        var Xpadding = 15   
         if(game.isXTurn)
         {
-            var coords = game.convertIndexesToCoords(boardNum, row, col)
-            game.addSprite(coords[0], coords[1], 'X');
+            game.addSprite(x + Xpadding, y + Ypadding, 'X');
         }
         else
         {
-            var coords = game.convertIndexesToCoords(boardNum, row, col)
-            game.addSprite(coords[0], coords[1], 'O');
+            game.addSprite(x + Xpadding, y + Ypadding, 'O');
         }
     },
     
@@ -640,7 +824,7 @@ var threeDticTacState = {
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
             game.opponentKey = data.challengerkey
-            
+            Client.connectedToChat({"opponent": game.opponent});
         }
         else
         {
@@ -651,6 +835,7 @@ var threeDticTacState = {
             game.opponent = data.username
             game.turnStatusText.setText("Your Turn")
             game.opponentKey = data.userkey
+            Client.connectedToChat({"opponent": game.opponent});
         }
         console.log("you are challenged by " + game.opponent)
         console.log("you are challenged by key " + game.opponentKey)
@@ -694,7 +879,7 @@ var threeDticTacState = {
      Initialize the texts used to display turn status and matching status
      */
     addTexts(){
-        var startingMessage = game.singleplayer ? "Current Turn: X" : "Searching for Opponent"
+        var startingMessage = (game.singleplayer || game.vs3DAi) ? "Current Turn: X" : "Searching for Opponent"
         
         game.turnStatusText = game.add.text(
                                             game.world.centerX, 50, startingMessage,
@@ -705,7 +890,7 @@ var threeDticTacState = {
         game.turnStatusText.key = 'text'
         
         game.playerPieceText = game.add.text(
-                                             game.world.centerX, 600-50, '',
+                                             game.world.centerX, game.screenHeight-50, '',
                                              { font: '50px Arial', fill: '#ffffff' }
                                              )
         //setting anchor centers the text on its x, y coordinates
@@ -719,22 +904,41 @@ var threeDticTacState = {
     /*
      Update the status of the current turn player
      */
-    updateTurnStatus(boardNum, indexX, indexY)
+    updateTurnStatus(boardNum, indexX, indexY, worldX, worldY)
     {
-        if(game.singleplayer)
+        if (game.vs3DAi) {
+            console.log("updateTurnStatus: single player AI");
+            if(game.isOver(boardNum, indexX, indexY)) {
+               game.displayWinner()         
+            }
+            else {
+               game.switchTurn(indexX, indexY); 
+               game.waiting = true;
+               console.log("indexX: "+indexX+" indexY: "+indexY);
+               console.log(game.board);
+               console.log(threeDboardToArray());
+               
+               threeDaiMakesMove();
+               game.switchTurn(indexX, indexY);
+               console.log(threeDboardToArray());
+               game.waiting = false;
+               
+            }
+         }
+        else if(game.singleplayer)
         {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(boardNum, indexX, indexY))
                 game.displayWinner()
             else
-                game.switchTurn()
+                game.switchTurn(boardNum, indexX, indexY)
         }
         //if multiplayer, set waiting to true so that you can't place two pieces in one turn
         else
         {
             game.waiting = true;
             //send updated board to the server so the opponent's board is updated too
-            var data = {board:game.board, boardNum:boardNum, x:indexX, y:indexY};
+            var data = {board:game.board, boardNum:boardNum, worldX:worldX, worldY:worldY, x:indexX, y:indexY, id:game.id};
             Client.sendClick(data);
         }
         
@@ -749,7 +953,7 @@ var threeDticTacState = {
         var height = game.cache.getImage('board').height
         var zpoint = [[point[0], height -  point[1]]]
         var shear = [[1, 0],
-                     [-1.15, 1]
+                     [-0.75, 1] //1.15
                      ]
         
         var result = game.multiplyMatrices(zpoint, shear)
@@ -772,7 +976,7 @@ var threeDticTacState = {
         var height = game.cache.getImage('board').height
         var zpoint = [[x, height -  y]]
         var shear = [[1, 0],
-                     [1.15, 1]
+                     [0.75, 1] //1.15
                      ]
         console.log("Convert to grid coords: " + zpoint[0][0] + ", " + zpoint[0][1])
         var result = game.multiplyMatrices(zpoint, shear)
@@ -805,6 +1009,21 @@ var threeDticTacState = {
       return result;
     },
     
+    /*
+        called in winstate to redisplay the board
+     */
+    rescaleSprites()
+    {
+        game.makeBoardOnScreenBetter('square', 1)
+        game.makeBoardOnScreenBetter('greensquare', 0)
+        game.endingBoard.forEach(function(element) {
+            if(element.key != 'text' && element.key != 'square' && element.key != 'redsquare' && element.key != 'background')
+                  game.addSprite(element.x, element.y, element.key);
+        });
+    },
+    
+    
+    
     
     /*
      asign functions ot the game object, so they can be called by the client
@@ -814,10 +1033,12 @@ var threeDticTacState = {
     assignFunctions()
     {
         game.makeBoardOnScreen = this.makeBoardOnScreen;
+        game.makeBoardOnScreenBetter = this.makeBoardOnScreenBetter;
         game.switchTurn = this.switchTurn;
         game.placePiece = this.placePiece
         game.makeBoardAsArray = this.makeBoardAsArray
         game.addSprite = this.addSprite
+        game.addSpriteWithWidth = this.addSpriteWithWidth
         game.displayDraw = this.displayDraw
         game.displayWinner = this.displayWinner
         game.saveBoard = this.saveBoard
@@ -842,5 +1063,305 @@ var threeDticTacState = {
         game.checkIfOver3D = this.checkIfOver3D
         game.checkMainDiagonals3D = this.checkMainDiagonals3D
         game.convertIndexesToCoords = this.convertIndexesToCoords
+        game.adjustForScale = this.adjustForScale
+        game.addPolygonBounds = this.addPolygonBounds
+        game.placePieceNoPointer = this.placePieceNoPointer
+        game.rescaleSprites = this.rescaleSprites
+        game.checkAdjacentShears = this.checkAdjacentShears
+        game.updateHilightedSquare = this.updateHilightedSquare
+        game.addWinningSquares = this.addWinningSquares
     }
+    
 };
+
+// /****************************************** 3D Tic Tac Toe AI ************************/
+// var human = "x";
+// var ai    = "o";
+
+       
+// /* This is called when for the ai to make a move.
+//  * Converts the board to a single array for minimax to calculate where to play a move.
+//  * Then we place the move there for the AI.
+//  * We convert the board back to a single array and check for the winning condition.
+//  */
+// function threeDaiMakesMove() {
+//    var boardArr = threeDboardToArray();
+//    var move = threeDminimax(boardArr, ai);
+
+//    var newBoardArr = threeDspliceBoard(boardArr);
+
+//    // Set game difficutly probability
+//    if (game.difficulty == 'easy') {
+//     var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     console.log("EASY MODE")
+//    }
+//    else if (game.difficulty == 'medium') {
+//     var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     console.log("MEDIUM MODE")
+//    }
+//    else if (game.difficulty == 'hard') {
+//     var actualMove = (Math.random() < 0.9) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+//     console.log("HARD MODE")   
+//    }
+//    console.log("MOVE: ", move)
+//    console.log("ACTUAL MOVE: ", actualMove)
+   
+//    //    var convertedMove = convertMove(move);
+//    if (actualMove == move)
+//    {
+//     console.log("a")
+//     var convertedMove = threeDconvertMove(actualMove);
+//    } 
+//    else
+//    {
+//     console.log("b")
+//     var convertedMove = threeDconvertRandMove(actualMove);   
+//    } 
+// //    console.log("AI's move: ", move);
+//    console.log("AI's move: ", move);
+//    console.log("convertedMove: ", convertedMove);
+   
+//    threeDplacePieceAt(convertedMove.row, convertedMove.column);
+   
+//    boardArr = threeDboardToArray();
+
+//    if ( threeDgameIsWon(boardArr, human) || threeDgameIsWon(boardArr, ai) ) {
+//       game.displayWinner();
+//    }
+// }
+
+// function threeDspliceBoard(boardArr) {
+//     var array = [];
+
+//    for (var i=0; i < boardArr.length; i++) {
+//          if (boardArr[i] != "x" && boardArr[i] != "o") {
+//             array.push(boardArr[i]);
+//          }
+//    }
+
+//    return array;
+// }
+
+ 
+// /* Draws a piece at the given index 
+//  */
+// function threeDplacePieceAt(row , col) {
+//    console.log(game.screenWidth);
+// //    var x = 485 + (col * 115);
+// //    var y = 115   * (row + 1);
+//    var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'moon');
+// //    var piece = game.addSprite(x, y, 'moon');
+//    game.placedPieces.push(piece);
+//    game.board[row][col] = "o";
+// }
+
+       
+// /* Converts the board to a single array 
+//  */
+// function threeDboardToArray() {
+   
+//    var array = [];
+
+//     for (var j=0; j<3; j++) {
+//       for (var k=0; k<3; k++){
+//        if (game.board[0][j][k] != "") {
+//           array.push(game.board[0][j][k]);
+//        }else {
+//           array.push(0*3 + j*3 + k);
+//        }
+//        console.log ("BOARD ARRAY: " + (j*3 + k), game.board[0][j][k])
+//       }
+
+//       alert("POOP")
+//  }
+   
+// //    for (var i=0; i<4; i++) {
+// //       for (var j=0; j<4; j++) {
+// //         for (var k=0; k<4; k++){
+// //          if (board[i][j][k] != "") {
+// //             array.push(board[i][j][k]);
+// //          }else {
+// //             array.push(i*3 + j*3 + k);
+// //          }
+// //         }
+// //       }
+// //    }
+// //    console.log ("BOARD ARRAY: ", array)
+//    return array;
+// }
+
+
+// /* Converts a move{index, score} to location{row, column}
+//  */
+// function threeDconvertMove(move) {
+//    var loc = {};
+   
+//    loc.row    = Math.floor(move.index / 3);
+//    loc.column = move.index % 3;
+//    return loc;
+// }
+
+// /* Converts a "arrIndex" to location{row, column}
+//  */
+// function threeDconvertRandMove(move) {
+//     var loc = {};
+    
+//     loc.row    = Math.floor(move / 3);
+//     loc.column = move % 3;
+//     return loc;
+//  }
+
+       
+// /* Returns the list of indexes of empty spaces on the board
+//  */
+// function threeDemptyIndexies(board){
+//   return  board.filter(tile => tile != "o" && tile != "x");
+// }
+
+
+// /* Tests if the given player has won the board by checking all combinations
+//  * 0 1 2
+//  * 3 4 5
+//  * 6 7 8 
+//  */
+// function threeDgameIsWon(gboard, player) {
+//     console.log("POOOOOP")
+// //    if ( (gboard[0] == player && gboard[1] == player && gboard[2] == player && gboard[3] == player) || //Horizontals (b0)
+// //         (gboard[4] == player && gboard[5] == player && gboard[6] == player && gboard[7] == player) ||
+// //         (gboard[8] == player && gboard[9] == player && gboard[10] == player && gboard[11] == player) ||
+// //         (gboard[12] == player && gboard[13] == player && gboard[14] == player && gboard[15] == player) 
+
+// if ( (gboard[0] == player && gboard[1] == player && gboard[2] == player) || //Horizontals
+//         (gboard[3] == player && gboard[4] == player && gboard[5] == player) ||
+//         (gboard[6] == player && gboard[7] == player && gboard[8] == player) 
+
+//         // (board[0] == player && board[4] == player && board[8] == player && board[12] == player) || //Verticals (b0)
+//         // (board[1] == player && board[5] == player && board[9] == player && board[13] == player) ||
+//         // (board[2] == player && board[6] == player && board[10] == player && board[14] == player) ||
+//         // (board[3] == player && board[7] == player && board[11] == player && board[15] == player) ||
+       
+//         // (board[0] == player && board[5] == player && board[10] == player && board[15] == player) || //Diagonals (b0)
+//         // (board[3] == player && board[6] == player && board[9] == player && board[12] == player) || 
+    
+    
+//         // (board[16] == player && board[17] == player && board[18] == player && board[19] == player) || //Horizontals (b1)
+//         // (board[20] == player && board[21] == player && board[22] == player && board[23] == player) ||
+//         // (board[24] == player && board[25] == player && board[26] == player && board[27] == player) ||
+//         // (board[28] == player && board[29] == player && board[30] == player && board[31] == player) ||
+
+//         // (board[16] == player && board[20] == player && board[24] == player && board[28] == player) || //Verticals (b1)
+//         // (board[17] == player && board[21] == player && board[25] == player && board[29] == player) ||
+//         // (board[18] == player && board[22] == player && board[26] == player && board[30] == player) ||
+//         // (board[19] == player && board[23] == player && board[27] == player && board[31] == player) ||
+       
+//         // (board[16] == player && board[21] == player && board[26] == player && board[31] == player) || //Diagonals (b1)
+//         // (board[19] == player && board[22] == player && board[25] == player && board[28] == player) ||
+    
+    
+//         // (board[32] == player && board[33] == player && board[34] == player && board[35] == player) || //Horizontals (b2)
+//         // (board[36] == player && board[37] == player && board[38] == player && board[39] == player) ||
+//         // (board[40] == player && board[41] == player && board[42] == player && board[43] == player) ||
+//         // (board[44] == player && board[45] == player && board[46] == player && board[47] == player) ||
+
+//         // (board[32] == player && board[36] == player && board[40] == player && board[44] == player) || //Verticals (b2)
+//         // (board[33] == player && board[37] == player && board[41] == player && board[45] == player) ||
+//         // (board[34] == player && board[38] == player && board[42] == player && board[46] == player) ||
+//         // (board[35] == player && board[39] == player && board[43] == player && board[47] == player) ||
+       
+//         // (board[32] == player && board[37] == player && board[42] == player && board[47] == player) || //Diagonals (b2)
+//         // (board[35] == player && board[38] == player && board[41] == player && board[44] == player) || 
+    
+    
+//         // (board[48] == player && board[49] == player && board[50] == player && board[51] == player) || //Horizontals (b3)
+//         // (board[52] == player && board[53] == player && board[54] == player && board[55] == player) ||
+//         // (board[56] == player && board[57] == player && board[58] == player && board[59] == player) ||
+//         // (board[60] == player && board[61] == player && board[62] == player && board[63] == player) ||
+
+//         // (board[48] == player && board[52] == player && board[56] == player && board[60] == player) || //Verticals (b3)
+//         // (board[49] == player && board[53] == player && board[57] == player && board[61] == player) ||
+//         // (board[50] == player && board[54] == player && board[58] == player && board[62] == player) ||
+//         // (board[51] == player && board[55] == player && board[59] == player && board[63] == player) ||
+       
+//         // (board[48] == player && board[53] == player && board[58] == player && board[63] == player) || //Diagonals (b3)
+//         // (board[51] == player && board[54] == player && board[57] == player && board[60] == player)
+//      ) 
+//    {
+//        console.log("GAME OVER BASE CASE")
+//       return true;
+//    }
+//    return false;
+// }
+
+
+// /* This is the minimax algorithm that recursively chooses the best move to play for the 
+//  * ai by playing ahead. 
+//  * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
+//  */
+// function threeDminimax(newBoard, player) {
+   
+//    var availSpots = threeDemptyIndexies(newBoard);
+   
+//    if (threeDgameIsWon(newBoard, human)) {
+//       return {score: -10};
+//    }
+//    else if (threeDgameIsWon(newBoard, ai)) {
+//       return {score:  10};
+//    }
+//    else if (availSpots.length == 0) {
+//       return {score:   0};
+//    }
+   
+//    var moves = []; //Collects all the objects
+   
+//    for (var i=0; i<availSpots.length; i++) {
+      
+//       //Create an object for each and store the index of that spot 
+//       var move = {};
+//       move.index = newBoard[availSpots[i]];
+      
+//       newBoard[availSpots[i]] = player; //Set the empty spot to the current player
+      
+//       if (player == ai) {
+//          var result = threeDminimax(newBoard, human);
+//          move.score = result.score;
+//       }
+//       else {
+//          var result = threeDminimax(newBoard, ai);
+//          move.score = result.score;
+//       }
+      
+//       newBoard[availSpots[i]] = move.index; //Reset the spot to empty
+      
+//       moves.push(move); //Push the spot to empty
+//    }
+
+//    console.log("DONE")
+      
+//    //If it's the ai's turn, loop over the moves and choose the one with the highest score
+//    var bestMove;
+   
+//    if (player == ai) {
+//       var bestScore = -10000;
+      
+//       for (var i=0; i<moves.length; i++) {
+//          if (moves[i].score > bestScore) {
+//             bestScore = moves[i].score;
+//             bestMove  = i;
+//          }
+//       }
+//    }
+//    //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
+//    else { 
+//       var bestScore = 10000;
+      
+//       for (var i=0; i<moves.length; i++) {
+//          if (moves[i].score < bestScore) {
+//             bestScore = moves[i].score;
+//             bestMove  = i;
+//          }
+//       }
+//    }
+   
+//    //Return the chosen move(object) from the moves array
+//    return moves[bestMove];
+// }

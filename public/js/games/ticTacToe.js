@@ -14,19 +14,34 @@ var ticTacState = {
     update() {
     },
     
+    preload() {
+        game.load.image('comet', 'imgs/comet.png');
+        game.load.image('cometTail', 'imgs/cometTail.png');
+    },
+    
     /*
      called when the game starts
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
+
+        game.linesToAnimate = 0
+        
+
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
+			
+
         game.squareSize = 115
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 3
         game.isXTurn = true
         game.isDraw = false
         game.turns = 0
-        
+         
         //the top left coordinate to place the whole board at, we will make game
         //not hardcoded in the furture to center the board, but I believe we need jQuery
         //to get window size and I didn't feel like learning that right now
@@ -40,29 +55,37 @@ var ticTacState = {
         
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
-        
+
+        game.cursorSquares = []
+        for (var i=0; i < game.n; i++) {
+            game.cursorSquares[i]=new Array(game.n)
+        }  
+
+        for (var i=0; i < game.n; i++)
+        {
+            for (var j=0; j < game.n; j++)
+            {
+                console.log("HERE")
+                game.cursorSquares[i][j] = game.addSprite(game.startingX + i*game.squareSize, game.startingY + j*game.squareSize, 'redsquare')
+                game.cursorSquares[i][j].alpha = 0
+            }
+        }
+
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         //create the board on screen and makes each square clickable
         game.makeBoardOnScreen()
         //add messages that display turn status, connection statuses
         this.addTexts()
+        
+        game.previousPiece = ""
+        
+        //game.drawWinningLine(game.screenWidth/2, game.startingY - 15, game.screenWidth/2, 400)
         //folloowing logic is for multiplayer games
-        if(game.singleplayer)
+        if(game.singleplayer || game.vsAi)
             return
         //if this is the first play against an opponent, create a new player on the server
-        if(game.firstPlay)
-        {
-            makeClient();
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
-            console.log("firstPlay!")
-            game.firstPlay = false
-            game.waiting = true
-        }
-        else
-        {
-            game.askForRematch()
-        }
+        game.startMultiplayer()
         
     },
     
@@ -74,6 +97,7 @@ var ticTacState = {
         for (var i=0; i < n; i++) {
             board[i]=new Array(n)
         }
+        console.log(board);
         return board;
     },
     
@@ -107,10 +131,15 @@ var ticTacState = {
      */
     placePiece(sprite, pointer)
     {
+        console.log(sprite); 
+        console.log("x: ", sprite.x);
+        console.log("y: ", sprite.y);
+       //console.log(pointer);
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
-        
+        if(game.multiplayer && game.checkForDoubleClick())
+            return
         //the indexes in the 2D array corresponding to the clicked square
         var indexX = sprite.xIndex
         var indexY = sprite.yIndex
@@ -127,16 +156,20 @@ var ticTacState = {
          //place either an x or o, depending whose turn it is
         if(game.isXTurn)
         {
-            var piece = game.addSprite(sprite.x, sprite.y, 'star');
+            var piece = game.addSprite(sprite.x, sprite.y, 'X');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "x"
+            game.previousPiece = "x"
         }
         else{
-            var piece = game.addSprite(sprite.x, sprite.y, 'moon');
+            var piece = game.addSprite(sprite.x, sprite.y, 'O');
             game.placedPieces.push(piece);
             game.board[indexY][indexX] = "o";
+            game.previousPiece = "o"
         }
         
+        // game.cursorSquares[i][j] = game.addSprite(game.startingX + i*game.squareSize, game.startingY + j*game.squareSize, 'redsquare')
+        // game.cursorSquares[i][j].alpha = 0.5
 
         game.updateTurnStatus(indexX, indexY)
         pieceChallenge(game.turns);
@@ -145,14 +178,45 @@ var ticTacState = {
     /*
         switch current turn, and display whose turn it is
      */
-    switchTurn(){
+    switchTurn(x,y){
         console.log("switching current turn")
+        console.log("x: ", x)
+        console.log("y: ", y)
+        
         game.isXTurn = !game.isXTurn
         game.turns++
 
+<<<<<<< HEAD
         console.log("turn count: " + game.turns)
         var turn = game.isXTurn ? "x" : "o"
         if(game.singleplayer){
+=======
+        for (var i = 0; i < 3; i++)
+        {
+            for (var j = 0; j < 3; j++)
+            {
+                //Normal functionality, just assign one open spot
+                if(i == x && j == y)
+                {
+                    console.log("i: ", i)
+                    console.log("j: ", j)
+                    console.log("x: ", x)
+                    console.log("y: ", y)
+                    game.cursorSquares[i][j].alpha = .7
+                    // game.cursorSquares[i][j].tint = 0xffffff
+                }
+                else
+                {
+                    game.cursorSquares[i][j].alpha = 0
+                }
+            }
+        }
+
+        pieceChallenge(game.turns);
+        console.log("turn count: " + game.turns)
+        var turn = game.isXTurn ? "x" : "o"
+        if(game.singleplayer || game.vsAi)
+>>>>>>> 73eed7d6f83f2750f9693f66a361700f2eb7bb09
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
         // Below is for multiplayer
         }else if(game.player === turn){
@@ -185,10 +249,14 @@ var ticTacState = {
             game.waiting = false
         if(game.isOver(coordInfo.x, coordInfo.y))
         {
-            game.displayWinner()
+            game.waiting = true
+            if(game.isDraw) {
+                game.displayWinner()
+            }                        
+            //game.displayWinner()
             console.log(board)
         }
-        game.switchTurn()
+        game.switchTurn(coordInfo.x, coordInfo.y)
     },
     
     /*
@@ -200,6 +268,16 @@ var ticTacState = {
         sprite.scale.setTo(0.5, 0.5);
         sprite.width = game.squareSize
         sprite.height = game.squareSize
+        return sprite
+    },
+    
+    /*
+     adds a sprite to the screen and returns a reference to it, scales image down
+     to half its size, we can change game later
+     */
+    addSpriteNoScale(x, y, name) {
+        var sprite = game.add.sprite(x, y, name);
+        
         return sprite
     },
     
@@ -242,25 +320,46 @@ var ticTacState = {
         {
             gameOver = true
             game.isDraw = false
+            var lineAngle = -90
+            var startingY = game.startingX + (game.squareSize * (row)) - game.squareSize/2 - 15
+            var endingX = game.screenWidth + 100
+            game.drawWinningLine(game.startingX - 15, startingY, endingX, startingY, lineAngle, 45)
         }
-        else if(vertical.size === 1)
+        if(vertical.size === 1)
         {
             gameOver = true
             game.isDraw = false
+            var lineAngle = 0
+            var startingX = game.startingX + (game.squareSize * (col+1)) - game.squareSize/2
+            game.drawWinningLine(startingX, game.startingY - 15, startingX, 800, lineAngle, 45)
         }
         //if all entries in a diagonal are the same AND that entry is not blank,
         //then the game is over
-        else if(posDiagonal.size === 1 && !posDiagonal.has(""))
+        if(posDiagonal.size === 1 && !posDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            var lineAngle = -45
+            var startingX = game.startingX
+            var startingY = game.startingY + 15
+            var endingX = game.screenWidth + 100
+            var endingY = 800
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 120)
+            
         }
-        else if(negDiagonal.size === 1 && !negDiagonal.has(""))
+        if(negDiagonal.size === 1 && !negDiagonal.has(""))
         {
             gameOver = true
             game.isDraw = false
+            
+            var lineAngle = -135
+            var startingX = game.startingX
+            var startingY = game.startingY + (game.squareSize * game.n)
+            var endingX = game.screenWidth + 100
+            var endingY = -100
+            game.drawWinningLine(startingX, startingY, endingX, endingY, lineAngle, 120)
         }
-        else if(game.turns >= 8)
+        if(game.turns >= 8 && !gameOver)
         {
             gameOver = true;
             game.isDraw = true
@@ -275,7 +374,7 @@ var ticTacState = {
      */
     displayWinner() {
         var winningPiece = game.isXTurn ? 'x' : 'o'
-        if(game.singleplayer)
+        if(game.singleplayer || game.vsAi)
             game.winner = winningPiece
         else
         {
@@ -311,6 +410,7 @@ var ticTacState = {
     {
         if(game.state.current==="win")
             return
+
         /*if(game.id === id)
             return
         //updated the game board
@@ -323,14 +423,15 @@ var ticTacState = {
         if(game.isXTurn)
         {
             var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'star');
+            game.addSprite(coords[0], coords[1], 'X');
         }
         else
         {
             var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'moon');
+            game.addSprite(coords[0], coords[1], 'O');
         }
         return*/
+
         game.board = board
         //rub out pieces, so we don't draw multiple on top of each other
         for(var i in game.placedPieces)
@@ -345,10 +446,10 @@ var ticTacState = {
                 var x = game.startingX + i*game.squareSize;
                 var y = game.startingY + j * game.squareSize;
                 if(game.board[j][i] === "x"){
-                    game.addSprite(x, y, 'star');
+                    game.addSprite(x, y, 'X');
                 }
                 if(game.board[j][i] === "o"){
-                    game.addSprite(x, y, 'moon');
+                    game.addSprite(x, y, 'O');
                 }
             }
         }
@@ -384,7 +485,7 @@ var ticTacState = {
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
             game.opponentKey = data.challengerkey
-            
+            Client.connectedToChat({"opponent": game.opponent});
         }
         else
         {
@@ -395,6 +496,7 @@ var ticTacState = {
             game.opponent = data.username
             game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
+            Client.connectedToChat({"opponent": game.opponent});
         }
         //game.showOpponent();
         console.log("you are challenged by " + game.opponent)
@@ -440,7 +542,7 @@ var ticTacState = {
         Initialize the texts used to display turn status and matching status
      */
     addTexts(){
-        var startingMessage = game.singleplayer ? "Current Turn: X" : "Searching for Opponent"
+        var startingMessage = (game.singleplayer || game.vsAi) ? "Current Turn: X" : "Searching for Opponent"
         
         game.turnStatusText = game.add.text(
             game.world.centerX, 50, startingMessage,
@@ -467,24 +569,114 @@ var ticTacState = {
      */
     updateTurnStatus(indexX, indexY)
     {
-        if(game.singleplayer)
+        if (game.vsAi) {
+           console.log("updateTurnStatus: single player AI");
+           if(game.isOver(indexX, indexY)) {
+                if(game.isDraw) {
+                    game.displayWinner()
+                }
+               //game.displayWinner()  
+               game.waiting = true
+           }
+           else {
+              game.switchTurn(indexX, indexY); 
+              game.waiting = true;
+              console.log("indexX: "+indexX+" indexY: "+indexY);
+              console.log(board);
+              console.log(boardToArray());
+              
+              var aiMoveCoords = []
+              aiMoveCoords = aiMakesMove();
+              game.switchTurn(aiMoveCoords[0], aiMoveCoords[1]); // needs to pass ai move instread
+              console.log(boardToArray());
+              game.waiting = false;
+              
+           }
+        }
+        else if(game.singleplayer)
         {
+            console.log("updateTurnStatus: single player");
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
-                game.displayWinner()
+            {
+                if(game.isDraw) {
+                    game.displayWinner()
+                }
+                //game.displayWinner()
+                game.waiting = true
+            }
             else
-                game.switchTurn()
+                game.switchTurn(indexX, indexY)
         }
         //if multiplayer, set waiting to true so that you can't place two pieces in one turn
         else
         {
             //send updated board to the server so the opponent's board is updated too
             var data = {board:game.board, x:indexX, y:indexY,id:game.id};
+            console.log(data)
             Client.sendClick(data);
         }
         
         //for debugging
         game.printBoard();
+    },
+    
+    drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
+    {
+        game.linesToAnimate++
+        //var piece2 = game.addSpriteNoScale(startX, startY, 'cometTail');
+        //game.add.tween(piece2.scale).to({  y: 2.7}, 500, Phaser.Easing.Linear.None, true);
+        var piece = game.addSpriteNoScale(startX, startY, 'comet');
+        piece.key = 'comet'
+        piece.angle = angle
+        var tween = game.add.tween(piece).to( { x: endX, y: endY }, 1000,Phaser.Easing.Linear.None, true)
+        game.tstartX = startX
+        game.tstartY = startY
+        tween.onComplete.add(function() { game.showLine(startX, startY, angle, lineExtra); });
+    },
+    
+    showLine(startX, startY, angle, lineExtra)
+    {
+        var piece2 = game.addSpriteNoScale(startX , startY, 'cometTail');
+        piece2.key = 'cometTail'
+        piece2.height = game.squareSize*3 + lineExtra
+        piece2.angle = angle
+        console.log(startX + "," + startY)
+        //console.log(this)
+        piece2.alpha = 0;
+        piece2.angle = angle
+        piece2.lineExtra = lineExtra
+        //console.log("complete tween")
+        
+        var tween = game.add.tween(piece2).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
+        //var tween = game.add.tween(line).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(game.completeDraw)
+    },
+
+    
+    completeDraw()
+    {
+        game.linesToAnimate--
+        if(game.linesToAnimate === 0)
+            game.displayWinner()
+    },
+    
+    showSprites()
+    {
+        game.endingBoard.forEach(function(element) 
+        {
+
+            console.log(element)
+             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare')
+                game.addSprite(element.x, element.y, element.key);
+             else if(element.key === 'cometTail')
+             {
+                var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
+                cometTail.height = game.squareSize*3 + element.lineExtra
+                cometTail.angle = element.angle
+                                 
+             }
+         });
     },
     
     
@@ -496,6 +688,9 @@ var ticTacState = {
      */
     assignFunctions()
     {
+        game.completeDraw = this.completeDraw
+        game.showSprites = this.showSprites
+        game.showLine = this.showLine
         game.makeBoardOnScreen = this.makeBoardOnScreen;
         game.switchTurn = this.switchTurn;
         game.placePiece = this.placePiece
@@ -515,6 +710,8 @@ var ticTacState = {
         game.askForRematch = this.askForRematch
         game.updateTurnStatus = this.updateTurnStatus
         game.convertIndexesToCoords = this.convertIndexesToCoords
+        game.addSpriteNoScale = this.addSpriteNoScale
+        game.drawWinningLine = this.drawWinningLine
     }
 
 
@@ -554,4 +751,233 @@ function notification(message) {
     x.className = "show";
     x.innerHTML = message;
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+}
+/****************************************** Tic Tac Toe AI ************************/
+var human = "x";
+var ai    = "o";
+
+       
+/* This is called when for the ai to make a move.
+ * Converts the board to a single array for minimax to calculate where to play a move.
+ * Then we place the move there for the AI.
+ * We convert the board back to a single array and check for the winning condition.
+ */
+function aiMakesMove() {
+   var boardArr = boardToArray();
+   var move = minimax(boardArr, ai);
+
+   var newBoardArr = spliceBoard(boardArr);
+
+   // Set game difficutly probability
+   if (game.difficulty == 'easy') {
+    var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    console.log("EASY MODE")
+   }
+   else if (game.difficulty == 'medium') {
+    var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    console.log("MEDIUM MODE")
+   }
+   else if (game.difficulty == 'hard') {
+    var actualMove = (Math.random() < 0.98) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+    // var actualMove = move
+    console.log("HARD MODE")   
+   }
+   console.log("MOVE: ", move)
+   console.log("ACTUAL MOVE: ", actualMove)
+   
+   //    var convertedMove = convertMove(move);
+   if (actualMove == move)
+   {
+    console.log("a")
+    var convertedMove = convertMove(actualMove);
+   } 
+   else
+   {
+    console.log("b")
+    var convertedMove = convertRandMove(actualMove);   
+   } 
+//    console.log("AI's move: ", move);
+   console.log("AI's move: ", move);
+   console.log("convertedMove: ", convertedMove);
+   
+   placePieceAt(convertedMove.row, convertedMove.column);
+   
+   boardArr = boardToArray();
+
+   if ( gameIsWon(boardArr, human) || gameIsWon(boardArr, ai) ) {
+      game.displayWinner();
+   }
+
+   aiCoords = [convertedMove.column, convertedMove.row]
+
+   return (aiCoords)
+}
+
+function spliceBoard(boardArr) {
+    var array = [];
+
+   for (var i=0; i < boardArr.length; i++) {
+         if (boardArr[i] != "x" && boardArr[i] != "o") {
+            array.push(boardArr[i]);
+         }
+   }
+
+   return array;
+}
+
+ 
+/* Draws a piece at the given index 
+ */
+function placePieceAt(row , col) {
+   console.log(game.screenWidth);
+//    var x = 485 + (col * 115);
+//    var y = 115   * (row + 1);
+   var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'O');
+//    var piece = game.addSprite(x, y, 'moon');
+   game.placedPieces.push(piece);
+   game.board[row][col] = "o";
+}
+
+       
+/* Converts the board to a single array 
+ */
+function boardToArray() {
+    
+    var array = [];
+    
+    for (var i=0; i<3; i++) {
+        for (var j=0; j<3; j++) {
+            if (board[i][j] != "") {
+                array.push(board[i][j]);
+            }else {
+                array.push(i*3 + j);
+            }
+            console.log ("BOARD ARRAY: " + (i*3 + j), board[i][j])
+        }
+    }
+    return array;
+}
+
+
+/* Converts a move{index, score} to location{row, column}
+ */
+function convertMove(move) {
+   var loc = {};
+   
+   loc.row    = Math.floor(move.index / 3);
+   loc.column = move.index % 3;
+   return loc;
+}
+
+/* Converts a "arrIndex" to location{row, column}
+ */
+function convertRandMove(move) {
+    var loc = {};
+    
+    loc.row    = Math.floor(move / 3);
+    loc.column = move % 3;
+    return loc;
+ }
+
+       
+/* Returns the list of indexes of empty spaces on the board
+ */
+function emptyIndexies(board){
+  return  board.filter(tile => tile != "o" && tile != "x");
+}
+
+
+/* Tests if the given player has won the board by checking all combinations
+ * 0 1 2
+ * 3 4 5
+ * 6 7 8 
+ */
+function gameIsWon(board, player) {
+   if ( (board[0] == player && board[1] == player && board[2] == player) || //Horizontals
+        (board[3] == player && board[4] == player && board[5] == player) ||
+        (board[6] == player && board[7] == player && board[8] == player) ||
+        
+        (board[0] == player && board[3] == player && board[6] == player) || //Verticals
+        (board[1] == player && board[4] == player && board[7] == player) ||
+        (board[2] == player && board[5] == player && board[8] == player) ||
+       
+        (board[0] == player && board[4] == player && board[8] == player) || //Diagonals
+        (board[2] == player && board[4] == player && board[6] == player) ) 
+   {
+      return true;
+   }
+   return false;
+}
+
+
+/* This is the minimax algorithm that recursively chooses the best move to play for the 
+ * ai by playing ahead. 
+ * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
+ */
+function minimax(newBoard, player) {
+   
+   var availSpots = emptyIndexies(newBoard);
+   
+   if (gameIsWon(newBoard, human)) {
+      return {score: -10};
+   }
+   else if (gameIsWon(newBoard, ai)) {
+      return {score:  10};
+   }
+   else if (availSpots.length == 0) {
+      return {score:   0};
+   }
+   
+   var moves = []; //Collects all the objects
+   
+   for (var i=0; i<availSpots.length; i++) {
+      
+      //Create an object for each and store the index of that spot 
+      var move = {};
+      move.index = newBoard[availSpots[i]];
+      
+      newBoard[availSpots[i]] = player; //Set the empty spot to the current player
+      
+      if (player == ai) {
+         var result = minimax(newBoard, human);
+         move.score = result.score;
+      }
+      else {
+         var result = minimax(newBoard, ai);
+         move.score = result.score;
+      }
+      
+      newBoard[availSpots[i]] = move.index; //Reset the spot to empty
+      
+      moves.push(move); //Push the spot to empty
+   }
+
+      
+   //If it's the ai's turn, loop over the moves and choose the one with the highest score
+   var bestMove;
+   
+   if (player == ai) {
+      var bestScore = -10000;
+      
+      for (var i=0; i<moves.length; i++) {
+         if (moves[i].score > bestScore) {
+            bestScore = moves[i].score;
+            bestMove  = i;
+         }
+      }
+   }
+   //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
+   else { 
+      var bestScore = 10000;
+      
+      for (var i=0; i<moves.length; i++) {
+         if (moves[i].score < bestScore) {
+            bestScore = moves[i].score;
+            bestMove  = i;
+         }
+      }
+   }
+   
+   //Return the chosen move(object) from the moves array
+   return moves[bestMove];
 }

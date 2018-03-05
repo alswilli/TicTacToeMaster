@@ -1,7 +1,22 @@
 <list id="snackbar"></list>
         
 
-<div id="gameDiv" style="width:80%; margin:0 auto;float:left;height:600px"></div>
+
+    <div id="gameDiv" style="width:80%; margin:0 auto;height:700px; float:left;"></div>
+        <div class="overlay" id="challengeFriend">
+            
+            <form action="" id="challengeFriendForm">
+                <input type="text" id="friendName">  
+                    
+                <button>Submit</button>
+            </form>
+        </div>
+
+
+
+
+
+
 
 
 <div class="gameCard" id="opponentCard" style="float:right;">
@@ -18,22 +33,52 @@
             </div>
     </div>
 </div>
-<div id="test" style="width:75%; height:600px;background-color:black;">
+<div id="loading" style="width:75%; height:700px;background-color:black;">
 </div>
+
+
+
+
+  <!-- <div class="LiveChat">
+  <button id="chatBtn">Live chat</button>
+  <p>rest of details below</p>
+  </div> -->
+  <div class="open-box" id="open-box">
+        <div class="open" id="open">
+            <span class="notif" id="notifications">(p)</span>
+            Chat
+                <input type="button" class="closeBox" id="closeBox" value="X" align="right">
+  </div>
+  <div class="chat-box" id="chat-box">
+        <div class="box" id="box">
+                <ul id="messages"></ul>
+    </div>
+  </div>
+  <div class="form-box">
+      <form action="" id="inputBox" class="chatForm">
+                <input id="m" autocomplete="off" /><button>Send</button>
+              </form>
+  </div>
+        <!-- <ul id="messages"></ul>
+        <form action="">
+          <input id="m" autocomplete="off" /><button>Send</button>
+        </form> -->
+  
+
+
+
 <!-- Notice the URL, this is handled by socket.io on the server automatically, via express-->
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
-
-
-
-
 <!-- Load the js scripts that will make the game playable -->
 <script src="js/games/win.js"></script>
+<script src="js/games/challengeFriend.js"></script>
 <script src="js/games/load.js"></script>
 <script src="js/games/menu.js"></script>
 <script src="js/games/ticTacToe.js"></script>
 <script src="js/games/3DticTacToe.js"></script>
 <script src="js/games/orderChaos.js"></script>
-
+<script src="js/games/ultimateTTT.js"></script>
 <script src="js/games/waitingRoom.js"></script>
 <script src="js/games/game.js"></script>
+<script src="js/games/gameDifficulty.js"></script>

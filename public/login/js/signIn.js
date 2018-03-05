@@ -21,6 +21,7 @@ $(document).ready(function(){
  var battleText;
  var cashMoney;
  var urlVal;
+	var selected;
 
  //Login
  $('#login').on('click', function (e)
@@ -53,7 +54,10 @@ $(document).ready(function(){
                     var img = (snapshot.val().image);
                     console.log("Image: ", img);
                     cashMoney = (snapshot.val().cash);
+					console.log("Selected Customization: ", img);
+                    selected = (snapshot.val().selected);
                                                  
+
                     firebase.storage().ref(img).getDownloadURL().then(function(url) {
                         urlVal = url;
                         sessionStorage.setItem("name", nameOfUser)
@@ -62,6 +66,7 @@ $(document).ready(function(){
                         sessionStorage.setItem("cash", cashMoney)
                         sessionStorage.setItem("picUrl", urlVal)
                         sessionStorage.setItem("imageName", null)
+												sessionStorage.setItem("selectedList",selected)
                         window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
                         console.log("hola");
                     })
@@ -80,7 +85,30 @@ $(document).ready(function(){
  
 $('#guestlogin').on('click', function (e){
     e.preventDefault();
-    window.location.href = "mainMenu.html";
+
+    firebase.database().ref('/users/bRfjYiEy7iWn67IHnrqh0ksUjLY2').once('value').then(function(snapshot) {
+        nameOfUser = (snapshot.val().username);
+        console.log("Name of user: ", nameOfUser);
+        battleText = (snapshot.val().battleText);
+        console.log("Battle text: ", battleText);              
+        var img = (snapshot.val().image);
+        console.log("Image: ", img);
+        cashMoney = (snapshot.val().cash);
+				selected = (snapshot.val().selected);
+                                     
+        firebase.storage().ref(img).getDownloadURL().then(function(url) {
+            urlVal = url;
+            sessionStorage.setItem("name", nameOfUser)
+            sessionStorage.setItem("userkey", 'bRfjYiEy7iWn67IHnrqh0ksUjLY2')
+            sessionStorage.setItem("battleText", battleText)
+            sessionStorage.setItem("cash", cashMoney)
+            sessionStorage.setItem("picUrl", urlVal)
+            sessionStorage.setItem("imageName", null)
+						sessionStorage.setItem("selectedList",selected)
+            window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
+            console.log("holaGuest");
+        })
+    })
 })
 
 })

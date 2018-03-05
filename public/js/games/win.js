@@ -13,11 +13,24 @@ var winState = {
          state, so we have to save what the board looked like when the game ended so 
          it can be displayed in this winState
          */
-        game.endingBoard.forEach(function(element) {
-                                 if(element.key != 'text')
-                                 game.addSprite(element.x, element.y, element.key);
-                                 });
-        
+        //setup background
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
+        if(app.gameType == "3d" || app.gameType === "ultimate")
+            game.rescaleSprites()
+        else if(app.gameType == "original" || app.gameType == "orderChaos")
+            game.showSprites()
+        else
+        {
+            game.endingBoard.forEach(function(element) {
+                                     if(element.key != 'text' && element.key != 'redsquare')
+                                     game.addSprite(element.x, element.y, element.key);
+                                     });
+            }
+		
+			
         var message
         var submessage = ""
         //display that the game ended in a draw or display the winner
@@ -121,8 +134,11 @@ var winState = {
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Return to TicTacToe Menu', 400, function () {
+                            document.getElementById("chat-box").style.visibility = "hidden";
                            game.firstPlay = true
                            Client.notifyQuit()
+                           if(!game.opponentLeft)
+                                game.animateOpponentLeaving()
                            game.state.start("menu");
                            });
 
@@ -143,34 +159,34 @@ console.log("winstate defined")
  */
 function updateLeaderboard(userkey, result) {     
     
-    var gametype;
-    switch(game.gametype) {
-        case "original":   gametype = "TTT"; break;
-        case "3d":         gametype = "3DT"; break;
-        case "orderChaos": gametype = "OAC"; break;
-    }   
+   var gametype;
+   switch(game.gametype) {
+      case "original":   gametype = "TTT"; break;
+      case "3d":         gametype = "3DT"; break;
+      case "orderChaos": gametype = "OAC"; break;
+   }   
     
-    //Uses the userkey to retrieve the user reference to update the [win|loss] and the rating
-    firebase.database().ref('leaderboard/'+gametype+'/'+userkey).once('value').then(function(snapshot) {
+   //Uses the userkey to retrieve the user reference to update the [win|loss] and the rating
+   firebase.database().ref('leaderboard/'+gametype+'/'+userkey).once('value').then(function(snapshot) {
                                                                                     
-                updateScore( snapshot.val(), userkey, gametype, result);
-                updateRating(snapshot.val(), userkey, gametype, result);
-                });
+      updateScore( snapshot.val(), userkey, gametype, result);
+      updateRating(snapshot.val(), userkey, gametype, result);
+   });
 }
 
 
 /* Updates the [win|loss] count of the user 
  */
 function updateScore(userRef, userkey, gametype, result) {
-    console.log("userStats:", userRef);
+   console.log("userStats:", userRef);
     
-    var resultCount = userRef.win + 1;
-    if (result == "lose")
-        resultCount = userRef.lose + 1;
-    else if (result == "draw")
-        resultCount = userRef.draw + 1;
+   var resultCount = userRef.win + 1;
+   if (result == "lose")
+      resultCount = userRef.lose + 1;
+   else if (result == "draw")
+      resultCount = userRef.draw + 1;
     
-    firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
+   firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
 }
 
 
@@ -188,38 +204,38 @@ function updateScore(userRef, userkey, gametype, result) {
  */
 function updateRating(userRef, userkey, gametype, result) {
     
-    var myRating  = userRef.rating; //Our rating
-    var oppRating;                  //Opponent's rating 
+   var myRating  = userRef.rating; //Our rating
+   var oppRating;                  //Opponent's rating 
     
-    //Fetches the opponent rating, and then calls doUpdateRating() update firebase
-    function fetchOppRating(userkey, gametype) {
-        firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/rating').once('value')
-        .then(function(snapshot) {
+   //Fetches the opponent rating, and then calls doUpdateRating() update firebase
+   function fetchOppRating(userkey, gametype) {
+      firebase.database().ref('leaderboard/'+gametype+'/'+userkey+'/rating').once('value')
+      .then(function(snapshot) {
               
-              oppRating = snapshot.val();
-              doUpdateRating();
-              });
-    }
+         oppRating = snapshot.val();
+         doUpdateRating();
+      });
+   }
     
-    //Calculates the new rating and updates the leaderboard
-    function doUpdateRating() {
-        var power = (oppRating - myRating)/400;
-        var expectedScore = 1/(1 + Math.pow(10, power));
-        var actualScore = 1;                      //win
-        if (result === 'draw') actualScore = 0.5; //draw
-        if (result === 'lose') actualScore = 0;   //lose
-        var k = 32;                               //k-factor
+   //Calculates the new rating and updates the leaderboard
+   function doUpdateRating() {
+      var power = (oppRating - myRating)/400;
+      var expectedScore = 1/(1 + Math.pow(10, power));
+      var actualScore = 1;                      //win
+      if (result === 'draw') actualScore = 0.5; //draw
+      if (result === 'lose') actualScore = 0;   //lose
+      var k = 32;                               //k-factor
         
-        var adjustedRating = myRating + k*(actualScore - expectedScore);
-        console.log("oppRating:", oppRating);
-        console.log("myRating:", myRating);
-        console.log("my new rating:", adjustedRating);
-        console.log("net gain:", adjustedRating - myRating);
+      var adjustedRating = myRating + k*(actualScore - expectedScore);
+      console.log("oppRating:", oppRating);
+      console.log("myRating:", myRating);
+      console.log("my new rating:", adjustedRating);
+      console.log("net gain:", adjustedRating - myRating);
         
-        firebase.database().ref('leaderboard/'+gametype+'/'+userkey).update({ rating: adjustedRating});  
-    }   
+      firebase.database().ref('leaderboard/'+gametype+'/'+userkey).update({ rating: adjustedRating});  
+   }   
     
-    fetchOppRating(game.opponentKey, gametype);
+   fetchOppRating(game.opponentKey, gametype);
 }
 
 //takes in the userkey, the result of the game as 'Wins' 'Losses' or 'Draw',
