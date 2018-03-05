@@ -237,3 +237,6 @@ function changeSelection(buttonId){
                     selectedList
                     );
 }
+function togglePiece(){
+	
+}
