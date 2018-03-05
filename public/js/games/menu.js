@@ -51,6 +51,7 @@ var menuState = {
            game.addMenuOption('SinglePlayer', 200, function () {
                            game.singleplayer = true;
                            game.vsAi = true;
+                           game.challengingFriend = false
                         //    game.state.start("ticTac");
                            game.state.start("gameDif"); 
                            });
@@ -69,6 +70,8 @@ var menuState = {
         game.addMenuOption('Local Multiplayer', 200, function () {
                            game.singleplayer = true
                            game.vsAi = false;
+                           game.challengingFriend = false
+
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Online Multiplayer', 200,function () {
@@ -76,6 +79,8 @@ var menuState = {
                             document.getElementById("open-box").style.visibility = "visible";
                            game.singleplayer = false
                            game.vsAi = false;
+                           game.challengingFriend = false
+                           game.firstPlay = true
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Challenge Friend', 200,function () {
@@ -83,6 +88,8 @@ var menuState = {
                            document.getElementById("open-box").style.visibility = "visible";
                            game.singleplayer = false
                            game.vsAi = false;
+                           game.challengingFriend = true
+                           game.firstPlay = true
                            game.state.start("challengeFriend");
                            });
         // If neither option, do the database logic with leaderboards, achievements, currency, etc. (we will add more to here later, thoughwill need to be in home page because href loads first)

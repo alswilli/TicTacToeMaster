@@ -64,12 +64,20 @@ function makeClient()
         //Client.socket.emit('manualDisconnect');
     };
     
-    Client.checkForFriendChallenge  = function(){
+    Client.checkForFriendChallenge  = function(data){
         Client.socket.emit('checkForFriend', data)
         //Client.socket.emit('manualDisconnect');
     };
     
-
+    Client.acceptFriendChallenge = function(data){
+        data.challengedByFriend = true
+        console.log("accept friend challenge!")
+        Client.socket.emit('makeNewPlayer', data);
+    };
+    
+    Client.denyChallenge = function(username){
+        Client.socket.emit('denyChallenge', username);
+    };
 
     Client.socket.on('chatMessage', function(msg){
         console.log("back in client!")
@@ -153,6 +161,19 @@ function makeClient()
 
     Client.socket.on('playerLeft',function(data) {
         game.handleOpponentLeaving()
-    });
+    })
+    
+    //
+    Client.socket.on('confirmChallenge',function(data) {
+         //alert("Room " + data + " exists!!")
+         data.challengedByFriend = true
+         console.log(data)
+                     game.confirmChallenge(data)
+         //Client.socket.emit('makeNewPlayer', data);
+                     
+    })
+    Client.socket.on('promptFriendChallenge',function(data) {
+          game.makeChallengeMenu()
+    })
     
 }

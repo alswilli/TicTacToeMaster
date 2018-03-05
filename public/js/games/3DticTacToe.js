@@ -70,18 +70,7 @@ var threeDticTacState = {
             
         game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
-        if(game.firstPlay === true)
-        {
-            makeClient();
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
-            console.log("firstPlay!")
-            game.firstPlay = false
-            game.waiting = true
-        }
-        else
-        {
-            game.askForRematch()
-        }
+        game.startMultiplayer()
         
     },
     

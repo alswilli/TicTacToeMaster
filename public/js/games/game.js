@@ -53,6 +53,7 @@ function startGame()
         txt.anchor.setTo(0.5);
         txt.stroke = "rgba(0,0,0,0)";
         txt.strokeThickness = 4;
+        txt.key = 'text'
         var onOver = function (target) {
             target.fill = "#FEFFD5";
             target.stroke = "rgba(200,200,200,0.5)";
