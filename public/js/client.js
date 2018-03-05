@@ -4,7 +4,7 @@ function makeClient()
 {
     Client = {};
     Client.socket = io.connect();
-    var notificationCount = 0;
+    // var notificationCount = 0;
     //Client.socket = io.connect();
 
     Client.chatMessage = function(data){
@@ -83,9 +83,10 @@ function makeClient()
     Client.socket.on('chatMessage', function(msg){
         console.log("back in client!")
         // $('#messages').append($('<li>').text(msg.message));
-        notificationCount = msg.notificationCount;
-        console.log("Notification Count: ", msg.notificationCount)
+        var notificationCount = game.notificationCount;
+        console.log("Notification Count: ", game.notificationCount)
         notificationCount++
+        game.notificationCount++
         console.log("Notification Count After: ", notificationCount)
         var strNotif = notificationCount.toString()
         document.getElementById("notifications").innerHTML = "(" + strNotif + ")";
