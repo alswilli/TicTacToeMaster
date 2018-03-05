@@ -107,14 +107,11 @@ io.on('connection',function(socket)
                 if(data.friend === undefined && needNewRoom(data.gametype) && data.challengedByFriend != true)
                 //(io.nsps['/'].adapter.rooms[roomName] && io.nsps['/'].adapter.rooms[roomName].length >= server.roomSize)
                 {
+                    console.log("increment rooms")
                     roomsNo[data.gametype].num++
                     roomName = getRoomName(data)
                 }
-                if(data.friend === undefined)
-                {
-                    roomsNo[data.gametype].total++
-                    
-                }
+
                 console.log("there are now " + roomsNo[data.gametype].total + " players")
                 socket.join(roomName);
                 if(data.friend != undefined)
@@ -250,6 +247,7 @@ function needNewRoom(gametype)
 }
 function getRoomName(data)
 {
+    console.log("friend of " + data.name + ": " + data.friend)
     if(data.friend === undefined)
         return "room-"+data.gametype+roomsNo[data.gametype].num//server.roomno
     else if(data.friend === data.name)

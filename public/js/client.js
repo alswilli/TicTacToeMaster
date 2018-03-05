@@ -39,6 +39,7 @@ function makeClient()
     /*functions that can be called directly form the game to communicate with the server*/
     Client.makeNewPlayer = function(data){
         console.log("making new player!")
+        console.log(data)
         Client.socket.emit('makeNewPlayer', data);
     };
 

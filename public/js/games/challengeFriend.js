@@ -102,14 +102,31 @@ var challengeFriendState = {
 function findFriend(friendName)
 {
     console.log("go to the firebase")
-    firebase.database().ref('/users/').orderByChild('username').equalTo(friendName).limitToFirst(1).on('child_added',  sendChallenge)
+    //check for the username in firebase
+    firebase.database().ref('/users/').orderByChild('username').equalTo(friendName).limitToFirst(1).once("value", sendChallenge)
 }
 
 function sendChallenge(snapshot)
 {
     console.log(snapshot.val())
-    game.friend = snapshot.val()
-   // Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey, "friend":friend.username});
-    document.getElementById("challengeFriend").style.visibility = "hidden";
-    game.state.start("ticTac");
+    snapshot.forEach(function (childSnapshot) {
+                     
+                     var value = childSnapshot.val();
+                     console.log("Title is : " + value.username);
+                     game.friend = value
+                     
+                     });
+    //game.friend = snapshot.val()
+    console.log("FRIEND")
+    console.log(game.friend)
+    if (game.friend)
+    {
+        document.getElementById("challengeFriend").style.visibility = "hidden";
+        game.state.start("ticTac");
+    }
+    else
+        alert("no such user")
+    
 }
+
+
