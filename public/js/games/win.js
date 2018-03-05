@@ -91,6 +91,8 @@ var winState = {
                 }
             }
         }
+
+        
         app.money = game.cash;
         root.$broadcast('update', "homePageLink");
 
@@ -123,6 +125,7 @@ var winState = {
                            Client.notifyQuit()
                            game.state.start("menu");
                            });
+
     },
     
     /*
@@ -244,18 +247,16 @@ function updateChallenges(userkey, result, line) {
             } else {
                 if (result == 'Losses') {
                     challengesRef.update({ lose: '100%' });
-                    console.log('Challenge Complete!!!!!');
+                    notification("Challenge: Noooooooo! Unlocked! +5 Cash Money");
                     cashMoney = parseInt(stringCash);
                     cashMoney = cashMoney + 5;
                     app.money = cashMoney;
                     root.$broadcast('update', "homePageLink");
-                    //sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
                     userRef.update({ cash: cashMoney }); //updates cash to firebase;
-                    //notification needed
                 }
             }
         }
-        cashMoney = app.money;//sessionStorage.getItem("cash");
+        cashMoney = app.money; //update money
 
         //check for playing all game modes challenge
         check = snapshot.val().mode;
@@ -275,20 +276,18 @@ function updateChallenges(userkey, result, line) {
                         challengesRef.update({ mode: '75%' });
                     } else {
                         challengesRef.update({ mode: '100%' });
-                        console.log('Challenge Complete!!!!!');
+                        notification("Challenge: The Whole Shabang Unlocked! +50 Cash Money");
                         cashMoney = parseInt(stringCash);
                         cashMoney = cashMoney + 50;
                         app.money = cashMoney;
                         root.$broadcast('update', "homePageLink");
-                        //sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
                         userRef.update({ cash: cashMoney }); //updates cash to firebase;
-                        //notification needed
+
                     }
                 }
             });
             }
-        cashMoney = app.money;
-                                     //sessionStorage.getItem("cash");
+        cashMoney = app.money; //update money
 
         //check for winning as a O challenge
         check = snapshot.val().o;
@@ -297,16 +296,15 @@ function updateChallenges(userkey, result, line) {
                 //do nothing if challenge is complete
             }else if(game.player == 'o' && result == 'Wins') {
                 challengesRef.update({ o: '100%' });
-                console.log('Challenge Complete!!!!!');
+                notification("Challenge: Ohhhhh yeah Unlocked! +50 Cash Money");
                 cashMoney = parseInt(stringCash);
                 cashMoney = cashMoney + 50;
                 app.money = cashMoney;
                 root.$broadcast('update', "homePageLink");
-                //sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
                 userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         }
-        cashMoney = app.money //sessionStorage.getItem("cash");
+        cashMoney = app.money //update money value
 
         //check for playing an offline match challenge
         check = snapshot.val().offline;
@@ -316,16 +314,15 @@ function updateChallenges(userkey, result, line) {
                 //do nothing if challenge is complete
             } else {
                 challengesRef.update({ offline: '100%' });
-                console.log('Challenge Complete!!!!!');
+                notification("Challenge: Not the InterWebs Unlocked! +25 Cash Money");
                 cashMoney = parseInt(stringCash);
                 cashMoney = cashMoney + 25;
                 app.money = cashMoney;
                 root.$broadcast('update', "homePageLink");
-                //sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
                 userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         }
-        cashMoney = app.money;//sessionStorage.getItem("cash");
+        cashMoney = app.money;//update money value
 
         //check for playing an online match challenge
         check = snapshot.val().online;
@@ -334,16 +331,15 @@ function updateChallenges(userkey, result, line) {
                 //do nothing if challenge is complete
             }else{
                 challengesRef.update({ online: '100%' });
-                console.log('Challenge Complete!!!!!');
+                notification("Challenge: The Interwebs Unlocked! +50 Cash Money");
                 cashMoney = parseInt(stringCash);
                 cashMoney = cashMoney + 50;
                 app.money = cashMoney;
                 root.$broadcast('update', "homePageLink");
-                //sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
                 userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         }
-        cashMoney = app.money;//sessionStorage.getItem("cash");
+        cashMoney = app.money;//update money value
 
         //check for winning as a X challenge
         check = snapshot.val().x;
@@ -352,15 +348,22 @@ function updateChallenges(userkey, result, line) {
                 //do nothing if challence is complete
             } else if (game.player == 'x' && result == 'Wins') {
                 challengesRef.update({ x: '100%' });
-                console.log('Challenge Complete!!!!!');
+                notification("Challenge: X Gunna Give it to Yah Unlocked! +50 Cash Money");
                 cashMoney = parseInt(stringCash);
                 cashMoney = cashMoney + 50;
                 app.money = cashMoney;
                 root.$broadcast('update', "homePageLink");
-                //sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
                 userRef.update({ cash: cashMoney }); //updates cash to firebase;
             }
         }
+        cashMoney = app.money; //update money value
         userRef.update({ cash: cashMoney });
     });
-};
+}
+
+function notification(message) {
+    var x = document.getElementById("snackbar")
+    x.className = "show";
+    x.innerHTML = message;
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+}
