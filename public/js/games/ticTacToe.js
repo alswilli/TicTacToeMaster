@@ -186,11 +186,6 @@ var ticTacState = {
         game.isXTurn = !game.isXTurn
         game.turns++
 
-<<<<<<< HEAD
-        console.log("turn count: " + game.turns)
-        var turn = game.isXTurn ? "x" : "o"
-        if(game.singleplayer){
-=======
         for (var i = 0; i < 3; i++)
         {
             for (var j = 0; j < 3; j++)
@@ -216,14 +211,13 @@ var ticTacState = {
         console.log("turn count: " + game.turns)
         var turn = game.isXTurn ? "x" : "o"
         if(game.singleplayer || game.vsAi)
->>>>>>> 73eed7d6f83f2750f9693f66a361700f2eb7bb09
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
         // Below is for multiplayer
-        }else if(game.player === turn){
+        else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
-        }else{
+        else
             game.turnStatusText.setText(game.opponent + "'s turn")
-        }
+        
 
         
 
