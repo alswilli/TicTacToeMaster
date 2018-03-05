@@ -35,14 +35,14 @@ function initChat()
 {
       var clicked = false;
       var checked = null;
-      var notificationCount = 0; //different for both clients
+      game.notificationCount = 0; //different for both clients
       
       $('#inputBox').submit(function(){
                        console.log("Chat worked")
                        var message = $('#m').val()
                        console.log("Message: ", message) 
-                       Client.chatMessage({"message": message, "user": null, "notificationCount": notificationCount});
-                       notificationCount++;
+                       Client.chatMessage({"message": message, "user": null, "notificationCount": game.notificationCount});
+                    //    game.notificationCount++;
                        // socket.emit('chat message', $('#m').val());
                        $('#m').val('');
                        return false;
@@ -94,7 +94,7 @@ function initChat()
             // clicked = false;
             checked = 'justClicked'
             console.log("balls");
-            notificationCount = 0
+            game.notificationCount = 0
             // Client.updateNotificationCount({"notificationCount": notificationCount});
             }
         }
