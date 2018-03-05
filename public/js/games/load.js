@@ -61,6 +61,7 @@ var loadState = {
         game.disconnectSocket = this.disconnectSocket
         game.checkForDoubleClick = this.checkForDoubleClick
         game.animateOpponentLeaving = this.animateOpponentLeaving
+        game.startMultiplayer = this.startMultiplayer
         
         game.gametype = app.gameType;
         game.userkey = app.keyValue;
@@ -77,10 +78,17 @@ var loadState = {
     handleOpponentLeaving()
     {
         console.log("opponent left")
+        
         if(game.state.current==="ticTac")
-            game.state.start("waitingRoom");
+            {
+                Client.disconnectedFromChat({"opponent": game.opponent});
+                game.state.start("waitingRoom");
+            }
         else
+        {
+            game.challengingFriend = false
             game.firstPlay = true
+        }
         game.opponentLeft = true;
         $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
                                                                             'right' : '-20%'    
@@ -150,6 +158,30 @@ var loadState = {
                                                                             'right' : '-20%'    
                                                                             });
     },
+    
+    startMultiplayer()
+    {
+        if(game.firstPlay === true)
+        {
+            
+            if(game.challengingFriend)
+            {
+                Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey, "friend":game.friend.username});
+            }
+            else 
+            {
+                makeClient();
+                Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
+            }
+            console.log("firstPlay!")
+            game.firstPlay = false
+            game.waiting = true
+        }
+        else
+        {
+            game.askForRematch()
+        }
+    }
     
     
     

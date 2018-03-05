@@ -13,6 +13,12 @@ var waitingRoomState = {
         //setting anchor centers the text on its x, y coordinates
         gameName.anchor.setTo(0.5, 0.5)
         game.firstPlay = true
+        console.log("challengine: " + game.challengingFriend )
+        if(game.challengingFriend)
+        {
+            Client.socket.emit('friendDenied', game.friend.username)
+        }
+        game.challengingFriend = false
         game.optionCount = 0;
         
         game.addMenuOption('Search For Another', 200, function () {
@@ -22,6 +28,7 @@ var waitingRoomState = {
         
         game.addMenuOption('Main Menu', 200, function () {
                     document.getElementById("chat-box").style.visibility = "hidden";
+                    document.getElementById("open-box").style.visibility = "hidden";
                     Client.notifyQuit()
                     game.state.start("menu");
         });

@@ -24,13 +24,15 @@ function startGame()
     game.state.add('load', loadState)
     game.state.add('menu', menuState)
     game.state.add('gameDif', gameDifficultyState)
+    game.state.add('challengeFriend',challengeFriendState)
+    game.state.add('win', winState)
+    game.state.add('waitingRoom', waitingRoomState)
     
     game.firstPlay = true
     
    
     
-    game.state.add('win', winState)
-    game.state.add('waitingRoom', waitingRoomState)
+    
     if(app.gameType == "original")
         game.state.add('ticTac', ticTacState)
     else if(app.gameType == "3d")
@@ -51,6 +53,7 @@ function startGame()
         txt.anchor.setTo(0.5);
         txt.stroke = "rgba(0,0,0,0)";
         txt.strokeThickness = 4;
+        txt.key = 'text'
         var onOver = function (target) {
             target.fill = "#FEFFD5";
             target.stroke = "rgba(200,200,200,0.5)";

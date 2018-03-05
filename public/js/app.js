@@ -10,7 +10,7 @@ messagingSenderId: "1050901435462"
 firebase.initializeApp(config);
 
 var game = null;
-var MAX_GAME_NUM = 4
+var MAX_GAME_NUM = 1
 
 /*
     app is the main object that controlls the website. The routeProvider controlls which page to 

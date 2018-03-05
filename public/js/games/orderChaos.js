@@ -85,18 +85,7 @@ var orderChaosState = {
         
         game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
-        if(typeof game.firstPlay)
-        {
-            makeClient();
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
-            console.log("firstPlay!")
-            game.firstPlay = false
-            game.waiting = true
-        }
-        else
-        {
-            game.askForRematch()
-        }
+        game.startMultiplayer()
         
     },
     
@@ -575,7 +564,7 @@ var orderChaosState = {
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
             game.opponentKey = data.challengerkey
-
+            Client.connectedToChat({"opponent": game.opponent});
         }
         else
         {
@@ -586,6 +575,7 @@ var orderChaosState = {
             game.opponent = data.username
             game.opponentKey = data.userkey
             game.turnStatusText.setText("Your Turn")
+            Client.connectedToChat({"opponent": game.opponent});
         }
         console.log("you are challenged by " + game.opponent)
         console.log("you are challenged by key " + game.opponentKey)

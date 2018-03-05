@@ -70,18 +70,7 @@ var threeDticTacState = {
             
         game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
-        if(game.firstPlay === true)
-        {
-            makeClient();
-            Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
-            console.log("firstPlay!")
-            game.firstPlay = false
-            game.waiting = true
-        }
-        else
-        {
-            game.askForRematch()
-        }
+        game.startMultiplayer()
         
     },
     
@@ -835,7 +824,7 @@ var threeDticTacState = {
             game.opponent = data.challenger
             game.turnStatusText.setText(game.opponent + "'s turn")
             game.opponentKey = data.challengerkey
-            
+            Client.connectedToChat({"opponent": game.opponent});
         }
         else
         {
@@ -846,6 +835,7 @@ var threeDticTacState = {
             game.opponent = data.username
             game.turnStatusText.setText("Your Turn")
             game.opponentKey = data.userkey
+            Client.connectedToChat({"opponent": game.opponent});
         }
         console.log("you are challenged by " + game.opponent)
         console.log("you are challenged by key " + game.opponentKey)

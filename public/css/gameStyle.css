@@ -54,3 +54,116 @@
     margin-left: 15px;
     
 }
+
+.chat-box{
+    position: fixed;
+    bottom: 25px;
+    right: 0;
+    visibility: hidden;
+}
+
+.open-box{
+    position: fixed;
+    bottom: 0px;
+    right: 0;
+}
+
+.box{
+    /* transition: height .6s ease-out; */
+    width: 298px;
+    height: 0px;
+    background: rgb(248, 248, 248);
+    z-index: 9999;
+    color: #03030a;
+    overflow: scroll;
+    text-align: left;
+}
+/* .open:hover>.box{
+ height:350px;
+ transition: height .6s ease-out;
+ } */
+.open 
+{
+    /* transition: height .6s ease-out; */
+    height: 40px;
+    text-align: center;
+    font-size: 20px;
+    border: 1px solid #3F51B5;
+    background: #673AB7;
+    color: #eaeaea;
+}
+
+.closeBox {
+    
+    visibility: hidden;
+}
+
+.form-box {
+    width: 300px;
+}
+
+#notifications {
+    visibility: hidden;
+}
+
+.chatForm {background: #000; padding: 3px; position: fixed; bottom: 0; visibility: hidden; width: 301px;}
+.chatForm input {bottom: 0; border: 0; padding: 3px; width: 77.5%; height:35px;}
+.chatForm button { width: 22%; background: rgb(130, 224, 255); border: none; padding: 3px; height:35px;}
+#messages { list-style-type: none; margin: 0; padding: 0; }
+#messages li { padding: 5px 10px; }
+#messages li:nth-child(odd) { background: #eee; }
+/*.LiveChat{
+ position:absolute;
+ bottom:0%;
+ height:10%;
+ background-color:rgb(204, 0, 255); 
+ }*/
+
+.overlay
+{
+    visibility: hidden;
+    z-index: 4000;
+    vertical-align: middle;
+    position: absolute;
+    top: 300px;
+    left: 35%;
+    
+    color:  #8A2BE2;
+    text-align: center;
+}
+
+.overlay button
+{
+        
+        text-align: center;
+        background-color: #4CAF50;
+        color: white;
+
+        
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        
+        width: 20%;
+}
+
+.overlay button:hover
+{
+    background-color: #45a049;
+}
+/* Centered text on top of image*/
+.overlay label 
+{
+    
+     
+    color:  #8A2BE2;
+    font-size:40px;
+    text-align: center;
+    
+    
+}
+
+#friendName
+{
+    height:50px;
+}
