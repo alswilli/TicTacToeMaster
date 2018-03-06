@@ -419,20 +419,20 @@ var threeDticTacState = {
             //check the possible horizontal and vertical wins for the given placement
             horizontal.add(game.board[num][row][y])
             horCoords.push([num, row, y])
-            if(game.board[num][row][y] != "" && game.board[num][row][y] != "x")
+            if(game.board[num][row][y] != "" && game.board[num][row][y] != "o")
                 hor++
             vertical.add(game.board[num][y][col] )
-            if(game.board[num][y][col] != "" && game.board[num][y][col] != "x")
+            if(game.board[num][y][col] != "" && game.board[num][y][col] != "o")
                 vert++
             vertCoords.push([num, y, col])
             //check the possible diagonal wins by checking the main diagonals
             posDiagonal.add(game.board[num][y][y])
             posCoords.push([num, y, y])
-            if(game.board[num][y][y] != "" && game.board[num][y][y] != "x")
+            if(game.board[num][y][y] != "" && game.board[num][y][y] != "o")
                 pos++
             negDiagonal.add(game.board[num][game.n-1-y][y])
             negCoords.push([num, game.n-1-y, y])
-            if(game.board[num][game.n-1-y][y] != "" && game.board[num][game.n-1-y][y] != "x")
+            if(game.board[num][game.n-1-y][y] != "" && game.board[num][game.n-1-y][y] != "o")
                 neg++
         }
         var gameOver = false;
@@ -1240,7 +1240,7 @@ var threeDticTacState = {
 
 //possibleLines = [[hor,blockHorizontal],[vert,blockVertical],[pos,blockPos],[neg,blocNeg]]
 
-function blockVertical(board, col, row)
+function blockHorizontal(board, col, row)
 {
     for(var i = 1; i < game.n; i++)
     {
@@ -1252,7 +1252,7 @@ function blockVertical(board, col, row)
         }
     }
 }
-function blockHorizontal(board, col, row)
+function blockVertical(board, col, row)
 {
     for(var i = 1; i < game.n; i++)
     {
