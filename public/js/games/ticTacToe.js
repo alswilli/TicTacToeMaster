@@ -568,12 +568,12 @@ var ticTacState = {
               game.waiting = true;
               console.log("indexX: "+indexX+" indexY: "+indexY);
               console.log(game.board);
-              console.log(boardToArray());
+              //console.log(boardToArray());
               
               var aiMoveCoords = []
               aiMoveCoords = game.aiMakesMove();
               game.switchTurn(aiMoveCoords[0], aiMoveCoords[1]); // needs to pass ai move instread
-              console.log(boardToArray());
+              //console.log(boardToArray());
               game.waiting = false;
               
            }
@@ -677,7 +677,7 @@ var ticTacState = {
         console.log("do minimax")
         var move = game.minimax(boardArr, ai);
         
-        var newBoardArr = spliceBoard(boardArr);
+        var newBoardArr = game.spliceBoard(boardArr);
         
         // Set game difficutly probability
         if (game.difficulty == 'easy') {
@@ -804,6 +804,9 @@ var ticTacState = {
      * 6 7 8 
      */
     gameIsWon(board, player) {
+        
+        
+        
         if ( (board[0] == player && board[1] == player && board[2] == player) || //Horizontals
             (board[3] == player && board[4] == player && board[5] == player) ||
             (board[6] == player && board[7] == player && board[8] == player) ||

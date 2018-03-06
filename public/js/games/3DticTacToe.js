@@ -13,7 +13,7 @@ var threeDticTacState = {
     update() {
     },
     
-
+    
     /*
      called when the game starts
      */
@@ -56,7 +56,7 @@ var threeDticTacState = {
         game.makeBoardOnScreenBetter('redsquare', 0)
         
         game.winningSquares = game.makeBoardAsArray(game.n)
-
+        
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         
@@ -66,16 +66,16 @@ var threeDticTacState = {
         //add messages that display turn status, connection statuses
         this.addTexts()
         
-                
+        
         //folloowing logic is for multiplayer games
         if(game.singleplayer || game.vsAi)
             return
             
-        game.previousPiece = ""
-        //if this is the first play against an opponent, create a new player on the server
-        game.startMultiplayer()
-        
-    },
+            game.previousPiece = ""
+            //if this is the first play against an opponent, create a new player on the server
+            game.startMultiplayer()
+            
+            },
     
     /*
      returns nxn 3D array
@@ -99,7 +99,7 @@ var threeDticTacState = {
             {
                 for (var k=0; k < n; k++)
                     board[i][j][k]= ""
-            }
+                    }
         }
         
         return board;
@@ -171,24 +171,24 @@ var threeDticTacState = {
                     square.boardNum = i
                     if(name === 'square')
                         game.spriteSquares[i][j][k] = square
-                    else if(name === 'redsquare')
-                        game.cursorSquares[i][j][k] = square
-                    else if(name === 'greensquare')
-                    {
-                        if(game.winningSquares[i][j][k] != "")
-                            square.alpha = 0.7
-                    }
+                        else if(name === 'redsquare')
+                            game.cursorSquares[i][j][k] = square
+                            else if(name === 'greensquare')
+                            {
+                                if(game.winningSquares[i][j][k] != "")
+                                    square.alpha = 0.7
+                                    }
                 }
             }
         }
         
         
-
+        
     },
     
     /*
-        After scaling an image, move its x and y coordinates accordingly so tiles still are next to each 
-        other without any gaps
+     After scaling an image, move its x and y coordinates accordingly so tiles still are next to each 
+     other without any gaps
      */
     adjustForScale(square, xScale, yScale, k, j)
     {
@@ -202,7 +202,7 @@ var threeDticTacState = {
     },
     
     /*
-        Every square is given bounds to check if a click on a sprite is actually inside of the square
+     Every square is given bounds to check if a click on a sprite is actually inside of the square
      */
     addPolygonBounds(square, xScale, yScale)
     {
@@ -215,7 +215,7 @@ var threeDticTacState = {
     },
     
     /*
-        Checks if the square to the left of a sprite is clicked, since images overlap now 
+     Checks if the square to the left of a sprite is clicked, since images overlap now 
      */
     checkAdjacentShears(sprite, pointer)
     {
@@ -234,51 +234,51 @@ var threeDticTacState = {
     },
     
     /*
-        places a piece on an empty square, either x or o depending whose turn it is, given a pointer9i.e mouse click)
+     places a piece on an empty square, either x or o depending whose turn it is, given a pointer9i.e mouse click)
      */
     placePiece(sprite, pointer)
     {
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
-        if(game.multiplayer && game.checkForDoubleClick())
-            return
-        if(sprite.poly.contains(pointer.worldX, pointer.worldY))
-            game.placePieceNoPointer(sprite)
-        else
-            game.checkAdjacentShears(sprite, pointer)
-        
-    },
-     /*
-        called when a mouse click has been verified to actually be on a square
-      */
+            if(game.multiplayer && game.checkForDoubleClick())
+                return
+                if(sprite.poly.contains(pointer.worldX, pointer.worldY))
+                    game.placePieceNoPointer(sprite)
+                    else
+                        game.checkAdjacentShears(sprite, pointer)
+                        
+                        },
+    /*
+     called when a mouse click has been verified to actually be on a square
+     */
     placePieceNoPointer(sprite)
     {
-       var indexX = sprite.indexX
-       var indexY = sprite.indexY
-       var boardNum = sprite.boardNum
-       if(game.board[boardNum][indexY][indexX] != "")
+        var indexX = sprite.indexX
+        var indexY = sprite.indexY
+        var boardNum = sprite.boardNum
+        if(game.board[boardNum][indexY][indexX] != "")
             return 
-           
-       var Ypadding = 3
-       var Xpadding = 15
-       if(game.isXTurn)
-       {
-           var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'X');
-           game.board[boardNum][indexY][indexX] = "x"
-           game.previousPiece = "x"
-       }
-       else
-       {
-           var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'O');
-           game.board[boardNum][indexY][indexX] = "o"
-           game.previousPiece = "o"
-       }
-       if(game.playerMove)
-           game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
-    },
+            
+            var Ypadding = 3
+            var Xpadding = 15
+            if(game.isXTurn)
+            {
+                var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'X');
+                game.board[boardNum][indexY][indexX] = "x"
+                game.previousPiece = "x"
+            }
+            else
+            {
+                var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'O');
+                game.board[boardNum][indexY][indexX] = "o"
+                game.previousPiece = "o"
+            }
+        if(game.playerMove)
+            game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
+            },
     
-
+    
     
     
     /*
@@ -292,11 +292,11 @@ var threeDticTacState = {
         var turn = game.isXTurn ? "x" : "o"
         if(game.singleplayer || game.vsAi)
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
-        else if(game.player === turn)
-            game.turnStatusText.setText("Your Turn")
-        else
-            game.turnStatusText.setText(game.opponent + "'s turn")
-    },
+            else if(game.player === turn)
+                game.turnStatusText.setText("Your Turn")
+                else
+                    game.turnStatusText.setText(game.opponent + "'s turn")
+                    },
     
     updateHilightedSquare(boardNum, x, y)
     {
@@ -333,12 +333,12 @@ var threeDticTacState = {
         //if the id received is this player, that means this player just moved, so they should be waiting now
         if(game.id === id)
             game.waiting = true
-        else
-            game.waiting = false
-        if(game.isOver(coordInfo.boardNum, coordInfo.x, coordInfo.y))
-            game.displayWinner()
-        game.switchTurn(coordInfo.boardNum, coordInfo.x, coordInfo.y)
-    },
+            else
+                game.waiting = false
+                if(game.isOver(coordInfo.boardNum, coordInfo.x, coordInfo.y))
+                    game.displayWinner()
+                    game.switchTurn(coordInfo.boardNum, coordInfo.x, coordInfo.y)
+                    },
     
     /*
      adds a sprite to the screen and returns a reference to it, scales image down
@@ -384,12 +384,12 @@ var threeDticTacState = {
     {
         
         winningSquares.forEach(function(winningSquare)
-        {
-               var i = winningSquare[0]
-               var k = winningSquare[1]
-               var j = winningSquare[2]
-               game.winningSquares[i][j][k] = true
-        });
+                               {
+                               var i = winningSquare[0]
+                               var k = winningSquare[1]
+                               var j = winningSquare[2]
+                               game.winningSquares[i][j][k] = true
+                               });
     },
     
     /*
@@ -403,25 +403,37 @@ var threeDticTacState = {
         //is only one entry and it is not an empty string, that entry is the winner
         var horizontal = new Set()
         var horCoords = []
+        var hor = 0
         var vertical = new Set()
         var vertCoords = []
+        var vert = 0
         
         var posDiagonal = new Set()
         var posCoords = []
+        var pos = 0
         var negDiagonal = new Set()
         var negCoords = []
+        var neg = 0
         
         for (var y=0; y < game.n; y++){
             //check the possible horizontal and vertical wins for the given placement
             horizontal.add(game.board[num][row][y])
             horCoords.push([num, row, y])
-            vertical.add(game.board[num][y][col])
+            if(game.board[num][row][y] != "" && game.board[num][row][y] != "x")
+                hor++
+            vertical.add(game.board[num][y][col] )
+            if(game.board[num][y][col] != "" && game.board[num][y][col] != "x")
+                vert++
             vertCoords.push([num, y, col])
             //check the possible diagonal wins by checking the main diagonals
             posDiagonal.add(game.board[num][y][y])
             posCoords.push([num, y, y])
+            if(game.board[num][y][y] != "" && game.board[num][y][y] != "x")
+                pos++
             negDiagonal.add(game.board[num][game.n-1-y][y])
             negCoords.push([num, game.n-1-y, y])
+            if(game.board[num][game.n-1-y][y] != "" && game.board[num][game.n-1-y][y] != "x")
+                neg++
         }
         var gameOver = false;
         console.log(horCoords)
@@ -462,34 +474,39 @@ var threeDticTacState = {
         }
         //Not sure if it is possible to draw in 3D, we can check after 63 just in case
         /*else if(game.turns >= 8)
-        {
-            gameOver = true;
-            game.isDraw = true
-        }*/
+         {
+         gameOver = true;
+         game.isDraw = true
+         }*/
+         if(game.vsAi)
+         {
+             possibleLines = [[hor,blockHorizontal],[vert,blockVertical],[pos,blockPos],[neg,blockNeg]]
+             game.getMax(possibleLines)
+         }
         
         return gameOver
         
     },
     
     /*
-        Check if there is a 3D vertical win, a local diagonal, or a main diagonal 
-        victory
+     Check if there is a 3D vertical win, a local diagonal, or a main diagonal 
+     victory
      */
     checkIfOver3D(board, col, row)
     {
         var gameOver = false
         if(game.checkIfVertical3D(col, row))
             gameOver = true
-        if(game.checkLocalDiagonals3D(board, col, row))
-            gameOver =  true
-        if(game.checkMainDiagonals3D(board, col, row))
-            gameOver = true
-        console.log("CHECKIFOVER3D: " + gameOver)
-        return gameOver
-    },
+            if(game.checkLocalDiagonals3D(board, col, row))
+                gameOver =  true
+                if(game.checkMainDiagonals3D(board, col, row))
+                    gameOver = true
+                    console.log("CHECKIFOVER3D: " + gameOver)
+                    return gameOver
+                    },
     
     /*
-        Check all the pieces along the vertical of where the piece was placed
+     Check all the pieces along the vertical of where the piece was placed
      */
     checkIfVertical3D(col, row)
     {
@@ -511,7 +528,7 @@ var threeDticTacState = {
     },
     
     /*
-        Check diagonals local to the placed piece
+     Check diagonals local to the placed piece
      */
     checkLocalDiagonals3D(board, fixedCol, fixedRow)
     {
@@ -533,7 +550,7 @@ var threeDticTacState = {
             }
             else
             {
-
+                
                 negativeHorizontal.add(game.board[k][fixedRow][col])
                 negHorCoords.push([k, fixedRow, col])
             }
@@ -581,7 +598,7 @@ var threeDticTacState = {
                 negVertCoords.push([k, row, fixedCol])
             }
         }
-    
+        
         var gameOver = false
         if(negativeHorizontal.size === 1)
         {
@@ -612,7 +629,7 @@ var threeDticTacState = {
     },
     
     /*
-        Check the main diagonals
+     Check the main diagonals
      */
     checkMainDiagonals3D()
     {
@@ -706,12 +723,12 @@ var threeDticTacState = {
         
         
         return gameOver
-
-
+        
+        
     },
     
     /*
-        Returns true if indexes are in bounds, false otherwise
+     Returns true if indexes are in bounds, false otherwise
      */
     inBounds(col, row)
     {
@@ -719,8 +736,8 @@ var threeDticTacState = {
     },
     
     /*
-        Adds two entries to the given set, so when we check if the set has only one 
-        element, the result will be false
+     Adds two entries to the given set, so when we check if the set has only one 
+     element, the result will be false
      */
     markSetInvalid(set)
     {
@@ -735,13 +752,13 @@ var threeDticTacState = {
         var winningPiece = game.isXTurn ? 'x' : 'o'
         if(game.singleplayer || game.vsAi)
             game.winner = winningPiece
-        else
-        {
-            if(game.player === winningPiece)
-                game.winner = game.username
             else
-                game.winner = game.opponent
-        }
+            {
+                if(game.player === winningPiece)
+                    game.winner = game.username
+                    else
+                        game.winner = game.opponent
+                        }
         
         
         game.saveBoard()
@@ -770,26 +787,26 @@ var threeDticTacState = {
     {
         if(game.state.current==="win")
             return
-        if(game.id === id)
-            return
-            //updated the game board
-        game.board = board
-        console.log(board)
-        
-        var boardNum = coordInfo.boardNum
-        var x = coordInfo.worldX
-        var y = coordInfo.worldY
-
-        var Ypadding = 3
-        var Xpadding = 15   
-        if(game.isXTurn)
-        {
-            game.addSprite(x + Xpadding, y + Ypadding, 'X');
-        }
-        else
-        {
-            game.addSprite(x + Xpadding, y + Ypadding, 'O');
-        }
+            if(game.id === id)
+                return
+                //updated the game board
+                game.board = board
+                console.log(board)
+                
+                var boardNum = coordInfo.boardNum
+                var x = coordInfo.worldX
+                var y = coordInfo.worldY
+                
+                var Ypadding = 3
+                var Xpadding = 15   
+                if(game.isXTurn)
+                {
+                    game.addSprite(x + Xpadding, y + Ypadding, 'X');
+                }
+                else
+                {
+                    game.addSprite(x + Xpadding, y + Ypadding, 'O');
+                }
     },
     
     convertIndexesToCoords(boardNum, indexX, indexY)
@@ -914,30 +931,30 @@ var threeDticTacState = {
         if (game.vsAi) {
             console.log("updateTurnStatus: single player AI");
             if(game.isOver(boardNum, indexX, indexY)) {
-               game.displayWinner()         
+                game.displayWinner()         
             }
             else{
-               game.switchTurn(indexX, indexY); 
-               game.waiting = true;
-               console.log("indexX: "+indexX+" indexY: "+indexY);
-               console.log(game.board);
-               console.log(/*threeD*/game.boardToArray());
-               
-               /*threeD*/game.aiMakesMove();
-               game.switchTurn(indexX, indexY);
-               console.log(/*threeD*/game.boardToArray());
-               game.waiting = false;
-               
+                game.switchTurn(indexX, indexY); 
+                game.waiting = true;
+                console.log("indexX: "+indexX+" indexY: "+indexY);
+                console.log(game.board);
+                //console.log(/*threeD*/game.boardToArray());
+                
+                /*threeD*/game.aiMakesMove(boardNum, indexY, indexX);
+                game.switchTurn(indexX, indexY);
+                //console.log(/*threeD*/game.boardToArray());
+                game.waiting = false;
+                
             }
-         }
+        }
         else if(game.singleplayer)
         {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(boardNum, indexX, indexY))
                 game.displayWinner()
-            else
-                game.switchTurn(boardNum, indexX, indexY)
-        }
+                else
+                    game.switchTurn(boardNum, indexX, indexY)
+                    }
         //if multiplayer, set waiting to true so that you can't place two pieces in one turn
         else
         {
@@ -951,7 +968,7 @@ var threeDticTacState = {
         game.printBoard();
     },
     
-
+    
     
     convertToIndexes(point)
     {
@@ -971,8 +988,8 @@ var threeDticTacState = {
     },
     
     /*
-        Applies the shear matrix to the given coordinates and returns the result in 
-        an array
+     Applies the shear matrix to the given coordinates and returns the result in 
+     an array
      */
     convertToShearCoords(x, y)
     {
@@ -992,11 +1009,11 @@ var threeDticTacState = {
         
         
         return [row, col]
-
+        
     },
     
     /*
-        returns the matrix result of multiplying two matrices
+     returns the matrix result of multiplying two matrices
      */
     multiplyMatrices(m1, m2) {
         var result = [];
@@ -1008,23 +1025,23 @@ var threeDticTacState = {
                 for (var k = 0; k < m1[0].length; k++) {
                     sum += m1[i][k] * m2[k][j];
                 }
-            result[i][j] = sum;
-          }
-      }
-      return result;
+                result[i][j] = sum;
+            }
+        }
+        return result;
     },
     
     /*
-        called in winstate to redisplay the board
+     called in winstate to redisplay the board
      */
     rescaleSprites()
     {
         game.makeBoardOnScreenBetter('square', 1)
         game.makeBoardOnScreenBetter('greensquare', 0)
         game.endingBoard.forEach(function(element) {
-            if(element.key != 'text' && element.key != 'square' && element.key != 'redsquare' && element.key != 'background')
-                  game.addSprite(element.x, element.y, element.key);
-        });
+                                 if(element.key != 'text' && element.key != 'square' && element.key != 'redsquare' && element.key != 'background')
+                                 game.addSprite(element.x, element.y, element.key);
+                                 });
     },
     
     /* This is called when for the ai to make a move.
@@ -1032,58 +1049,17 @@ var threeDticTacState = {
      * Then we place the move there for the AI.
      * We convert the board back to a single array and check for the winning condition.
      */
-    aiMakesMove() {
-        console.log("make boardasarr")
+    aiMakesMove(board, col, row) {
+        /*console.log("make boardasarr")
         var boardArr = game.boardToArray();
         console.log("empty indexes at start")
+
+        console.log(game.emptyIndexies(boardArr));*/
+        game.playerMove = false
+        game.placePieceAt(board, col , row)
+        game.playerMove = true
+        return
         
-        console.log(game.emptyIndexies(boardArr));
-        var move = game.minimax(boardArr, ai);
-        
-        var newBoardArr = game.spliceBoard(boardArr);
-        
-        // Set game difficutly probability
-        if (game.difficulty == 'easy') {
-            var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-            console.log("EASY MODE")
-        }
-        else if (game.difficulty == 'medium') {
-            var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-            console.log("MEDIUM MODE")
-        }
-        else if (game.difficulty == 'hard') {
-            var actualMove = (Math.random() < 0.98) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-            // var actualMove = move
-            console.log("HARD MODE")   
-        }
-        console.log("MOVE: ", move)
-        console.log("ACTUAL MOVE: ", actualMove)
-        
-        //    var convertedMove = convertMove(move);
-        if (actualMove == move)
-        {
-            console.log("a")
-            var convertedMove = game.convertMove(actualMove);
-        } 
-        else
-        {
-            console.log("b")
-            var convertedMove = game.convertRandMove(actualMove);   
-        } 
-        //    console.log("AI's move: ", move);
-        console.log("AI's move: ", move);
-        console.log("convertedMove: ", convertedMove);
-        
-        game.placePieceAt(convertedMove.row, convertedMove.column);
-        
-        boardArr = game.boardToArray();
-        
-        //if ( gameIsWon(boardArr, human) || gameIsWon(boardArr, ai) ) {
-        //  game.displayWinner();
-        //}
-        
-        aiCoords = [convertedMove.column, convertedMove.row]
-        return (aiCoords)
     },
     
     spliceBoard(boardArr) {
@@ -1101,166 +1077,100 @@ var threeDticTacState = {
     
     /* Draws a piece at the given index 
      */
-    placePieceAt(row , col) {
-        console.log(game.screenWidth);
+    placePieceAt(board, col , row) {
+        
+        
+        /*while(!game.findOpenSquare(board, col, row))
+        {
+            var nextBoard = (board + 1) % game.n
+            game.findOpenSquare(nextBoard, col, row)
+        }*/
+        if(!game.aiBlockingFunction(board, col, row))
+        {
+            while(!game.findOpenSquare(board, col, row))
+            {
+                
+                board = (board + 1) % game.n
+
+            }
+        }
+            /*console.log(game.screenWidth);
         console.log("row: " + row + ", col: " + col)
         //    var x = 485 + (col * 115);
         //    var y = 115   * (row + 1);
         game.playerMove = false
-        game.placePieceNoPointer( game.spriteSquares[0][col][row] )
-        game.playerMove = true
-        // var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'O');
-        //    var piece = game.addSprite(x, y, 'moon');
-        //game.placedPieces.push(piece);
-        //game.board[0][col][row] = "o";
-    },
-    
-    
-    /* Converts the board to a single array 
-     */
-    boardToArray() {
-        
-        var array = [];
-        
-        for (var i=0; i<3; i++) {
-            for (var j=0; j<3; j++) {
-                if (game.board[0][i][j] != "") {
-                    array.push(game.board[0][i][j]);
-                }else {
-                    array.push(i*3 + j);
-                }
-                //console.log ("BOARD ARRAY: " + (i*3 + j), game.board[0][i][j])
-            }
-        }
-        return array;
-    },
-    
-    
-    /* Converts a move{index, score} to location{row, column}
-     */
-    convertMove(move) {
-        var loc = {};
-        
-        loc.row    = Math.floor(move.index / 3);
-        loc.column = move.index % 3;
-        return loc;
-    },
-    
-    /* Converts a "arrIndex" to location{row, column}
-     */
-    convertRandMove(move) {
-        var loc = {};
-        
-        loc.row    = Math.floor(move / 3);
-        loc.column = move % 3;
-        return loc;
-    },
-    
-    
-    /* Returns the list of indexes of empty spaces on the board
-     */
-    emptyIndexies(board){
-        return  board.filter(tile => tile != "o" && tile != "x");
-    },
-    
-    
-    /* Tests if the given player has won the board by checking all combinations
-     * 0 1 2
-     * 3 4 5
-     * 6 7 8 
-     */
-    gameIsWon(board, player) {
-        
-        //console.log(board)
-        if ( (board[0] == player && board[1] == player && board[2] == player) || //Horizontals
-            (board[3] == player && board[4] == player && board[5] == player) ||
-            (board[6] == player && board[7] == player && board[8] == player) ||
-            
-            (board[0] == player && board[3] == player && board[6] == player) || //Verticals
-            (board[1] == player && board[4] == player && board[7] == player) ||
-            (board[2] == player && board[5] == player && board[8] == player) ||
-            
-            (board[0] == player && board[4] == player && board[8] == player) || //Diagonals
-            (board[2] == player && board[4] == player && board[6] == player) ) 
-        {
-            return true;
-        }
-        return false;
-    },
-    
-    
-    /* This is the minimax algorithm that recursively chooses the best move to play for the 
-     * ai by playing ahead. 
-     * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
-     */
-    minimax(newBoard, player) {
-        
-        var availSpots = game.emptyIndexies(newBoard);
-        
-        if (game.gameIsWon(newBoard, human)) {
-            return {score: -10};
-        }
-        else if (game.gameIsWon(newBoard, ai)) {
-            return {score:  10};
-        }
-        else if (availSpots.length == 0) {
-            return {score:   0};
-        }
-        
-        var moves = []; //Collects all the objects
-        
-        for (var i=0; i<availSpots.length; i++) {
-            
-            //Create an object for each and store the index of that spot 
-            var move = {};
-            move.index = newBoard[availSpots[i]];
-            
-            newBoard[availSpots[i]] = player; //Set the empty spot to the current player
-            
-            if (player == ai) {
-                var result = game.minimax(newBoard, human);
-                move.score = result.score;
-            }
-            else {
-                var result = game.minimax(newBoard, ai);
-                move.score = result.score;
-            }
-            
-            newBoard[availSpots[i]] = move.index; //Reset the spot to empty
-            
-            moves.push(move); //Push the spot to empty
-        }
+        game.placePieceNoPointer( game.spriteSquares[board][col][row] )
+        game.playerMove = true*/
         
         
-        //If it's the ai's turn, loop over the moves and choose the one with the highest score
-        var bestMove;
-        
-        if (player == ai) {
-            var bestScore = -10000;
-            
-            for (var i=0; i<moves.length; i++) {
-                if (moves[i].score > bestScore) {
-                    bestScore = moves[i].score;
-                    bestMove  = i;
-                }
-            }
-        }
-        //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
-        else { 
-            var bestScore = 10000;
-            
-            for (var i=0; i<moves.length; i++) {
-                if (moves[i].score < bestScore) {
-                    bestScore = moves[i].score;
-                    bestMove  = i;
-                }
-            }
-        }
-        
-        //Return the chosen move(object) from the moves array
-        return moves[bestMove];
-    },
 
+    },
+    
+    findOpenSquare(board, col, row)
+    {
+        for(var i = 1; i < game.n; i++)
+        {
+            if(game.inBounds(col - i, row) && game.board[board][col-i][row] === "")
+            {
+                game.placePieceNoPointer( game.spriteSquares[board][row][col-i] )
+                return true
+            }
+            if(game.inBounds(col + i, row) && game.board[board][col+i][row] === "")
+            {
+                game.placePieceNoPointer( game.spriteSquares[board][row][col+i] )
+                return true
+            }
+            if(game.inBounds(col, row - i) && game.board[board][col][row - i] === "")
+            {
+                game.placePieceNoPointer( game.spriteSquares[board][row - i][col] )
+                return true
+            }
+            if(game.inBounds(col, row + i) && game.board[board][col][row + i] === "")
+            {
+                game.placePieceNoPointer( game.spriteSquares[board][row + i][col] )
+                return true
+            }
+            
+            if(game.inBounds(col + i, row + i) && game.board[board][col + i][row + i] === "")
+            {
+                game.placePieceNoPointer( game.spriteSquares[board][row + i][col + i] )
+                return true
+            }
+            if(game.inBounds(col - i, row + i) && game.board[board][col - i][row + i] === "")
+            {
+                game.placePieceNoPointer( game.spriteSquares[board][row + i][col - i] )
+                return true
+            }
+            if(game.inBounds(col + i, row - i) && game.board[board][col + i][row- i] === "")
+            {
+                game.placePieceNoPointer( game.spriteSquares[board][row - i][col + i] )
+                return true
+            }
+            if(game.inBounds(col - i, row - i) && game.board[board][col - i][row- i] === "")
+            {
+                game.placePieceNoPointer( game.spriteSquares[board][row - i][col - i] )
+                return true
+            }
+        }
+        return false
+    },
+    
+   // [horizontal, blockHorizontal], [vert, blockVertical]
+    getMax(lines)
+    {
+        var max = 0
+        var maxIndex = 0
+        for(var i = 0; i < lines.length; i++)
+        {
+            if(lines[i][0] > max)
+            {
+                max = lines[i][0]
+                maxIndex = i
+            }
+        }
+        game.aiBlockingFunction = lines[maxIndex][1]
+    },
+    
     
     
     
@@ -1272,6 +1182,9 @@ var threeDticTacState = {
      */
     assignFunctions()
     {
+        game.findOpenSquare = this.findOpenSquare
+        game.getMax = this.getMax
+        
         game.makeBoardOnScreen = this.makeBoardOnScreen;
         game.makeBoardOnScreenBetter = this.makeBoardOnScreenBetter;
         game.switchTurn = this.switchTurn;
@@ -1325,7 +1238,57 @@ var threeDticTacState = {
     
 };
 
+//possibleLines = [[hor,blockHorizontal],[vert,blockVertical],[pos,blockPos],[neg,blocNeg]]
 
-
-
+function blockVertical(board, col, row)
+{
+    for(var i = 1; i < game.n; i++)
+    {
+        nextRow = (row - i) % game.n
+        if(game.inBounds(col, nextRow) && game.board[board][col][nextRow] === "")
+        {
+            game.placePieceNoPointer( game.spriteSquares[board][nextRow][col] )
+            return true
+        }
+    }
+}
+function blockHorizontal(board, col, row)
+{
+    for(var i = 1; i < game.n; i++)
+    {
+        nextCol = (col - i) % game.n
+        if(game.inBounds(nextCol, row) && game.board[board][nextCol][row] === "")
+        {
+            game.placePieceNoPointer( game.spriteSquares[board][row][nextCol] )
+            return true
+        }
+    }
+}
+function blockPos(board, col, row)
+{
+    for(var i = 1; i < game.n; i++)
+    {
+        nextRow = (row - i) % game.n
+        nextCol = (col - i) % game.n
+        if(game.inBounds(nextCol, nextRow) && game.board[board][nextCol][nextRow] === "")
+        {
+            game.placePieceNoPointer( game.spriteSquares[board][nextRow][nextCol] )
+            return true
+        }
+    }
+}
+function blockNeg(board, col, row)
+{
+    for(var i = 1; i < game.n; i++)
+    {
+        nextRow = (row - i) % game.n
+        nextCol = (col - i) % game.n
+        if(game.inBounds(nextCol, nextRow) && game.board[board][nextCol][nextRow] === "")
+        {
+            game.placePieceNoPointer( game.spriteSquares[board][nextRow][nextCol] )
+            return true
+        }
+    }
+}
+    
 
