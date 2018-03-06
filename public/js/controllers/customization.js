@@ -237,6 +237,17 @@ function changeSelection(buttonId){
                     selectedList
                     );
 }
+
+//toggle the piece displayed from O to X
 function togglePiece(){
-	
+	var pieceImages=document.querySelectorAll(".pieceImg");
+	for(var i=0; i <pieceImages.length; i++){
+		var oldPath=pieceImages[i].src;
+		if(oldPath.indexOf("X")==-1){
+			var newPath=oldPath.replace("O","X");
+		}else{
+			var newPath=oldPath.replace("X","O");
+		}
+		pieceImages[i].src=newPath;
+	}
 }
