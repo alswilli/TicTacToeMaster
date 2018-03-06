@@ -55,9 +55,15 @@ var winState = {
         }
         else
         {
+            if (game.forfeit) {
+                message = game.winner + ' wins via opponent forfeiting! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+                submessage = game.winner + ' receives 50 gold coins!'
+            }
+            else {
+                message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+                submessage = game.winner + ' receives 50 gold coins!'
+            }
             
-            message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
-            submessage = game.winner + ' receives 50 gold coins!'
             
             if (game.singleplayer == true)
             {

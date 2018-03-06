@@ -34,8 +34,10 @@ var orderChaosState = {
         game.turns = 0
         game.XPicked = true;
         //game.pickedPiece = 'X'
+        game.forfeit = false
         
         game.PPOffset = 60;
+        game.FOffset = 20;
         console.log("we PP");
         game.startingX = game.screenWidth/2 + game.PPOffset - ((game.cache.getImage('square').width* game.n) / 2)
         game.startingY = 100
@@ -43,6 +45,11 @@ var orderChaosState = {
         //new size definitions for pick piece baord
         game.PPstartingX = game.screenWidth/2 - game.PPOffset - ((game.cache.getImage('square').width* game.n) / 2)
         game.PPstartingY = 200
+
+        console.log("we F");
+        game.FstartingX = game.screenWidth/2 - game.FOffset + ((game.cache.getImage('square').width* game.n) / 2)
+        game.FstartingY = 200
+
         //intialize waiting status to false, update accordingly later if multiplayer
         game.waiting = false
 
@@ -51,6 +58,9 @@ var orderChaosState = {
 
         //record of picked pieces
         game.pickedPieces = []
+
+        //record of forfeit piece
+        // game.forfeitPiece = []
         
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
@@ -77,6 +87,12 @@ var orderChaosState = {
         game.pickPieceBoard = game.makePPBoardAsArray()
         //create the pick piece board on screen and makes each square clickable
         game.makePPBoardOnScreen()
+
+        //create board for forfeiting
+        game.forfeitBoard = game.makeFBoardAsArray()
+        //create the forfeit board on screen with clickability
+        game.makeFBoardOnScreen()
+
         //add messages that display turn status, connection statuses
         this.addTexts()
         //folloowing logic is for multiplayer games
@@ -107,6 +123,15 @@ var orderChaosState = {
         pickPieceBoard = [];
         pickPieceBoard[0]=new Array(2)
         return pickPieceBoard;
+    },
+
+    /*
+    returns 1x1 2D array
+    */
+    makeFBoardAsArray() {
+        forfeitBoard = [];
+        forfeitBoard[0]=new Array(1)
+        return forfeitBoard;
     },
     
     /*
@@ -164,6 +189,56 @@ var orderChaosState = {
                     square.alpha = 0.4; 
                 }
             }
+        }
+    },
+
+    /*
+     creates the forfeit board on screen with a clickable square, game.n, game.board, and
+     game.startingCX and Y must be defined before calling game function
+     */
+    makeFBoardOnScreen(){
+        //  Here we'll create a new Group
+        for (var i=0; i < 1; i++) {
+            for (var j=0; j < 1; j ++) {
+                //create square
+                var square = game.addSprite(game.FstartingX + i*game.squareSize, game.FstartingY + j * game.squareSize, 'square');
+                //allow square to respond to input
+                square.inputEnabled = true
+                //indices used for the 2D array
+                square.xIndex = i
+                square.yIndex = j
+                var pieceImg = game.addSprite(square.x, square.y, 'forfeit');
+                //make have placePiece be called when a square is clicked
+                square.events.onInputDown.add(game.forfeitPiece, game)
+                
+                //initialize 2D array board to be empty strings
+                game.forfeitBoard[i][j] = "";
+            }
+        }
+    },
+
+    forfeitPiece(sprite, pointer){
+        var indexX = sprite.xIndex
+        var indexY = sprite.yIndex
+
+        if(game.waiting)
+            return
+
+        console.log("forfeit");
+        var forfeitStatus = confirm("Are you sure you want to forfeit?")
+        if (forfeitStatus) {
+            console.log("Forfeiting!")
+            if (game.singleplayer) {
+                game.forfeit = true
+                game.updateTurnStatus(indexX, indexY)
+            }
+            else {
+                var data = {id:game.id}
+                Client.forfeit(data);
+            }
+        }
+        else {
+            console.log("Cancelling forfeit")
         }
     },
 
@@ -271,6 +346,23 @@ var orderChaosState = {
     /*
         Make sure only one player is waiting at a time for the opponent
      */
+    forfeitGame(id)
+    {
+        //if the id received is this player, that means this player just moved, so they should be waiting now
+        if(game.id === id)
+            game.waiting = true
+        else
+            game.waiting = false
+
+        if (game.forfeit) {
+            console.log("forfeit synchronize")
+            game.displayWinner()
+        }
+    },
+
+    /*
+        Make sure only one player is waiting at a time for the opponent
+     */
     synchronizeTurn(id, coordInfo)
     {
         //if the id received is this player, that means this player just moved, so they should be waiting now
@@ -278,10 +370,11 @@ var orderChaosState = {
             game.waiting = true
         else
             game.waiting = false
+
         if(game.isOver(coordInfo.x, coordInfo.y))
         {
             game.waiting = true
-            if(game.isDraw) {
+            if(game.isDraw) { // drawing lines
                 game.displayWinner()
             }
             //game.displayWinner()
@@ -316,6 +409,9 @@ var orderChaosState = {
      */
     isOver(col, row)
     {
+        if (game.forfeit == true){
+            return true
+        }
         //create Sets for each direction. Since a Set has unique entries, if there
         //is only one entry and it is not an empty string, that entry is the winner
         var horizontal = new Set()
@@ -461,15 +557,32 @@ var orderChaosState = {
      switch the the winState, indicating who the winner is
      */
     displayWinner() {
+        console.log("POOPNUT")
         var winningPiece = game.isDraw ? 'chaos' : 'order'
+        if (game.forfeit) {
+            console.log("a")
+            if (game.isXTurn) {
+                console.log("b")
+                winningPiece = 'chaos'
+            }
+            else {
+                console.log("c")
+                winningPiece = 'order'
+            }
+        }
         if(game.singleplayer)
             game.winner = winningPiece
         else
         {
-            if(game.player === winningPiece)
+            console.log("d")
+            if(game.player === winningPiece) {
+                console.log("e")
                 game.winner = game.username
-            else
+            }
+            else {
+                console.log("f")
                 game.winner = game.opponent
+            }
         }
         
         game.saveBoard()
@@ -623,6 +736,7 @@ var orderChaosState = {
     addTexts(){
         var startingMessage = game.singleplayer ? "Current Turn: X" : "Searching for Opponent"
         var pieceMessage = game.XPicked ? "Piece: X" : "Piece: O";
+        var forfeitMessage = "Forfeit?"
         
         game.turnStatusText = game.add.text(
             game.world.centerX, 50, startingMessage,
@@ -647,6 +761,14 @@ var orderChaosState = {
         //setting anchor centers the text on its x, y coordinates
         game.pieceStatusText.anchor.setTo(0.5, 0.5)
         game.pieceStatusText.key = 'text'
+
+        game.forfeitStatusText = game.add.text(
+            game.world.centerX + 320, 170, forfeitMessage,
+                { font: '30px Arial', fill: '#ffffff' }
+        )
+        //setting anchor centers the text on its x, y coordinates
+        game.forfeitStatusText.anchor.setTo(0.5, 0.5)
+        game.forfeitStatusText.key = 'text'
         
     },
     
@@ -660,7 +782,8 @@ var orderChaosState = {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
             {
-                if(game.isDraw) {
+                console.log("FORFEIT")
+                if(game.isDraw || game.forfeit) {
                     game.displayWinner()
                 }
                 //game.displayWinner()
@@ -762,11 +885,14 @@ var orderChaosState = {
         game.showLine = this.showLine
         game.makeBoardOnScreen = this.makeBoardOnScreen;
         game.makePPBoardOnScreen = this.makePPBoardOnScreen;
+        game.makeFBoardOnScreen = this.makeFBoardOnScreen;
         game.switchTurn = this.switchTurn;
         game.placePiece = this.placePiece
         game.pickPiece = this.pickPiece
+        game.forfeitPiece = this.forfeitPiece
         game.makeBoardAsArray = this.makeBoardAsArray
         game.makePPBoardAsArray = this.makePPBoardAsArray
+        game.makeFBoardAsArray = this.makeFBoardAsArray
         game.addSprite = this.addSprite
         game.displayDraw = this.displayDraw
         game.displayWinner = this.displayWinner
@@ -781,5 +907,6 @@ var orderChaosState = {
         game.restartMatch = this.restartMatch
         game.askForRematch = this.askForRematch
         game.updateTurnStatus = this.updateTurnStatus
+        game.forfeitGame = this.forfeitGame
     }
 };
