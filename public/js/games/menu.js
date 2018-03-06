@@ -21,6 +21,8 @@ var menuState = {
 
         document.getElementById("chat-box").style.visibility = "hidden";
         document.getElementById("open-box").style.visibility = "hidden";
+        document.getElementById("inputBox").style.visibility = "hidden";
+        document.getElementById("closeBox").style.visibility = "hidden";
         console.log("IN MENU")
         //setup background
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'menubackground');

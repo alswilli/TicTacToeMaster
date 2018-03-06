@@ -166,6 +166,12 @@ io.on('connection',function(socket)
                     io.sockets.in(socket.player.roomName).emit('switchTurn',socket.player,data);
                           
                 });
+
+                socket.on('forfeit',function(data)
+                {
+                    console.log("server data.id: ", data.id)
+                    io.sockets.in(socket.player.roomName).emit('forfeitTurn', data);           
+                });
                 
                 //keep track of if both players in a room want a rematch or not
                 io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch = 0;
