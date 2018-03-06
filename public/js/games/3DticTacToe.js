@@ -274,9 +274,9 @@ var threeDticTacState = {
                 game.board[boardNum][indexY][indexX] = "o"
                 game.previousPiece = "o"
             }
-        if(game.playerMove)
-            game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
-            },
+        //if(game.playerMove)
+        game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
+    },
     
     
     
@@ -933,7 +933,7 @@ var threeDticTacState = {
             if(game.isOver(boardNum, indexX, indexY)) {
                 game.displayWinner()         
             }
-            else{
+            else if(game.playerMove){
                 game.switchTurn(indexX, indexY); 
                 game.waiting = true;
                 console.log("indexX: "+indexX+" indexY: "+indexY);
@@ -1244,7 +1244,7 @@ function blockHorizontal(board, col, row)
 {
     for(var i = 1; i < game.n; i++)
     {
-        nextRow = (row - i) % game.n
+        var nextRow = (row + i) % game.n
         if(game.inBounds(col, nextRow) && game.board[board][col][nextRow] === "")
         {
             game.placePieceNoPointer( game.spriteSquares[board][nextRow][col] )
@@ -1256,7 +1256,7 @@ function blockVertical(board, col, row)
 {
     for(var i = 1; i < game.n; i++)
     {
-        nextCol = (col - i) % game.n
+        nextCol = (col + i) % game.n
         if(game.inBounds(nextCol, row) && game.board[board][nextCol][row] === "")
         {
             game.placePieceNoPointer( game.spriteSquares[board][row][nextCol] )
@@ -1268,8 +1268,15 @@ function blockPos(board, col, row)
 {
     for(var i = 1; i < game.n; i++)
     {
-        nextRow = (row - i) % game.n
-        nextCol = (col - i) % game.n
+        var nextRow = (row - i) % game.n
+        var nextCol = (col - i) % game.n
+        if(game.inBounds(nextCol, nextRow) && game.board[board][nextCol][nextRow] === "")
+        {
+            game.placePieceNoPointer( game.spriteSquares[board][nextRow][nextCol] )
+            return true
+        }
+        nextRow = (row + i) % game.n
+        nextCol = (col + i) % game.n
         if(game.inBounds(nextCol, nextRow) && game.board[board][nextCol][nextRow] === "")
         {
             game.placePieceNoPointer( game.spriteSquares[board][nextRow][nextCol] )
@@ -1281,8 +1288,15 @@ function blockNeg(board, col, row)
 {
     for(var i = 1; i < game.n; i++)
     {
+        var nextRow = (row + i) % game.n
+        var nextCol = (col - i) % game.n
+        if(game.inBounds(nextCol, nextRow) && game.board[board][nextCol][nextRow] === "")
+        {
+            game.placePieceNoPointer( game.spriteSquares[board][nextRow][nextCol] )
+            return true
+        }
         nextRow = (row - i) % game.n
-        nextCol = (col - i) % game.n
+        nextCol = (col + i) % game.n
         if(game.inBounds(nextCol, nextRow) && game.board[board][nextCol][nextRow] === "")
         {
             game.placePieceNoPointer( game.spriteSquares[board][nextRow][nextCol] )
