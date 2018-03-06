@@ -43,6 +43,11 @@ function makeClient()
         Client.socket.emit('makeNewPlayer', data);
     };
 
+    Client.forfeit = function(data){
+        console.log("data id:", data.id)
+        Client.socket.emit('forfeit', data);
+    };
+
     Client.sendClick = function(data){
         console.log("Client received sendClick from " + data.id +", now Sending click to server")
         Client.socket.emit('click',data);
@@ -140,6 +145,13 @@ function makeClient()
         game.assignRoom(data.room);
                      console.log("confirming!");
      });
+
+     Client.socket.on('forfeitTurn',function(data){
+       // if(!game.verifyBoard(data.board))
+         //  return
+        game.forfeit = true;
+        game.forfeitGame(data.id);
+   });
 
     Client.socket.on('switchTurn',function(data, coordInfo){
          console.log("sending message from " + data.id + " to game to switch turn");

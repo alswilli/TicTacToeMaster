@@ -1,3 +1,15 @@
+.boardDesign img{
+	width: 150px; 
+	height: 150px
+}
+.pieceDesign img{
+	width: 150px; 
+	height: 150px
+}
+.backgroundDesign img{
+	width: 100%; 
+	height: 150px
+}
 #insufficientCash {
     display: none; 
     position: fixed; 
@@ -68,4 +80,9 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+#togglePiece{
+		float: right;
+		height:45px;
+		font-size: 18px;
 }
