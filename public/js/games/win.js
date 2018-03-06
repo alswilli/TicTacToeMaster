@@ -66,7 +66,7 @@ var winState = {
                 console.log("game.player:", game.player);
                 console.log("game.userkey", game.userkey);
                 console.log("game.username", game.username);
-                updateChallenges(game.userkey, "Draw", "Offline");
+                updateChallenges(game.userkey, "idk", "Offline");
             }
             else 
             {
@@ -276,33 +276,34 @@ function updateChallenges(userkey, result, line) {
 
         //check for playing all game modes challenge
         check = snapshot.val().mode;
-    
-        if (check == '100%') {
-            //do nothing
-        } else {
-            leaderboardRef.once('value', function (snapshot) {
-                if(snapshot.wins == '0' || snapshot.lose == '0'){
-                    //do nothing if they have a win or loss
-                }else{
-                    if (check == '0%') {
-                        challengesRef.update({ mode: '25%' });
-                    } else if (check == '25%') {
-                        challengesRef.update({ mode: '50%' });
-                    } else if (check == '50%') {
-                        challengesRef.update({ mode: '75%' });
+        if (line == "Online") {
+            if (check == '100%') {
+                //do nothing
+            } else {
+                leaderboardRef.once('value', function (snapshot) {
+                    if (snapshot.win == '0' || snapshot.lose == '0') {
+                        //do nothing if they have a win or loss
                     } else {
-                        challengesRef.update({ mode: '100%' });
-                        notification("Challenge: The Whole Shabang Unlocked! +50 Cash Money");
-                        cashMoney = parseInt(stringCash);
-                        cashMoney = cashMoney + 50;
-                        app.money = cashMoney;
-                        root.$broadcast('update', "homePageLink");
-                        userRef.update({ cash: cashMoney }); //updates cash to firebase;
+                        if (check == '0%') {
+                            challengesRef.update({ mode: '25%' });
+                        } else if (check == '25%') {
+                            challengesRef.update({ mode: '50%' });
+                        } else if (check == '50%') {
+                            challengesRef.update({ mode: '75%' });
+                        } else {
+                            challengesRef.update({ mode: '100%' });
+                            notification("Challenge: The Whole Shabang Unlocked! +50 Cash Money");
+                            cashMoney = parseInt(stringCash);
+                            cashMoney = cashMoney + 50;
+                            app.money = cashMoney;
+                            root.$broadcast('update', "homePageLink");
+                            userRef.update({ cash: cashMoney }); //updates cash to firebase;
 
+                        }
                     }
-                }
-            });
+                });
             }
+        }
         cashMoney = app.money; //update money
 
         //check for winning as a O challenge
@@ -361,7 +362,7 @@ function updateChallenges(userkey, result, line) {
         check = snapshot.val().x;
         if (line == 'Online') {
             if (check == '100%') {
-                //do nothing if challence is complete
+                //do nothing if challenge is complete
             } else if (game.player == 'x' && result == 'Wins') {
                 challengesRef.update({ x: '100%' });
                 notification("Challenge: X Gunna Give it to Yah Unlocked! +50 Cash Money");
@@ -374,6 +375,21 @@ function updateChallenges(userkey, result, line) {
         }
         cashMoney = app.money; //update money value
         userRef.update({ cash: cashMoney });
+
+        check = snapshot.val().draw;
+        if(result == "Draw"){
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                challengesRef.update({draw: '100%'});
+                notification("Challenge: Artist Unlocked! +25 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 25;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+        }
     });
 }
 

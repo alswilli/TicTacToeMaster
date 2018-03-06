@@ -172,7 +172,7 @@ var ticTacState = {
         // game.cursorSquares[i][j].alpha = 0.5
 
         game.updateTurnStatus(indexX, indexY)
-        pieceChallenge(game.turns);
+
     },
     
     /*
@@ -185,7 +185,9 @@ var ticTacState = {
         
         game.isXTurn = !game.isXTurn
         game.turns++
-
+        console.log("before challange");
+        pieceChallenge(game.turns);
+        console.log("turn count: " + game.turns)
         for (var i = 0; i < 3; i++)
         {
             for (var j = 0; j < 3; j++)
@@ -206,9 +208,6 @@ var ticTacState = {
                 }
             }
         }
-
-        pieceChallenge(game.turns);
-        console.log("turn count: " + game.turns)
         var turn = game.isXTurn ? "x" : "o"
         if(game.singleplayer || game.vsAi)
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
@@ -218,17 +217,6 @@ var ticTacState = {
         else
             game.turnStatusText.setText(game.opponent + "'s turn")
         
-
-        
-
-        /*console.log('array before while loop: ', notifyArray);
-        while (notifyArray.length > 0) {
-            console.log('array in while loop: ', notifyArray);
-            console.log('array length', notifyArray.length);
-            delayNotify(notifyArray, notify, notifyCounter, notifyTime);
-        }
-        notifyBool = false;
-        */
     },
     
     /*
@@ -725,9 +713,9 @@ function pieceChallenge(turn) {
             if (check == '100%') {
                 //do nothing if challence is complete
             } else {
-                challengesRef.update({piece: '100%'});
+                console.log("notify");
                 notification("Challenge: Baby Steps Unlocked! +50 Cash Money");
-                console.log('array in piece after push: ', notifyArray);
+                challengesRef.update({piece: '100%'});
                 cashMoney = parseInt(stringCash);
                 cashMoney = cashMoney + 50;
                 app.money = cashMoney;//updates cash to session storage
