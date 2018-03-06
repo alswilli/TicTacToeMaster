@@ -57,7 +57,7 @@ var menuState = {
                         });
         // }
 
-        game.vs3DAi = false
+        game.vs3DAi = true
 
         // if (game.gametype == "3d") {
         //     game.addMenuOption('SinglePlayer', 200, function () {
