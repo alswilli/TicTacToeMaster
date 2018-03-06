@@ -335,7 +335,6 @@ var ultimateTTTState = {
         game.turns++
         game.boardTurns[x][y] = game.boardTurns[x][y] + 1 // Now the turns for each mini board are updated
         console.log("Board turns:", game.boardTurns[x][y])
-        pieceChallenge(game.turns);
         console.log("turn count: " + game.turns)
 
         // Set Logic for piece placement next time around (needs alpha changes)
@@ -1316,33 +1315,6 @@ var ultimateTTTState = {
 
 };
 
-function pieceChallenge(turn) {
-    console.log("pieceChallenge");
-    var cashMoney;
-    var stringCash = sessionStorage.getItem("cash");
-
-    if (game.turns == 1) {
-        console.log("pieceChallenge turn 1");
-        challengesRef.once('value').then(function (snapshot) {
-            var check;
-            //check for placing first piece challenge                  
-            check = snapshot.val().piece;
-            if (check == '100%') {
-                //do nothing if challence is complete
-            } else {
-                challengesRef.update({piece: '100%'});
-                console.log('Challenge Complete!!!!!');
-                //need notification
-                cashMoney = parseInt(stringCash);
-                cashMoney = cashMoney + 50;
-                sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
-                console.log("cashMoney: ", cashMoney);
-                console.log("session money: ", sessionStorage.getItem("cash"));
-                userRef.update({ cash: cashMoney }); //updates cash to firebase;
-            }
-        });
-    }
-}
 
 // /****************************************** Tic Tac Toe AI ************************/
 // var human = "x";
