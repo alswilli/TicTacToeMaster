@@ -6,6 +6,7 @@ var userRef = firebase.database().ref('/users/' + keyValue);
  game.
  */
 var ticTacState = {
+    
     /*
      called every frame, we don't actually need game since the screen only changes
      when a player clicks, but we can keep it for when/if we add animations
@@ -174,6 +175,7 @@ var ticTacState = {
         // game.cursorSquares[i][j].alpha = 0.5
 
         game.updateTurnStatus(indexX, indexY)
+
     },
     
     /*
@@ -186,7 +188,9 @@ var ticTacState = {
         
         game.isXTurn = !game.isXTurn
         game.turns++
-
+        console.log("before challange");
+        pieceChallenge(game.turns);
+        console.log("turn count: " + game.turns)
         for (var i = 0; i < 3; i++)
         {
             for (var j = 0; j < 3; j++)
@@ -207,9 +211,6 @@ var ticTacState = {
                 }
             }
         }
-
-        pieceChallenge(game.turns);
-        console.log("turn count: " + game.turns)
         var turn = game.isXTurn ? "x" : "o"
         if(game.singleplayer || game.vsAi)
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
@@ -218,6 +219,7 @@ var ticTacState = {
             game.turnStatusText.setText("Your Turn")
         else
             game.turnStatusText.setText(game.opponent + "'s turn")
+        
     },
     
     /*
@@ -943,7 +945,7 @@ var ticTacState = {
 function pieceChallenge(turn) {
     console.log("pieceChallenge");
     var cashMoney;
-    var stringCash = sessionStorage.getItem("cash");
+    var stringCash = app.money;
 
     if (game.turns == 1) {
         console.log("pieceChallenge turn 1");
@@ -954,12 +956,13 @@ function pieceChallenge(turn) {
             if (check == '100%') {
                 //do nothing if challence is complete
             } else {
+                console.log("notify");
+                notification("Challenge: Baby Steps Unlocked! +50 Cash Money");
                 challengesRef.update({piece: '100%'});
-                console.log('Challenge Complete!!!!!');
-                //need notification
                 cashMoney = parseInt(stringCash);
                 cashMoney = cashMoney + 50;
-                sessionStorage.setItem("cash", cashMoney);//updates cash to session storage
+                app.money = cashMoney;//updates cash to session storage
+                root.$broadcast('update', "homePageLink");
                 console.log("cashMoney: ", cashMoney);
                 console.log("session money: ", sessionStorage.getItem("cash"));
                 userRef.update({ cash: cashMoney }); //updates cash to firebase;
@@ -968,4 +971,10 @@ function pieceChallenge(turn) {
     }
 }
 
+function notification(message) {
+    var x = document.getElementById("snackbar")
+    x.className = "show";
+    x.innerHTML = message;
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+}
 /****************************************** Tic Tac Toe AI ************************/
