@@ -2,7 +2,8 @@
  The actual meat of the game, game state contains all the logic for the tictactoe
  game.
  */
-
+var human = "x";
+var ai    = "o";
 
 var threeDticTacState = {
     /*
@@ -67,7 +68,7 @@ var threeDticTacState = {
         
                 
         //folloowing logic is for multiplayer games
-        if(game.singleplayer || game.vs3DAi)
+        if(game.singleplayer || game.vsAi)
             return
             
         game.previousPiece = ""
@@ -273,8 +274,10 @@ var threeDticTacState = {
            game.board[boardNum][indexY][indexX] = "o"
            game.previousPiece = "o"
        }
-       game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
+       if(game.playerMove)
+           game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
     },
+    
 
     
     
@@ -287,7 +290,7 @@ var threeDticTacState = {
         game.turns++
         game.updateHilightedSquare(boardNum, indexX, indexY)
         var turn = game.isXTurn ? "x" : "o"
-        if(game.singleplayer || game.vs3DAi)
+        if(game.singleplayer || game.vsAi)
             game.turnStatusText.setText("Current Turn: " + turn.toUpperCase())
         else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
@@ -730,7 +733,7 @@ var threeDticTacState = {
      */
     displayWinner() {
         var winningPiece = game.isXTurn ? 'x' : 'o'
-        if(game.singleplayer || game.vs3DAi)
+        if(game.singleplayer || game.vsAi)
             game.winner = winningPiece
         else
         {
@@ -881,7 +884,7 @@ var threeDticTacState = {
      Initialize the texts used to display turn status and matching status
      */
     addTexts(){
-        var startingMessage = (game.singleplayer || game.vs3DAi) ? "Current Turn: X" : "Searching for Opponent"
+        var startingMessage = (game.singleplayer || game.vsAi) ? "Current Turn: X" : "Searching for Opponent"
         
         game.turnStatusText = game.add.text(
                                             game.world.centerX, 50, startingMessage,
@@ -908,27 +911,24 @@ var threeDticTacState = {
      */
     updateTurnStatus(boardNum, indexX, indexY, worldX, worldY)
     {
-        if (game.vs3DAi) {
+        if (game.vsAi) {
             console.log("updateTurnStatus: single player AI");
             if(game.isOver(boardNum, indexX, indexY)) {
                game.displayWinner()         
             }
-            else if(game.playerMove){
+            else{
                game.switchTurn(indexX, indexY); 
                game.waiting = true;
-               game.playerMove = false
                console.log("indexX: "+indexX+" indexY: "+indexY);
                console.log(game.board);
-               console.log(/*threeD*/boardToArray());
+               console.log(/*threeD*/game.boardToArray());
                
-               /*threeD*/aiMakesMove();
+               /*threeD*/game.aiMakesMove();
                game.switchTurn(indexX, indexY);
-               console.log(/*threeD*/boardToArray());
+               console.log(/*threeD*/game.boardToArray());
                game.waiting = false;
                
             }
-            else
-                game.playerMove = true
          }
         else if(game.singleplayer)
         {
@@ -976,17 +976,17 @@ var threeDticTacState = {
      */
     convertToShearCoords(x, y)
     {
-        console.log("SHEAR CALCULATION given " + x + ", " + y)
+        //console.log("SHEAR CALCULATION given " + x + ", " + y)
         
         var height = game.cache.getImage('board').height
         var zpoint = [[x, height -  y]]
         var shear = [[1, 0],
                      [0.75, 1] //1.15
                      ]
-        console.log("Convert to grid coords: " + zpoint[0][0] + ", " + zpoint[0][1])
+        //console.log("Convert to grid coords: " + zpoint[0][0] + ", " + zpoint[0][1])
         var result = game.multiplyMatrices(zpoint, shear)
-        console.log("-----result of matrix mu,tiplication-----")
-        console.log(result[0])
+        //console.log("-----result of matrix mu,tiplication-----")
+        //console.log(result[0])
         var row = Math.floor(y)
         var col = Math.floor(result[0][0])
         
@@ -1026,6 +1026,241 @@ var threeDticTacState = {
                   game.addSprite(element.x, element.y, element.key);
         });
     },
+    
+    /* This is called when for the ai to make a move.
+     * Converts the board to a single array for minimax to calculate where to play a move.
+     * Then we place the move there for the AI.
+     * We convert the board back to a single array and check for the winning condition.
+     */
+    aiMakesMove() {
+        console.log("make boardasarr")
+        var boardArr = game.boardToArray();
+        console.log("empty indexes at start")
+        
+        console.log(game.emptyIndexies(boardArr));
+        var move = game.minimax(boardArr, ai);
+        
+        var newBoardArr = game.spliceBoard(boardArr);
+        
+        // Set game difficutly probability
+        if (game.difficulty == 'easy') {
+            var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+            console.log("EASY MODE")
+        }
+        else if (game.difficulty == 'medium') {
+            var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+            console.log("MEDIUM MODE")
+        }
+        else if (game.difficulty == 'hard') {
+            var actualMove = (Math.random() < 0.98) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
+            // var actualMove = move
+            console.log("HARD MODE")   
+        }
+        console.log("MOVE: ", move)
+        console.log("ACTUAL MOVE: ", actualMove)
+        
+        //    var convertedMove = convertMove(move);
+        if (actualMove == move)
+        {
+            console.log("a")
+            var convertedMove = game.convertMove(actualMove);
+        } 
+        else
+        {
+            console.log("b")
+            var convertedMove = game.convertRandMove(actualMove);   
+        } 
+        //    console.log("AI's move: ", move);
+        console.log("AI's move: ", move);
+        console.log("convertedMove: ", convertedMove);
+        
+        game.placePieceAt(convertedMove.row, convertedMove.column);
+        
+        boardArr = game.boardToArray();
+        
+        //if ( gameIsWon(boardArr, human) || gameIsWon(boardArr, ai) ) {
+        //  game.displayWinner();
+        //}
+        
+        aiCoords = [convertedMove.column, convertedMove.row]
+        return (aiCoords)
+    },
+    
+    spliceBoard(boardArr) {
+        var array = [];
+        
+        for (var i=0; i < boardArr.length; i++) {
+            if (boardArr[i] != "x" && boardArr[i] != "o") {
+                array.push(boardArr[i]);
+            }
+        }
+        
+        return array;
+    },
+    
+    
+    /* Draws a piece at the given index 
+     */
+    placePieceAt(row , col) {
+        console.log(game.screenWidth);
+        console.log("row: " + row + ", col: " + col)
+        //    var x = 485 + (col * 115);
+        //    var y = 115   * (row + 1);
+        game.playerMove = false
+        game.placePieceNoPointer( game.spriteSquares[0][col][row] )
+        game.playerMove = true
+        // var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'O');
+        //    var piece = game.addSprite(x, y, 'moon');
+        //game.placedPieces.push(piece);
+        //game.board[0][col][row] = "o";
+    },
+    
+    
+    /* Converts the board to a single array 
+     */
+    boardToArray() {
+        
+        var array = [];
+        
+        for (var i=0; i<3; i++) {
+            for (var j=0; j<3; j++) {
+                if (game.board[0][i][j] != "") {
+                    array.push(game.board[0][i][j]);
+                }else {
+                    array.push(i*3 + j);
+                }
+                //console.log ("BOARD ARRAY: " + (i*3 + j), game.board[0][i][j])
+            }
+        }
+        return array;
+    },
+    
+    
+    /* Converts a move{index, score} to location{row, column}
+     */
+    convertMove(move) {
+        var loc = {};
+        
+        loc.row    = Math.floor(move.index / 3);
+        loc.column = move.index % 3;
+        return loc;
+    },
+    
+    /* Converts a "arrIndex" to location{row, column}
+     */
+    convertRandMove(move) {
+        var loc = {};
+        
+        loc.row    = Math.floor(move / 3);
+        loc.column = move % 3;
+        return loc;
+    },
+    
+    
+    /* Returns the list of indexes of empty spaces on the board
+     */
+    emptyIndexies(board){
+        return  board.filter(tile => tile != "o" && tile != "x");
+    },
+    
+    
+    /* Tests if the given player has won the board by checking all combinations
+     * 0 1 2
+     * 3 4 5
+     * 6 7 8 
+     */
+    gameIsWon(board, player) {
+        
+        //console.log(board)
+        if ( (board[0] == player && board[1] == player && board[2] == player) || //Horizontals
+            (board[3] == player && board[4] == player && board[5] == player) ||
+            (board[6] == player && board[7] == player && board[8] == player) ||
+            
+            (board[0] == player && board[3] == player && board[6] == player) || //Verticals
+            (board[1] == player && board[4] == player && board[7] == player) ||
+            (board[2] == player && board[5] == player && board[8] == player) ||
+            
+            (board[0] == player && board[4] == player && board[8] == player) || //Diagonals
+            (board[2] == player && board[4] == player && board[6] == player) ) 
+        {
+            return true;
+        }
+        return false;
+    },
+    
+    
+    /* This is the minimax algorithm that recursively chooses the best move to play for the 
+     * ai by playing ahead. 
+     * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
+     */
+    minimax(newBoard, player) {
+        
+        var availSpots = game.emptyIndexies(newBoard);
+        
+        if (game.gameIsWon(newBoard, human)) {
+            return {score: -10};
+        }
+        else if (game.gameIsWon(newBoard, ai)) {
+            return {score:  10};
+        }
+        else if (availSpots.length == 0) {
+            return {score:   0};
+        }
+        
+        var moves = []; //Collects all the objects
+        
+        for (var i=0; i<availSpots.length; i++) {
+            
+            //Create an object for each and store the index of that spot 
+            var move = {};
+            move.index = newBoard[availSpots[i]];
+            
+            newBoard[availSpots[i]] = player; //Set the empty spot to the current player
+            
+            if (player == ai) {
+                var result = game.minimax(newBoard, human);
+                move.score = result.score;
+            }
+            else {
+                var result = game.minimax(newBoard, ai);
+                move.score = result.score;
+            }
+            
+            newBoard[availSpots[i]] = move.index; //Reset the spot to empty
+            
+            moves.push(move); //Push the spot to empty
+        }
+        
+        
+        //If it's the ai's turn, loop over the moves and choose the one with the highest score
+        var bestMove;
+        
+        if (player == ai) {
+            var bestScore = -10000;
+            
+            for (var i=0; i<moves.length; i++) {
+                if (moves[i].score > bestScore) {
+                    bestScore = moves[i].score;
+                    bestMove  = i;
+                }
+            }
+        }
+        //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
+        else { 
+            var bestScore = 10000;
+            
+            for (var i=0; i<moves.length; i++) {
+                if (moves[i].score < bestScore) {
+                    bestScore = moves[i].score;
+                    bestMove  = i;
+                }
+            }
+        }
+        
+        //Return the chosen move(object) from the moves array
+        return moves[bestMove];
+    },
+
     
     
     
@@ -1071,246 +1306,26 @@ var threeDticTacState = {
         game.adjustForScale = this.adjustForScale
         game.addPolygonBounds = this.addPolygonBounds
         game.placePieceNoPointer = this.placePieceNoPointer
+        game.placePieceNoPointerAI = this.placePieceNoPointerAI
         game.rescaleSprites = this.rescaleSprites
         game.checkAdjacentShears = this.checkAdjacentShears
         game.updateHilightedSquare = this.updateHilightedSquare
         game.addWinningSquares = this.addWinningSquares
+        
+        game.minimax = this.minimax
+        game.gameIsWon = this.gameIsWon
+        game.emptyIndexies = this.emptyIndexies
+        game.convertRandMove = this.convertRandMove
+        game.convertMove = this.convertMove
+        game.placePieceAt = this.placePieceAt
+        game.boardToArray = this.boardToArray
+        game.spliceBoard = this.spliceBoard
+        game.aiMakesMove = this.aiMakesMove
     }
     
 };
 
-var human = "x";
-var ai    = "o";
 
 
-/* This is called when for the ai to make a move.
- * Converts the board to a single array for minimax to calculate where to play a move.
- * Then we place the move there for the AI.
- * We convert the board back to a single array and check for the winning condition.
- */
-function aiMakesMove() {
-    console.log("make boardasarr")
-    var boardArr = boardToArray();
-    console.log("do minimax")
-    var move = minimax(boardArr, ai);
-    
-    var newBoardArr = spliceBoard(boardArr);
-    
-    // Set game difficutly probability
-    if (game.difficulty == 'easy') {
-        var actualMove = (Math.random() < 0.5) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-        console.log("EASY MODE")
-    }
-    else if (game.difficulty == 'medium') {
-        var actualMove = (Math.random() < 0.7) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-        console.log("MEDIUM MODE")
-    }
-    else if (game.difficulty == 'hard') {
-        var actualMove = (Math.random() < 0.98) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-        // var actualMove = move
-        console.log("HARD MODE")   
-    }
-    console.log("MOVE: ", move)
-    console.log("ACTUAL MOVE: ", actualMove)
-    
-    //    var convertedMove = convertMove(move);
-    if (actualMove == move)
-    {
-        console.log("a")
-        var convertedMove = convertMove(actualMove);
-    } 
-    else
-    {
-        console.log("b")
-        var convertedMove = convertRandMove(actualMove);   
-    } 
-    //    console.log("AI's move: ", move);
-    console.log("AI's move: ", move);
-    console.log("convertedMove: ", convertedMove);
-    
-    placePieceAt(convertedMove.row, convertedMove.column);
-    
-    boardArr = boardToArray();
-    
-    //if ( gameIsWon(boardArr, human) || gameIsWon(boardArr, ai) ) {
-      //  game.displayWinner();
-    //}
-    
-    aiCoords = [convertedMove.column, convertedMove.row]
-    
-    return (aiCoords)
-}
 
-function spliceBoard(boardArr) {
-    var array = [];
-    
-    for (var i=0; i < boardArr.length; i++) {
-        if (boardArr[i] != "x" && boardArr[i] != "o") {
-            array.push(boardArr[i]);
-        }
-    }
-    
-    return array;
-}
-
-
-/* Draws a piece at the given index 
- */
-function placePieceAt(row , col) {
-    console.log(game.screenWidth);
-    //alert("row: " + row + ", col: " + col)
-    //    var x = 485 + (col * 115);
-    //    var y = 115   * (row + 1);
-    game.placePieceNoPointer( game.spriteSquares[0][row][col] )
-   // var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'O');
-    //    var piece = game.addSprite(x, y, 'moon');
-    //game.placedPieces.push(piece);
-    game.board[0][row][col] = "o";
-}
-
-
-/* Converts the board to a single array 
- */
-function boardToArray() {
-    
-    var array = [];
-    
-    for (var i=0; i<3; i++) {
-        for (var j=0; j<3; j++) {
-            if (game.board[0][i][j] != "") {
-                array.push(game.board[0][i][j]);
-            }else {
-                array.push(i*3 + j);
-            }
-            console.log ("BOARD ARRAY: " + (i*3 + j), game.board[0][i][j])
-        }
-    }
-    return array;
-}
-
-
-/* Converts a move{index, score} to location{row, column}
- */
-function convertMove(move) {
-    var loc = {};
-    
-    loc.row    = Math.floor(move.index / 3);
-    loc.column = move.index % 3;
-    return loc;
-}
-
-/* Converts a "arrIndex" to location{row, column}
- */
-function convertRandMove(move) {
-    var loc = {};
-    
-    loc.row    = Math.floor(move / 3);
-    loc.column = move % 3;
-    return loc;
-}
-
-
-/* Returns the list of indexes of empty spaces on the board
- */
-function emptyIndexies(board){
-    return  board.filter(tile => tile != "o" && tile != "x");
-}
-
-
-/* Tests if the given player has won the board by checking all combinations
- * 0 1 2
- * 3 4 5
- * 6 7 8 
- */
-function gameIsWon(board, player) {
-
-    //console.log(board)
-    if ( (board[0] == player && board[1] == player && board[2] == player) || //Horizontals
-        (board[3] == player && board[4] == player && board[5] == player) ||
-        (board[6] == player && board[7] == player && board[8] == player) ||
-        
-        (board[0] == player && board[3] == player && board[6] == player) || //Verticals
-        (board[1] == player && board[4] == player && board[7] == player) ||
-        (board[2] == player && board[5] == player && board[8] == player) ||
-        
-        (board[0] == player && board[4] == player && board[8] == player) || //Diagonals
-        (board[2] == player && board[4] == player && board[6] == player) ) 
-    {
-        return true;
-    }
-    return false;
-}
-
-
-/* This is the minimax algorithm that recursively chooses the best move to play for the 
- * ai by playing ahead. 
- * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
- */
-function minimax(newBoard, player) {
-    
-    var availSpots = emptyIndexies(newBoard);
-    
-    if (gameIsWon(newBoard, human)) {
-        return {score: -10};
-    }
-    else if (gameIsWon(newBoard, ai)) {
-        return {score:  10};
-    }
-    else if (availSpots.length == 0) {
-        return {score:   0};
-    }
-    
-    var moves = []; //Collects all the objects
-    
-    for (var i=0; i<availSpots.length; i++) {
-        
-        //Create an object for each and store the index of that spot 
-        var move = {};
-        move.index = newBoard[availSpots[i]];
-        
-        newBoard[availSpots[i]] = player; //Set the empty spot to the current player
-        
-        if (player == ai) {
-            var result = minimax(newBoard, human);
-            move.score = result.score;
-        }
-        else {
-            var result = minimax(newBoard, ai);
-            move.score = result.score;
-        }
-        
-        newBoard[availSpots[i]] = move.index; //Reset the spot to empty
-        
-        moves.push(move); //Push the spot to empty
-    }
-    
-    
-    //If it's the ai's turn, loop over the moves and choose the one with the highest score
-    var bestMove;
-    
-    if (player == ai) {
-        var bestScore = -10000;
-        
-        for (var i=0; i<moves.length; i++) {
-            if (moves[i].score > bestScore) {
-                bestScore = moves[i].score;
-                bestMove  = i;
-            }
-        }
-    }
-    //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
-    else { 
-        var bestScore = 10000;
-        
-        for (var i=0; i<moves.length; i++) {
-            if (moves[i].score < bestScore) {
-                bestScore = moves[i].score;
-                bestMove  = i;
-            }
-        }
-    }
-    
-    //Return the chosen move(object) from the moves array
-    return moves[bestMove];
-}
 
