@@ -5,6 +5,8 @@ var userRef = firebase.database().ref('/users/' + keyValue);
  The actual meat of the game, game state contains all the logic for the tictactoe
  game.
  */
+var human = "x"
+var ai = "o"
 var ticTacState = {
     
     /*
