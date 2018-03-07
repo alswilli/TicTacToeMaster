@@ -5,8 +5,6 @@ var userRef = firebase.database().ref('/users/' + keyValue);
  The actual meat of the game, game state contains all the logic for the tictactoe
  game.
  */
-var human = "x"
-var ai = "o"
 var ticTacState = {
     
     /*
@@ -677,7 +675,7 @@ var ticTacState = {
         console.log("make boardasarr")
         var boardArr = game.boardToArray();
         console.log("do minimax")
-        var move = game.minimax(boardArr, ai);
+        var move = game.minimax(boardArr, game.ai);
         
         var newBoardArr = game.spliceBoard(boardArr);
         
@@ -854,7 +852,7 @@ var ticTacState = {
             
             newBoard[availSpots[i]] = player; //Set the empty spot to the current player
             
-            if (player == ai) {
+            if (player == game.ai) {
                 var result = game.minimax(newBoard, game.human);
                 move.score = result.score;
             }
@@ -872,7 +870,7 @@ var ticTacState = {
         //If it's the ai's turn, loop over the moves and choose the one with the highest score
         var bestMove;
         
-        if (player == ai) {
+        if (player == game.ai) {
             var bestScore = -10000;
             
             for (var i=0; i<moves.length; i++) {
