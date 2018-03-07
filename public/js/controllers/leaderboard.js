@@ -12,6 +12,8 @@ angular.module('TicTacToeApp')
    function LeaderboardCtrl ($scope, $rootScope ) {
    'use strict';
             
+   playTheme("main");
+   
    unlockedRef        = userRef.child('unlocked');
    DEBUG              = false;
    MAX_ROWS_ON_SCREEN = 10;
@@ -120,7 +122,7 @@ function getTopPlayersForGame(game) {
       //update on the list we're viewing, then the list will potentially be out of order. 
       if (game == activeBoard) {
          sorted = false;
-         createTable(game)   
+         createTable(game);   
       }                                                                               
    });
 }
@@ -149,7 +151,7 @@ function createTable(game) {
    addTableStatRow(game);   //Creates 1st row - Rank, Player Name, ...
     
    if (!sorted) {
-      sortPlayers(game)    //Sorts the users of the game
+      sortPlayers(game);    //Sorts the users of the game
       sorted = true;
    }
     
@@ -169,7 +171,7 @@ function createTable(game) {
    //Creates rows to fill in empty values
    for (var i=shownPlayers; i<MAX_ROWS_ON_SCREEN; i++) {
       addNewRow(game, rank, '','','', '', '');
-      rank++
+      rank++;
    }
 }
 

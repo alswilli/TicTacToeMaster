@@ -14,7 +14,7 @@ angular.module('TicTacToeApp')
             function CustomizationCtrl ($scope, $rootScope ) {
             'use strict';
             
-            
+            playTheme("main");
             
             unlockedRef= userRef.child('unlocked');
             initializeLocked();

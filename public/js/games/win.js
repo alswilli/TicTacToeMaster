@@ -36,7 +36,7 @@ var winState = {
         //display that the game ended in a draw or display the winner
         if(game.isDraw && game.gametype != "orderChaos")
         {
-            console.log("Hiya")
+            playSound("draw");
             message = 'Draw, both players' + ' receive 25 gold coins!' //add sound and or animation here later for getting the money
             //game.winner = 'o';
             game.cash = game.cash + 25;
@@ -67,6 +67,7 @@ var winState = {
             
             if (game.singleplayer == true)
             {
+                playSound("win");
                 game.cash = game.cash + 50;
                 console.log("Current cash amount: ", game.cash);
                 console.log("game.player:", game.player);
@@ -83,7 +84,7 @@ var winState = {
                 //*****Here is where we check if someboday won in multiplayer*****//
                 if (game.username === game.winner) {
                     //game.userkey can be used to update firebase shtuff
-                    
+                    playSound("win");
                     game.cash = game.cash + 50;
                     console.log("Current cash amount: ", game.cash);
                     console.log("winner");
@@ -97,6 +98,7 @@ var winState = {
                     }
                     
                 }else {
+                    playSound("lose");
                     console.log("loser");
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);

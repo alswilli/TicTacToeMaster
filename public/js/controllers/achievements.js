@@ -6,7 +6,7 @@ angular.module('TicTacToeApp')
             function AchievmentsCtrl ($scope, $rootScope ) {
             'use strict';
             
-            
+            playTheme("main");
             
             challengesRef = firebase.database().ref('/users/' + app.keyValue + '/challenges');
             initializeChallenge();
