@@ -4,7 +4,7 @@ angular.module('TicTacToeApp')
             function GameCtrl ($scope, $rootScope ) {
             'use strict';
             
-            //playTheme("game");         
+            playTheme("game");         
    
             app.numGames++
             if(app.numGames > MAX_GAME_NUM)
