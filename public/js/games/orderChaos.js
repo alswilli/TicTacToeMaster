@@ -36,6 +36,9 @@ var orderChaosState = {
         //game.pickedPiece = 'X'
         game.forfeit = false
         
+        //for ai
+        game.playerMove = true
+        
         game.PPOffset = 60;
         game.FOffset = 20;
         console.log("we PP");
@@ -139,6 +142,7 @@ var orderChaosState = {
      game.startingCX and Y must be defined before calling game function
      */
     makeBoardOnScreen(){
+        game.spriteSquares = game.makeBoardAsArray(game.n)
         //  Here we'll create a new Group
         for (var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {
@@ -151,6 +155,8 @@ var orderChaosState = {
                 square.yIndex = j
                 //make have placePiece be called when a square is clicked
                 square.events.onInputDown.add(game.placePiece, game)
+                
+                game.spriteSquares[i][j] = square
                 
                 //initialize 2D array board to be empty strings
                 game.board[i][j] = "";
@@ -289,17 +295,52 @@ var orderChaosState = {
         if(game.multiplayer)
             game.waiting = true
          //place either an x or o, depending on which piece is picked
-        if(game.XPicked){
+        if(game.XPicked && game.playerMove){
             var piece = game.addSprite(sprite.x, sprite.y, 'X');
             game.pickedPieces.push(piece);
             game.board[indexY][indexX] = "x"
         }
-        else{
+        else if(game.playerMove){
             var piece = game.addSprite(sprite.x, sprite.y, 'O');
             game.pickedPieces.push(piece);
             game.board[indexY][indexX] = "o";
         }
+        
+        if(!game.playerMove)
+        {
+           //if the ai is acting randomly, place the opposite piece of what the player just placed
+            if(game.random)
+            {
+                var pieceType = game.XPicked ? 'o' : 'x'
+                var piece = game.addSprite(sprite.x, sprite.y, pieceType.toUpperCase());
+                game.board[indexY][indexX] = pieceType
+                return
+            }
+            //game.possible lines has the form below
+            //[ [priority, blockingFunction] , ... ]
+            //for example,
+            // [ [-2, bockHorizontal], [1, blockVertical]
+            //if the maxPriority is negative, there are more Os in the line to block,
+            //so the ai blocks with an x and vice versa
+            console.log("placePieceAt, game.bestBlockingIndex = " + game.bestBlockingIndex)
+            var maxPriority = game.possibleLines[game.bestBlockingIndex][0]
+            console.log("we did it")
+            if(maxPriority > 0)
+            {
+                var piece = game.addSprite(sprite.x, sprite.y, 'O');
+                game.board[indexY][indexX] = "o"
+            }
+            else
+            {
+                var piece = game.addSprite(sprite.x, sprite.y, 'X');
+                game.board[indexY][indexX] = "x"
+            }
+        }
+        
         game.previousPiece = game.isXTurn ?  "order" : "chaos"
+        //pointer will be undefined when placePiece is called by the ai
+        if(game.vsAi)
+            game.updateHilightedSquare(indexX,indexY)
 
         game.updateTurnStatus(indexX, indexY)
     },
@@ -312,9 +353,24 @@ var orderChaosState = {
         game.isXTurn = !game.isXTurn
         game.turns++
 
-        for (var i = 0; i < 3; i++)
+        if(!game.vsAi)
+            game.updateHilightedSquare(x,y)
+
+        var turn = game.isXTurn ?  "order" : "chaos"
+        if(game.singleplayer)
+            game.turnStatusText.setText("Current Turn: " + turn)
+        // Below is for multiplayer
+        else if(game.player === turn)
+            game.turnStatusText.setText("Your Turn")
+        else
+            game.turnStatusText.setText(game.opponent + "'s turn")
+    },
+    
+    updateHilightedSquare(x,y)
+    {
+        for (var i = 0; i < game.n; i++)
         {
-            for (var j = 0; j < 3; j++)
+            for (var j = 0; j < game.n; j++)
             {
                 //Normal functionality, just assign one open spot
                 if(i == x && j == y)
@@ -332,15 +388,6 @@ var orderChaosState = {
                 }
             }
         }
-
-        var turn = game.isXTurn ?  "order" : "chaos"
-        if(game.singleplayer)
-            game.turnStatusText.setText("Current Turn: " + turn)
-        // Below is for multiplayer
-        else if(game.player === turn)
-            game.turnStatusText.setText("Your Turn")
-        else
-            game.turnStatusText.setText(game.opponent + "'s turn")
     },
     
     /*
@@ -404,6 +451,18 @@ var orderChaosState = {
         console.log("");
     },
     
+    updateLineCount(row, col, count)
+    {
+        if(!game.inBounds(col, row))
+            return count
+        
+        if(game.board[row][col] === 'x')
+            count++
+        else if(game.board[row][col] === 'o')
+            count--
+        return count
+    },
+    
     /*
      check if the game is over, given the index of the piece that was just placed
      */
@@ -415,17 +474,25 @@ var orderChaosState = {
         //create Sets for each direction. Since a Set has unique entries, if there
         //is only one entry and it is not an empty string, that entry is the winner
         var horizontal = new Set()
+        var hor = 0
         var horizontalExt = new Set()
         var vertical = new Set()
+        var vert = 0
         var verticalExt = new Set()
         
         var posDiagonal = new Set()
+        var pos = 0
         var posDiagonalLow = new Set()
+        var posLow = 0
         var posDiagonalHigh = new Set()
+        var posHigh = 0
         var posDiagonalExt = new Set()
         var negDiagonal = new Set()
+        var neg = 0
         var negDiagonalLow = new Set()
+        var negLow = 0
         var negDiagonalHigh = new Set()
+        var negHigh = 0
         var negDiagonalExt = new Set()
         
         for (var y=0; y < game.n-1; y++){
@@ -435,6 +502,13 @@ var orderChaosState = {
             vertical.add(game.board[y][col])
             verticalExt.add(game.board[y+1][col])
         }
+        
+        for (var y=0; y < game.n; y++){
+            //update the priortiy of possible lines to block
+            hor = game.updateLineCount(row, y, hor)
+            vert = game.updateLineCount(y, col, vert)
+        }
+
 
         for (var z=0; z < game.n-1; z++){
             //check the possible diagonal wins by checking the main diagonals
@@ -446,6 +520,18 @@ var orderChaosState = {
             negDiagonalLow.add(game.board[game.n-2-z][z])
             negDiagonalHigh.add(game.board[game.n-1-z][z+1])
             negDiagonalExt.add(game.board[game.n-2-z][z+1])
+        }
+        //update the priortiy of possible lines to block
+        for (var z=0; z < game.n; z++)
+        {
+            pos = game.updateLineCount(z, z, pos)
+            posLow = game.updateLineCount(z+1, z, posLow)
+            posHigh = game.updateLineCount(z, z+1, posHigh)
+
+            neg = game.updateLineCount(game.n-1-z, z, neg)
+            negLow = game.updateLineCount(game.n-2-z, z, negLow)
+            negHigh = game.updateLineCount(game.n-1-z, z+1, negHigh)
+
         }
 
         console.log(negDiagonal)
@@ -549,6 +635,12 @@ var orderChaosState = {
             game.isDraw = true
         }
         
+        
+        //update priorities for blocking function for ai
+        if(game.vsAi)
+        {
+            game.possibleLines = [[hor,blockHorizontalOrder],[vert,blockVerticalOrder], [pos, blockPositiveDiagonalOrder],  [posLow, blockPositiveLowDiagonalOrder], [posHigh, blockPositiveHighDiagonalOrder], [neg, blockNegativeDiagonalOrder],  [negLow, blockNegativeLowDiagonalOrder], [negHigh, blockNegativeHighDiagonalOrder]]
+        }
         return gameOver
         
     },
@@ -734,7 +826,7 @@ var orderChaosState = {
         Initialize the texts used to display turn status and matching status
      */
     addTexts(){
-        var startingMessage = game.singleplayer ? "Current Turn: X" : "Searching for Opponent"
+        var startingMessage = game.singleplayer ? "Current Turn: Order" : "Searching for Opponent"
         var pieceMessage = game.XPicked ? "Piece: X" : "Piece: O";
         var forfeitMessage = "Forfeit?"
         
@@ -777,7 +869,30 @@ var orderChaosState = {
      */
     updateTurnStatus(indexX, indexY)
     {
-        if(game.singleplayer)
+        if (game.vsAi) {
+            console.log("updateTurnStatus: single player AI");
+            if(game.isOver(indexX, indexY)) {
+                if(game.isDraw) {
+                    game.displayWinner()
+                }
+                //game.displayWinner()  
+                game.waiting = true
+            }
+            else if(game.playerMove){
+                game.switchTurn(indexX, indexY); 
+                game.waiting = true;
+                console.log("indexX: "+indexX+" indexY: "+indexY);
+                console.log(game.board);
+                //console.log(/*threeD*/game.boardToArray());
+                
+                game.aiMakesMove(indexY, indexX);
+                game.switchTurn();
+                //console.log(/*threeD*/game.boardToArray());
+                game.waiting = false;
+                
+            }
+        }
+        else if(game.singleplayer)
         {
             //if single player, check if game ended right after placing a piece
             if(game.isOver(indexX, indexY))
@@ -868,8 +983,99 @@ var orderChaosState = {
          
          }
          });
-},
+    },
     
+    /*  This is called when for the ai to make a move. Depending on difficulty setting, has a probablity
+     of either blocking the player's longest potential line of 4 x's or places a piece on an open
+     square adjacent to where the pley just placed a piece
+     */
+    aiMakesMove(col, row) {
+        game.playerMove = false
+        var makeRandomMove = false
+        if (game.difficulty == 'easy') {
+            makeRandomMove = (Math.random() < 0.5) ? false : true
+        }
+        else if (game.difficulty == 'medium') {
+            makeRandomMove  = (Math.random() < 0.7) ? false : true
+        }
+        else if (game.difficulty == 'hard') {
+            makeRandomMove  =  false 
+        }
+        game.waiting = false
+        game.random = makeRandomMove
+        if(makeRandomMove)
+            game.makeRandomMove(col , row)
+        else
+            game.blockPieceAt(col , row)
+        game.playerMove = true
+        return
+                
+        },
+    
+    /* 
+     Block the player from winning given the indexes of where they just placed a piece
+     */
+    blockPieceAt(col , row) {
+        //sort the blocking functions by priority
+        game.sortBlockingFunctions(game.possibleLines)
+        //get the blocking function with highest priority
+        game.bestBlockingIndex = 0
+        game.aiBlockingFunction = game.possibleLines[game.bestBlockingIndex][1]
+        //if there is nowhere to block, move to next blocking function until there is a place to block
+        while(!game.aiBlockingFunction(col, row) && game.bestBlockingIndex < game.possibleLines.length-1)
+        {
+            game.bestBlockingIndex++
+            //if there are no more blocking functions, place piece at any open place
+            if(game.bestBlockingIndex >= game.possibleLines.length)
+            {
+                findOpenSquareOrder(col, row)
+                break
+            }
+            game.aiBlockingFunction = game.possibleLines[game.bestBlockingIndex][1]
+        }  
+    },
+    
+    /*
+     Sorts the blocking functions for ai in order of priority. Priority is determined by 
+     how many x's are placed in a certain line, i.e three x's on a horizontal have 
+     higher priority than 1 x on a vertical. game.possibleLines has the form
+     [ [numOfXs, blockingFunction], ... ]
+     [ [verticals, blockVerticalFunction], [horizontals, blockHorizontalFunction], ... ]
+     */
+    sortBlockingFunctions(lines)
+    {
+        var max = 0
+        var maxIndex = 0
+        for(var i = 0; i < lines.length; i++)
+        {
+            //consider absolute values, since there can be negative numbers if there are more os than xs
+            //in a given line
+            if(Math.abs(lines[i][0]) > max)
+            {
+                max = Math.abs(lines[i][0])
+                maxIndex = i
+            }
+        }
+        //sort the possible lines by priority, i.e the first value in each pair
+        //consider absolute values, since there can be negative numbers if there are mor os than xs
+        game.possibleLines.sort(function(a, b){return Math.abs(b[0]) - Math.abs(a[0])})
+    },
+    
+    /*
+        searches for an open sqaure on the board
+     */
+    makeRandomMove(col, row)
+    {
+        findOpenSquareOrder(col, row)
+    },
+    
+    /*
+     Returns true if indexes are in bounds, false otherwise
+     */
+    inBounds(col, row)
+    {
+        return (col >= 0 && col < game.n) && (row >= 0 && row < game.n)
+    },
     /*
         asign functions ot the game object, so they can be called by the client
         technically this is a state object, so the functions in this file are not 
@@ -877,6 +1083,13 @@ var orderChaosState = {
      */
     assignFunctions()
     {
+        game.inBounds = this.inBounds
+        game.aiMakesMove = this.aiMakesMove
+        game.blockPieceAt = this.blockPieceAt
+        game.sortBlockingFunctions = this.sortBlockingFunctions
+        game.makeRandomMove = this.makeRandomMove
+        game.updateLineCount = this.updateLineCount
+        
         game.showSprites = this.showSprites
         game.addSpriteNoScale = this.addSpriteNoScale
         game.drawWinningLine = this.drawWinningLine
@@ -908,5 +1121,6 @@ var orderChaosState = {
         game.askForRematch = this.askForRematch
         game.updateTurnStatus = this.updateTurnStatus
         game.forfeitGame = this.forfeitGame
+        game.updateHilightedSquare = this.updateHilightedSquare
     }
 };
