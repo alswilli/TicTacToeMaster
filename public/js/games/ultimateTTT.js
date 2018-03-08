@@ -1311,7 +1311,7 @@ var ultimateTTTState = {
         var boardArr = game.boardToArray(x, y);
         x = boardArr[1]
         y = boardArr[2]
-        var move = game.minimax(boardArr[0], ai);
+        var move = game.minimax(boardArr[0], game.ai);
 
         var newBoardArr = game.spliceBoard(boardArr[0]);
 
