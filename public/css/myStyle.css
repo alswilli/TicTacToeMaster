@@ -1,14 +1,14 @@
 .navigationBar
 {
     list-style-type: none;
-    
+
     background-color: #333;
     height: 50px;
-    
+
     margin-top: 0px;
     margin-bottom: 0px;
-    
-    
+
+
 }
 
 .homePageLink
@@ -23,7 +23,7 @@
 
 #links  a
 {
-    
+
     color: white;
     text-align: center;
     text-decoration: none;
@@ -62,10 +62,10 @@
 }
 
 html, body {
-    
+
     min-height: 100%;
     height: 100%;
-    background-color: #506295;
+    background-color: #B38CF7;
 }
 
 
@@ -75,15 +75,15 @@ html, body {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
     width: 75%;
-    
+
     height:200px;
-    
-    
+
+
     margin-top:20px;
-    
-    
+
+
     margin-left:35px;
-    
+
     background-color: #f2f2f2;
 }
 
@@ -107,20 +107,20 @@ html, body {
     vertical-align: middle;
     line-height: 50px;
     font-size: 25px;
-    
+
 }
 
 .cardText
 {
     float: left;
     vertical-align: middle;
-    
+
 }
 
 .cardText p
 {
     margin-left: 15px;
-    
+
 }
 
 .gameCard
@@ -130,22 +130,22 @@ html, body {
 
 .cardPlain
 {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 10px 8px 0 rgba(0,0,0,0.3);
     transition: 0.3s;
     width: 95%;
-    
+
     margin-top: 20px;
     /*padding-top:10px;
     padding-left:10px;
     padding-right:10px;
-    
+
     */
     padding-bottom:10px;
     margin-left:25px;
     margin-bottom: 10px;
-    
+
     /*background-color: #f2f2f2;*/
-     background-color: rgba(52, 73, 94, 0.7);
+     background-color: #2A2E3D;
     border-radius: 5px;
 }
 
@@ -167,27 +167,27 @@ html, body {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
     width: 100%;
-    
+
     margin-top: 20px;
     margin-left:20px;
-    
+
     margin-bottom: 10px;
-    
+
     padding-left:10px;
     padding-right:10px;
-    
+
     padding-top:15px;
     padding-bottom:15px;
-    
+
     background-color: #f2f2f2;
-    
+
     border-radius: 5px;
 }
 
 .cardTable:hover
 {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    
+
 }
 
 html, body
@@ -200,7 +200,7 @@ html, body
 
 .sidebar
 {
-    background-color: #5656cc;
+    background-color: #07121c;
     position: relative;
     width: 20%;
     border-right: 1px solid black;
@@ -256,20 +256,20 @@ html, body
 .footerBar
 {
     list-style-type: none;
-    
-    
-    
+
+
+
 }
 
 .footerBar  a
 {
-    
+
     display: inline-block;
     color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    
+
 }
 
 html
@@ -285,9 +285,8 @@ footer
     display: flex;
     justify-content:center;
     align-items: center;
-    background-color: #333536;
     height: 60px;
-    background-color: #333;
+    background-color: #1c1d1e;
 }
 
 .contentSideBarContainer
@@ -329,7 +328,7 @@ footer
 .todoTable
 {
     clear: both;
-    
+
     width: 100%;
 }
 
@@ -374,15 +373,15 @@ input[type=text], input[type=date],select
 
 .submitButton
 {
-    
+
     background-color: #4CAF50;
     color: white;
     padding: 14px 20px;
-    
+
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    
+
     width: 20%;
 }
 
@@ -446,7 +445,7 @@ input[type="text"],input[type="password"]{
 
 .challengePiece, .challengeDraw, .challengeOffline, .challengeOnline, .challengeMode, .challengeX, .challengeO, .challengeLose {
     width: 0;
-    background: green;
+    background: #6c48ce; /*#3998ad*/
     color: #fff;
     height: 40px;
     line-height: 40px;

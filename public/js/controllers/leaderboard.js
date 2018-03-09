@@ -37,8 +37,8 @@ angular.module('TicTacToeApp')
 function switchToLeaderBoard(clickedBoard) {
 
    if (clickedBoard !== activeBoard) {
-      document.getElementById(clickedBoard).classList.add('w3-green');
-      document.getElementById(activeBoard).classList.toggle('w3-green');
+      document.getElementById(clickedBoard).classList.add('w3-deep-purple');
+      document.getElementById(activeBoard).classList.toggle('w3-deep-purple');
       activeBoard = clickedBoard;
       sorted = false;
    }
