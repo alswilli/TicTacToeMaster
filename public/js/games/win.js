@@ -56,18 +56,23 @@ var winState = {
         else
         {
             if (game.forfeit) {
+                console.log(game.player);
                 message = game.winner + ' wins via opponent forfeiting! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
                 submessage = game.winner + ' receives 50 gold coins!'
             }
-            else {
-                message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+            else { 
+               message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
                 submessage = game.winner + ' receives 50 gold coins!'
             }
             
             
             if (game.singleplayer == true)
             {
-                playSound("win");
+                if (game.winner == 'o') {
+                   playSound("lose");
+                }else {
+                   playSound("win");
+                }
                 game.cash = game.cash + 50;
                 console.log("Current cash amount: ", game.cash);
                 console.log("game.player:", game.player);
@@ -183,7 +188,6 @@ function updateLeaderboard(userkey, result) {
    });
 }
 
-
 /* Updates the [win|loss] count of the user 
  */
 function updateScore(userRef, userkey, gametype, result) {
@@ -197,7 +201,6 @@ function updateScore(userRef, userkey, gametype, result) {
     
    firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
 }
-
 
 /* Calculates and updates the elo rating of the user given the result = [win|draw|loss]
  * Rating calculation is based on https://en.wikipedia.org/wiki/Elo_rating_system

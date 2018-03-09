@@ -1,11 +1,11 @@
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyARQqkwmw-yDfR4Fl7eyDSs464kPyDTWpo",
-    authDomain: "tictactoemaster-b46ab.firebaseapp.com",
-    databaseURL: "https://tictactoemaster-b46ab.firebaseio.com",
-    projectId: "tictactoemaster-b46ab",
-    storageBucket: "tictactoemaster-b46ab.appspot.com",
-    messagingSenderId: "1050901435462"
+   apiKey: "AIzaSyARQqkwmw-yDfR4Fl7eyDSs464kPyDTWpo",
+   authDomain: "tictactoemaster-b46ab.firebaseapp.com",
+   databaseURL: "https://tictactoemaster-b46ab.firebaseio.com",
+   projectId: "tictactoemaster-b46ab",
+   storageBucket: "tictactoemaster-b46ab.appspot.com",
+   messagingSenderId: "1050901435462"
 };
 firebase.initializeApp(config);
 
@@ -17,7 +17,7 @@ var usersRef = dbRef.ref('users')
 var auth = null;
 
 var e = document.getElementById("secQ");
-var secQ = e.options[e.selectedIndex].text; 
+var secQ = e.options[e.selectedIndex].text;
 
 //Register
 $('#btn-submit').on('click', function (e) {
@@ -28,17 +28,15 @@ $('#btn-submit').on('click', function (e) {
 
     const file = document.querySelector('#profile_image').files[0];
 
-    if(file === undefined)
-    {
+    if(file === undefined){
         alert("Image file invalid, please enter a valid image!");
         //break;
-    }
-    else{
+    }else{
         console.log("file: ", file);
 
         var imageName;
 
-        const name = (+new Date()) + '-' +file.name;
+        const name = (+new Date()) + '-' + file.name;
         console.log("name: ", name);
 
         const metadata = {
@@ -89,10 +87,10 @@ $('#btn-submit').on('click', function (e) {
         };
         
         var initStats = { 
-           win:      0,
-           lose:     0,
-           draw:     0,
-           rating:   1200,
+           win: 0,
+           lose: 0,
+           draw: 0,
+           rating: 1200,
            username: data.username
         };
        
@@ -132,31 +130,22 @@ $('#btn-submit').on('click', function (e) {
     }   
 });
 
-$(function(){
-    $('#profile_image').change( function(e) {
-        
-        var img = URL.createObjectURL(e.target.files[0]);
-        $('.image').attr('src', img);
-    });
+$(function () {
+   $('#profile_image').change(function (e) {
+
+      var img = URL.createObjectURL(e.target.files[0]);
+      $('.image').attr('src', img);
+   });
 });
 
-function getInputVal(id){
-    return document.getElementById(id).value;
+function getInputVal(id) {
+   return document.getElementById(id).value;
 }
 
-function passwordRetrieval(){
-    if (true) {
-        var con=confirm("Email verified: Password Token sent!");
-    } else {
-        var con2=confirm("Email invalid: Please try again");   
-    }
+function passwordRetrieval() {
+   if (true) {
+      var con = confirm("Email verified: Password Token sent!");
+   } else {
+      var con2 = confirm("Email invalid: Please try again");
+   }
 }
-
-
-
-
-
-
-
-
-

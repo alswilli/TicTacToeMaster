@@ -1,0 +1,98 @@
+/********** Slider **********/
+.slidecontainer {
+    width: 100%;
+}
+
+/* The slider */
+.slider {
+   -webkit-appearance: none; /* Override default CSS styles */
+   width: 100%;              
+   height: 7px;
+   padding: 0;
+   margin: 0;
+   background: #1e2c38;            
+   outline: none;            
+   opacity: 1;
+   -webkit-transition: .2s;
+   transition: opacity .2s;
+}
+
+.slider:hover {
+   opacity: .8;
+}
+
+/* The slider handle
+ * for Chrome, Opera, Safari, Edge 
+ */
+.slider::-webkit-slider-thumb {
+   -webkit-appearance: none;
+   appearance: none;
+   width: 10px;
+   height: 25px;
+   background: white;
+   cursor: pointer; /* Cursor on hover */
+}
+
+/* The slider handle
+/* for Firefox */
+.slider::-moz-range-thumb {
+   width: 10px;
+   height: 25px;
+   background: white;
+   cursor: pointer;
+}
+
+
+/*#topSlider a,*/
+#topSlider input,
+#topSlider button {
+  margin-top: 15px;
+  color: white;
+}
+
+/*#botSlider a,*/
+#botSlider input, 
+#botSlider button { 
+  margin-bottom: 15px;
+  color: white;
+
+}
+
+
+
+/********** The sound control table **********/
+.soundControl {
+   background-color: #07121c;
+   margin-top: 50%;
+   width: 100%;
+   border: 5px solid black;
+}
+
+.soundControl a {
+   padding: 0;
+   color: white;
+   vertical-align: middle
+      
+}
+
+/********** Sound buttons **********/
+.soundButton {
+   background-color: transparent;
+   background-repeat: no-repeat;
+   background-size: 25px 25px;     
+   display: inline-block;
+   padding: 0;
+   margin: 0;
+   vertical-align: top; 
+   height: 25px;
+   width: 30px;
+   border: 0;
+}
+
+#sfxButton {
+   background-image: url(/imgs/sound_on2.png);
+}
+
+#bgmButton {
+   background-image: url(/imgs/sound_on2.png);
+}
