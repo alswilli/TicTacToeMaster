@@ -3,6 +3,7 @@ angular.module('TicTacToeApp')
             function HomeCtrl ($scope, $rootScope, $window ) {
             'use strict';
             
+            initSoundPrefs();
             playTheme("main");
    
             //update siebar to hilight home page selection

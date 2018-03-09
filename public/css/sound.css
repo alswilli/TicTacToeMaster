@@ -7,16 +7,18 @@
 .slider {
    -webkit-appearance: none; /* Override default CSS styles */
    width: 100%;              
-   height: 25px;
-   background: #FFFFFF;            
+   height: 7px;
+   padding: 0;
+   margin: 0;
+   background: #1e2c38;            
    outline: none;            
-   opacity: 0.7;
+   opacity: 1;
    -webkit-transition: .2s;
    transition: opacity .2s;
 }
 
 .slider:hover {
-   opacity: 1;
+   opacity: .8;
 }
 
 /* The slider handle
@@ -25,42 +27,72 @@
 .slider::-webkit-slider-thumb {
    -webkit-appearance: none;
    appearance: none;
-   width: 15px;
+   width: 10px;
    height: 25px;
-   background: #00B8E6;
+   background: white;
    cursor: pointer; /* Cursor on hover */
 }
 
+/* The slider handle
 /* for Firefox */
 .slider::-moz-range-thumb {
-   width: 25px;
+   width: 10px;
    height: 25px;
-   background: #4CAF50;
+   background: white;
    cursor: pointer;
 }
 
+
+/*#topSlider a,*/
+#topSlider input,
+#topSlider button {
+  margin-top: 15px;
+  color: white;
+}
+
+/*#botSlider a,*/
+#botSlider input, 
+#botSlider button { 
+  margin-bottom: 15px;
+  color: white;
+
+}
+
+
+
+/********** The sound control table **********/
+.soundControl {
+   background-color: #07121c;
+   margin-top: 50%;
+   width: 100%;
+   border: 5px solid black;
+}
+
+.soundControl a {
+   padding: 0;
+   color: white;
+   vertical-align: middle
+      
+}
+
 /********** Sound buttons **********/
-.soundBtn {
+.soundButton {
+   background-color: transparent;
+   background-repeat: no-repeat;
+   background-size: 25px 25px;     
    display: inline-block;
    padding: 0;
    margin: 0;
-   vertical-align: top;
-   height: 50px;
-   width: 50px;
+   vertical-align: top; 
+   height: 25px;
+   width: 30px;
+   border: 0;
 }
 
 #sfxButton {
-   background-image: url(/imgs/sound-on.png);
-   background-repeat: no-repeat;
-   background-size: 25px 25px;   
-   height: 25px;
-   width: 30px;
+   background-image: url(/imgs/sound_on2.png);
 }
 
 #bgmButton {
-   background-image: url(/imgs/sound-on.png);
-   background-repeat: no-repeat;
-   background-size: 25px 25px;   
-   height: 25px;
-   width: 30px;
+   background-image: url(/imgs/sound_on2.png);
 }

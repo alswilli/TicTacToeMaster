@@ -11,7 +11,8 @@ angular.module('TicTacToeApp')
    .controller('LeaderboardCtrl',
    function LeaderboardCtrl ($scope, $rootScope ) {
    'use strict';
-            
+   
+   initSoundPrefs();
    playTheme("main");
    
    unlockedRef        = userRef.child('unlocked');
@@ -21,9 +22,7 @@ angular.module('TicTacToeApp')
    snapshotArrs       = {};            
    playerIndex        = 0;
    sorted             = false;
-            
-   if (DEBUG) { console.log("START: $document.ready()"); }
-            
+                 
    getTopPlayersForGame(activeBoard);
    
    //Update sidebar to highlight leaderboard page selection

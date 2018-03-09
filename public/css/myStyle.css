@@ -214,9 +214,9 @@ html, body
     display: block;
 }
 
-.sidebar a
+#links a
 {
-    padding: 10px 6px 0px 16px;
+    padding: 10px 6px 10px 16px;
     font-size: 14px;
     /*color: #817d1a;*/
     display: block;
@@ -230,17 +230,18 @@ html, body
     display: block;
 }
 
-table, td, th
+
+.table, .table td, .table th
 {
     border: 1px solid black;
 }
 
-table
+.table
 {
     border-collapse: collapse;
 }
 
-td
+.table td
 {
     height: 50px;
     text-align: center;
@@ -285,7 +286,7 @@ footer
     justify-content:center;
     align-items: center;
     background-color: #333536;
-    height: 100px;
+    height: 60px;
     background-color: #333;
 }
 

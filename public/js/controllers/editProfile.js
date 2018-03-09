@@ -7,7 +7,8 @@ angular.module('TicTacToeApp')
 
             'use strict';
 
-             playTheme("main");
+             initSoundPrefs();
+             playTheme("main");        
    
              $scope.img_url = app.img_url;
             //update siebar to hilight edit page selection

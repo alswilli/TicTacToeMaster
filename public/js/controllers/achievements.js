@@ -6,8 +6,9 @@ angular.module('TicTacToeApp')
             function AchievmentsCtrl ($scope, $rootScope ) {
             'use strict';
             
-            playTheme("main");
-            
+            initSoundPrefs();
+            playTheme("main");       
+   
             challengesRef = firebase.database().ref('/users/' + app.keyValue + '/challenges');
             initializeChallenge();
             //update siebar to hilight achievemnet page selection

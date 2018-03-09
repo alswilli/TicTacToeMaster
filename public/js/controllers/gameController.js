@@ -4,6 +4,7 @@ angular.module('TicTacToeApp')
             function GameCtrl ($scope, $rootScope ) {
             'use strict';
             
+            initSoundPrefs();
             playTheme("game");         
    
             app.numGames++
