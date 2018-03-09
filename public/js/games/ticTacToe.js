@@ -651,9 +651,12 @@ var ticTacState = {
         game.endingBoard.forEach(function(element) 
         {
 
-            console.log(element)
-             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare')
+            //console.log(element)
+             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background')
+                                 {
+                                 console.log(element.key)
                 game.addSprite(element.x, element.y, element.key);
+                                 }
              else if(element.key === 'cometTail')
              {
                 var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
