@@ -187,7 +187,6 @@ function updateLeaderboard(userkey, result) {
    });
 }
 
-
 /* Updates the [win|loss] count of the user 
  */
 function updateScore(userRef, userkey, gametype, result) {
@@ -201,7 +200,6 @@ function updateScore(userRef, userkey, gametype, result) {
     
    firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
 }
-
 
 /* Calculates and updates the elo rating of the user given the result = [win|draw|loss]
  * Rating calculation is based on https://en.wikipedia.org/wiki/Elo_rating_system

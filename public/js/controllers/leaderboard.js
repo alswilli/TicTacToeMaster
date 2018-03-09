@@ -29,7 +29,6 @@ angular.module('TicTacToeApp')
    $rootScope.$broadcast('update', "leaderboardLink");
 });
 
-
 /* Toggles the color of the active shown game on the leaderboard when it is pressed.
  * Clears the current table and loads the players from the clicked game.
  * If the leaderboard array for the clicked game is null, then we need to initialize it 
@@ -53,7 +52,6 @@ function switchToLeaderBoard(clickedBoard) {
    }  
 }
 
-
 /* Shows the top 10 players on the leaderboard
  */
 function toFirstPage() {
@@ -62,7 +60,6 @@ function toFirstPage() {
    playerIndex = 0;
    createTable(activeBoard);
 }
-
 
 /* Shows the page where the user is in the leaderboard
  * Does nothing for a guest
@@ -83,7 +80,6 @@ function toYourPage() {
    document.getElementById("userRow").classList.toggle('w3-animate-opacity');
 }
 
-
 /* Shows the previous top 10 players on the leaderboard starting at the new playerIndex
  */
 function getPrevPlayers() {
@@ -96,14 +92,12 @@ function getPrevPlayers() {
    }
 }
 
-
 /* Shows the next top 10 players on the leaderboard starting at the new playerIndex
  */
 function getNextPlayers() {
    playerIndex += 10;
    createTable(activeBoard);
 }
-
 
 /* Queries the DB for all the players from the given game, converts the result to an array
  * and then creates the leaderboard table. Apparently the function inside the firebase reference
@@ -126,7 +120,6 @@ function getTopPlayersForGame(game) {
    });
 }
 
-
 /* Converts a snapshot into an array
  */
 function snapshotToArray(snapshot) {
@@ -139,7 +132,6 @@ function snapshotToArray(snapshot) {
    });
    return Arr;
 };
-
 
 /* Clears current table, then creates the table by adding a row for each player in the snapshotArr. 
  * If there are less than 10 rows, empty rows are added to pad the table to the constant size of 10 rows
@@ -174,7 +166,6 @@ function createTable(game) {
    }
 }
 
-
 /* This creates the 1st row of the table (Rank, Player Name, ...)
  */
 function addTableStatRow(game) {   
@@ -191,7 +182,6 @@ function addTableStatRow(game) {
     
    document.getElementById("leaderboardStats").appendChild(tableStatsRow);   
 }
-
 
 /* Adds a new row to the table, given the person's name and stats.
  * If the player has 0 wins,losses, and draws, set the winrate to ---
@@ -223,7 +213,6 @@ function addNewRow(game, rank, name, rating, win, lose, draw) {
    document.getElementById("table_body").appendChild(row);
 }
 
-
 /* Creates and returns a new element [TD|TH] with the given text
  */
 function create(elem, text) {
@@ -234,13 +223,11 @@ function create(elem, text) {
    return td;
 }
 
-
 /* Calculates winrate 
  */
 function calculateWinRate(win, lose, draw) {
    return (win + 0.5*draw) / (win+lose+draw);
 }
-
 
 /* Removes all the rows of the table by removing the thead and tbody
  */
@@ -248,7 +235,6 @@ function clearTable() {
    $("#table thead tr").remove();
    $("#table tbody tr").remove();  
 }
-
 
 /* This sorts the players descending by 
  * the Priority = Rating->Winrate->Wins->Draws
