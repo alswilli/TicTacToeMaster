@@ -75,7 +75,11 @@ $('#btn-submit').on('click', function (e) {
             offline: '0%',
             online: '0%',
             piece: '0%',
-            x: '0%'
+            x: '0%',
+            win100TTT: '0',
+            win1003DT: '0',
+            win100OAC: '0',
+            win100ULT: '0'
         };
 
         var customization = {

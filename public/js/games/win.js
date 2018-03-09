@@ -43,9 +43,9 @@ var winState = {
             console.log("Current cash amount: ", game.cash);
             if (game.userkey != null) {
                 if (game.singleplayer == true) {
-                    updateChallenges(game.userkey, "Draw", "Offline");
+                    updateChallenges(game.userkey, "Draw", "Offline", 'idk');
                 } else {
-                    updateChallenges(game.userkey, "Draw", "Online");
+                    updateChallenges(game.userkey, "Draw", "Online", 'idk');
                     updateLeaderboard(game.userkey, "draw");
                 }
             } else {
@@ -73,7 +73,7 @@ var winState = {
                 console.log("game.player:", game.player);
                 console.log("game.userkey", game.userkey);
                 console.log("game.username", game.username);
-                updateChallenges(game.userkey, "idk", "Offline");
+                updateChallenges(game.userkey, "idk", "Offline", 'idk');
             }
             else 
             {
@@ -91,7 +91,7 @@ var winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
-                        updateChallenges(game.userkey, "Wins", "Online");
+                        updateChallenges(game.userkey, "Wins", "Online", 'idk');
                         updateLeaderboard(game.userkey, "win");
                     }else {
                         console("USER IS NULL: Not updating score");  
@@ -103,7 +103,7 @@ var winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
-                        updateChallenges(game.userkey, "Losses", "Online");
+                        updateChallenges(game.userkey, "Losses", "Online", 'idk');
                         updateLeaderboard(game.userkey, "lose");
                     }else {
                         console.log("USER IS NULL: Not updating score");
@@ -179,6 +179,7 @@ function updateLeaderboard(userkey, result) {
                                                                                     
       updateScore( snapshot.val(), userkey, gametype, result);
       updateRating(snapshot.val(), userkey, gametype, result);
+      updateChallenges(userkey, result, 'Online', gametype);
    });
 }
 
@@ -248,7 +249,7 @@ function updateRating(userRef, userkey, gametype, result) {
 
 //takes in the userkey, the result of the game as 'Wins' 'Losses' or 'Draw',
 //and takes in the line to see if it is online or offline
-function updateChallenges(userkey, result, line) {
+function updateChallenges(userkey, result, line, gametype) {
 
     var check;
     var cashMoney;
