@@ -46,6 +46,10 @@ function initializeChallenge() {
       challengeO = userChallenges.o;
       challengeX = userChallenges.x;
       challengeMode = userChallenges.mode;
+      challenge100TTT = userChallenges.win100TTT;
+      challenge1003DT = userChallenges.win1003DT;
+      challenge100OAC = userChallenges.win100OAC;
+      challenge100ULT = userChallenges.win100ULT;
 
       console.log("challengePiece in: ", challengePiece);
 
@@ -72,6 +76,18 @@ function initializeChallenge() {
 
       challenge = document.getElementById('challengeMode');
       challenge.setAttribute('data-width', challengeMode);
+
+      challenge = document.getElementById('challenge100TTT');
+      challenge.setAttribute('data-width', challenge100TTT);
+
+      challenge = document.getElementById('challenge1003DT');
+      challenge.setAttribute('data-width', challenge1003DT);
+
+      challenge = document.getElementById('challenge100OAC');
+      challenge.setAttribute('data-width', challenge100OAC);
+
+      challenge = document.getElementById('challenge100ULT');
+      challenge.setAttribute('data-width', challenge100ULT);
 
 
       $('.progress').each(function () {

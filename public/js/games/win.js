@@ -43,9 +43,9 @@ var winState = {
             console.log("Current cash amount: ", game.cash);
             if (game.userkey != null) {
                 if (game.singleplayer == true) {
-                    updateChallenges(game.userkey, "Draw", "Offline", 'idk');
+                    updateChallenges(game.userkey, "Draw", "Offline");
                 } else {
-                    updateChallenges(game.userkey, "Draw", "Online", 'idk');
+                    updateChallenges(game.userkey, "Draw", "Online");
                     updateLeaderboard(game.userkey, "draw");
                 }
             } else {
@@ -78,7 +78,7 @@ var winState = {
                 console.log("game.player:", game.player);
                 console.log("game.userkey", game.userkey);
                 console.log("game.username", game.username);
-                updateChallenges(game.userkey, "idk", "Offline", 'idk');
+                updateChallenges(game.userkey, "idk", "Offline");
             }
             else 
             {
@@ -96,7 +96,7 @@ var winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
-                        updateChallenges(game.userkey, "Wins", "Online", 'idk');
+                        updateChallenges(game.userkey, "Wins", "Online");
                         updateLeaderboard(game.userkey, "win");
                     }else {
                         console("USER IS NULL: Not updating score");  
@@ -108,7 +108,7 @@ var winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
-                        updateChallenges(game.userkey, "Losses", "Online", 'idk');
+                        updateChallenges(game.userkey, "Losses", "Online");
                         updateLeaderboard(game.userkey, "lose");
                     }else {
                         console.log("USER IS NULL: Not updating score");
@@ -177,6 +177,7 @@ function updateLeaderboard(userkey, result) {
       case "original":   gametype = "TTT"; break;
       case "3d":         gametype = "3DT"; break;
       case "orderChaos": gametype = "OAC"; break;
+      case "ultimate":   gametype = "ULT"; break;
    }   
     
    //Uses the userkey to retrieve the user reference to update the [win|loss] and the rating
@@ -184,7 +185,7 @@ function updateLeaderboard(userkey, result) {
                                                                                     
       updateScore( snapshot.val(), userkey, gametype, result);
       updateRating(snapshot.val(), userkey, gametype, result);
-      updateChallenges(userkey, result, 'Online', gametype);
+      updateChallenges(userkey, result, 'Online');
    });
 }
 
@@ -252,14 +253,24 @@ function updateRating(userRef, userkey, gametype, result) {
 
 //takes in the userkey, the result of the game as 'Wins' 'Losses' or 'Draw',
 //and takes in the line to see if it is online or offline
-function updateChallenges(userkey, result, line, gametype) {
+function updateChallenges(userkey, result, line) {
 
     var check;
+    var wins;
+    var leaderWins;
     var cashMoney;
+    var percent = "%"
     var stringCash = app.money; //sessionStorage.getItem("cash");
     //var keyValue = sessionStorage.getItem("userkey");
+    var gametype;
+   switch(game.gametype) {
+      case "original":   gametype = "TTT"; break;
+      case "3d":         gametype = "3DT"; break;
+      case "orderChaos": gametype = "OAC"; break;
+      case "ultimate":   gametype = "ULT"; break;
+   }
     challengesRef = firebase.database().ref('/users/' + app.keyValue + '/challenges');
-    leaderboardRef = firebase.database().ref('leaderboard/' + app.gametype + '/' + keyValue);
+    leaderboardRef = firebase.database().ref('leaderboard/' + gametype + '/' + app.keyValue);
     //userRef = firebase.database().ref('/users/' + app.keyValue);
 
 
@@ -293,7 +304,7 @@ function updateChallenges(userkey, result, line, gametype) {
                 //do nothing
             } else {
                 leaderboardRef.once('value', function (snapshot) {
-                    if (snapshot.win == '0' || snapshot.lose == '0') {
+                    if (snapshot.val().win == 0 || snapshot.val().lose == 0) {
                         //do nothing if they have a win or loss
                     } else {
                         if (check == '0%') {
@@ -400,6 +411,90 @@ function updateChallenges(userkey, result, line, gametype) {
                 app.money = cashMoney;
                 root.$broadcast('update', "homePageLink");
                 userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+        }
+
+        check = snapshot.val().win100TTT;
+        if(gametype == "TTT" && line == 'Online'){
+            if(check == '99%'){
+                notification("Challenge: TicTacToe Big Hundo Unlocked! +200 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 200;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                leaderboardRef.once('value').then(function(snapshot) {
+                    leaderWins = snapshot.val().win.toString();
+                    wins = leaderWins.concat(percent);
+                    challengesRef.update({win100TTT: wins});
+                });
+            }
+        }
+
+        check = snapshot.val().win1003DT;
+        if(gametype == "3DT" && line == 'Online'){
+            if(check == '99%'){
+                notification("Challenge: 3D TicTacToe Big Hundo Unlocked! +200 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 200;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                leaderboardRef.once('value').then(function(snapshot) {
+                    leaderWins = snapshot.val().win.toString();
+                    wins = leaderWins.concat(percent);
+                    challengesRef.update({win1003DT: wins});
+                });
+            }
+        }
+
+        check = snapshot.val().win100OAC;
+        if(gametype == "OAC" && line == 'Online'){
+            if(check == '99%'){
+                notification("Challenge: Order and Chaos Big Hundo Unlocked! +200 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 200;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                leaderboardRef.once('value').then(function(snapshot) {
+                    leaderWins = snapshot.val().win.toString();
+                    wins = leaderWins.concat(percent);
+                    challengesRef.update({win100OAC: wins});
+                });
+            }
+        }
+
+        check = snapshot.val().win100ULT;
+        if(gametype == "ULT" && line == 'Online'){
+            if(check == '99%'){
+                notification("Challenge: Ultimate TicTacToe Big Hundo Unlocked! +200 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 200;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                leaderboardRef.once('value').then(function(snapshot) {
+                    leaderWins = snapshot.val().win.toString();
+                    wins = leaderWins.concat(percent);
+                    challengesRef.update({win100ULT: wins});
+                });
             }
         }
     });
