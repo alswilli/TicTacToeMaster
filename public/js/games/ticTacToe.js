@@ -251,6 +251,7 @@ var ticTacState = {
         sprite.scale.setTo(0.5, 0.5);
         sprite.width = game.squareSize
         sprite.height = game.squareSize
+        game.updatePlacedPieces(sprite)
         return sprite
     },
 
@@ -260,6 +261,7 @@ var ticTacState = {
      */
     addSpriteNoScale(x, y, name) {
         var sprite = game.add.sprite(x, y, name);
+        game.updatePlacedPieces(sprite)
 
         return sprite
     },
@@ -399,8 +401,8 @@ var ticTacState = {
         for(var i in game.placedPieces)
         {
             game.placedPieces[i].kill();
-            game.placedPieces.splice(i, 1);
         }
+        game.placedPieces = []
         //draw the pieces on the screen
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {

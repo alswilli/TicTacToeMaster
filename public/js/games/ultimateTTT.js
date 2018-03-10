@@ -285,13 +285,13 @@ var ultimateTTTState = {
         if(game.isXTurn)
         {
             var piece = game.addSprite(sprite.x, sprite.y, 'X');
-            game.placedPieces.push(piece);
+            
             game.board[bigIndexY][bigIndexX][littleIndexY][littleIndexX] = "x"
             game.previousPiece = "x";
         }
         else{
             var piece = game.addSprite(sprite.x, sprite.y, 'O');
-            game.placedPieces.push(piece);
+            
             game.board[bigIndexY][bigIndexX][littleIndexY][littleIndexX] = "o";
             game.previousPiece = "o";
         }
@@ -637,6 +637,7 @@ var ultimateTTTState = {
         sprite.scale.setTo(0.5, 0.5);
         sprite.width = game.squareSize
         sprite.height = game.squareSize
+        game.updatePlacedPieces(sprite)
         return sprite
     },
 
@@ -805,6 +806,7 @@ var ultimateTTTState = {
         var sprite = game.add.sprite(x, y, name);
         sprite.width = width
         sprite.height = height
+        game.updatePlacedPieces(sprite)
 
         return sprite
     },
@@ -892,8 +894,8 @@ var ultimateTTTState = {
         for(var i in game.placedPieces)
         {
             game.placedPieces[i].kill();
-            game.placedPieces.splice(i, 1);
         }
+        game.placedPieces = []
         //draw the pieces on the screen
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {
@@ -1171,6 +1173,7 @@ var ultimateTTTState = {
 
     addSpriteNoScale(x, y, name) {
         var sprite = game.add.sprite(x, y, name);
+        game.updatePlacedPieces(sprite)
 
         return sprite
     },
@@ -1252,7 +1255,7 @@ var ultimateTTTState = {
     */
     placePieceAt(y , x , row , col, boardArr) {
         var piece = game.addSprite(game.startingX + x*game.squareSize*3 + col*game.squareSize, game.startingY + y * game.squareSize*3 + row*game.squareSize, 'O');
-        game.placedPieces.push(piece);
+        
         game.board[y][x][row][col] = "o"
         game.previousPiece = "o";
     },

@@ -64,6 +64,7 @@ var loadState = {
         game.checkForDoubleClick = this.checkForDoubleClick
         game.animateOpponentLeaving = this.animateOpponentLeaving
         game.startMultiplayer = this.startMultiplayer
+        game.updatePlacedPieces= this.updatePlacedPieces
 
         game.gametype = app.gameType;
         game.userkey = app.keyValue;
@@ -184,6 +185,12 @@ var loadState = {
         {
             game.askForRematch()
         }
+    },
+    
+    updatePlacedPieces(sprite)
+    {
+        if(sprite.key === "X" || sprite.key === "O")
+            game.placedPieces.push(sprite)
     }
 
 

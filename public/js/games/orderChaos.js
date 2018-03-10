@@ -437,6 +437,7 @@ var orderChaosState = {
         sprite.scale.setTo(0.5, 0.5);
         sprite.width = game.squareSize
         sprite.height = game.squareSize
+        game.updatePlacedPieces(sprite)
         return sprite
     },
 
@@ -701,8 +702,9 @@ var orderChaosState = {
         for(var i in game.placedPieces)
         {
             game.placedPieces[i].kill();
-            game.placedPieces.splice(i, 1);
         }
+        game.placedPieces = []
+        
 
         //draw the pieces on the screen
         for(var i=0; i < game.n; i++) {

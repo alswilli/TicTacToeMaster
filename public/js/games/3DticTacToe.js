@@ -322,6 +322,7 @@ var threeDticTacState = {
         var height = game.cache.getImage(name).height
         sprite.width = width
         sprite.height = height
+        game.updatePlacedPieces(sprite)
         return sprite
     },
 
@@ -335,6 +336,7 @@ var threeDticTacState = {
         //sprite.scale.setTo(0.75, 0.75);
         sprite.width = width
         sprite.height = height
+        game.updatePlacedPieces(sprite)
         return sprite
     },
 
