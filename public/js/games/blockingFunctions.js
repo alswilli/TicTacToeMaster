@@ -20,7 +20,6 @@ function blockVertical(board, col, row)
         {
             game.placePieceNoPointer( game.spriteSquares[board][row][nextCol] )
             return [board, row, nextCol]
-            //return true
         }
     }
 }

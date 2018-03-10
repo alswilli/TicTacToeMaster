@@ -71,7 +71,6 @@ app.selected = sessionStorage.getItem("selectedList");
 userRef = firebase.database().ref('/users/' + app.keyValue);
 //the controller for the sidebar. attaches a callback that updates the cash, username, and battletext on screen
 app.controller('SidebarCtrl', function($scope) {
-               //setSelected("homePageLink");
                $scope.$on('update', function(event, link) 
                 {
                           //set username, battletext, and img_url

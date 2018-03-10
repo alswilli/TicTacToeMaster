@@ -31,7 +31,6 @@ $('#btn-submit').on('click', function (e) {
     if(file === undefined)
     {
         alert("Image file invalid, please enter a valid image!");
-        //break;
     }
     else{
         console.log("file: ", file);

@@ -67,7 +67,7 @@ $(document).ready(function(){
                         sessionStorage.setItem("picUrl", urlVal)
                         sessionStorage.setItem("imageName", null)
 												sessionStorage.setItem("selectedList",selected)
-                        window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
+                        window.location.href = "mainMenu.html"; 
                         console.log("hola");
                     })
                 })
@@ -78,7 +78,6 @@ $(document).ready(function(){
         .catch(function(error) {
             $('#error').css("visibility", "visible")
             console.log("Login Failed!", error);
-            //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
         });
     }
 });
@@ -105,7 +104,7 @@ $('#guestlogin').on('click', function (e){
             sessionStorage.setItem("picUrl", urlVal)
             sessionStorage.setItem("imageName", null)
 						sessionStorage.setItem("selectedList",selected)
-            window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
+            window.location.href = "mainMenu.html"; 
             console.log("holaGuest");
         })
     })

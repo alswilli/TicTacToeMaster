@@ -3,7 +3,6 @@
 */
 var challengesRef;
 var leaderboardRef;
-//var userRef;
 console.log("define winstate")
 var winState = {
     create () {
@@ -38,7 +37,6 @@ var winState = {
         {
             playSound("draw");
             message = 'Draw, both players' + ' receive 25 gold coins!' //add sound and or animation here later for getting the money
-            //game.winner = 'o';
             game.cash = game.cash + 25;
             console.log("Current cash amount: ", game.cash);
             if (game.userkey != null) {
@@ -49,18 +47,18 @@ var winState = {
                     updateLeaderboard(game.userkey, "draw");
                 }
             } else {
-                console("USER IS NULL");
+                console.log("USER IS NULL");
             }
             
         }
         else
         {
             if (game.forfeit) {
-                message = game.winner + ' wins via opponent forfeiting! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+                message = game.winner + ' wins via opponent forfeiting! '
                 submessage = game.winner + ' receives 50 gold coins!'
             }
             else {
-                message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
+                message = game.winner + ' wins! '
                 submessage = game.winner + ' receives 50 gold coins!'
             }
             
@@ -116,8 +114,6 @@ var winState = {
         
         app.money = game.cash;
         root.$broadcast('update', "homePageLink");
-
-        //sessionStorage.setItem("cash", game.cash)
         
         // display win message
         const winMessage = game.add.text(
@@ -138,7 +134,6 @@ var winState = {
         // explain how to reStart the game, we will add more options when we have more games
         game.optionCount = 0;
         game.addMenuOption('Play Again',  400, function () {
-                           //game.singleplayer = true
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Return to TicTacToe Menu', 400, function () {
@@ -253,10 +248,8 @@ function updateChallenges(userkey, result, line) {
     var check;
     var cashMoney;
     var stringCash = app.money; //sessionStorage.getItem("cash");
-    //var keyValue = sessionStorage.getItem("userkey");
     challengesRef = firebase.database().ref('/users/' + app.keyValue + '/challenges');
     leaderboardRef = firebase.database().ref('leaderboard/' + app.gametype + '/' + keyValue);
-    //userRef = firebase.database().ref('/users/' + app.keyValue);
 
 
     //check for getting a draw match challenge
