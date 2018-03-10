@@ -41,7 +41,7 @@ function playTheme(sound) {
    var path = getSoundPath(sound);
    var volume = getSoundVolume("theme");
    var isMuted = false;
-   if (document.getElementById("bgmButton").value == "off") {
+   if (document.getElementById("bgmButton") != null && document.getElementById("bgmButton").value == "off") {
       isMuted = true;
    }
 
@@ -80,6 +80,8 @@ function themeIsPlaying(sound) {
 /* Returns the volume value of the given sound type
  */
 function getSoundVolume(soundType) {
+   if(document.getElementById("bgmSlider") === null)
+       return 0.3
    if (soundType == "theme")
       return document.getElementById("bgmSlider").value;
    return document.getElementById("sfxSlider").value;
@@ -205,10 +207,10 @@ function initSoundPrefs() {
       sfxButton.style.backgroundImage = "url('/imgs/sound_off2.png')";
    }
 
-   if (bgmVolume != null) {
+   if (bgmVolume != null && bgmSlider != null) {
       bgmSlider.value = bgmVolume;
    }
-   if (sfxVolume != null) {
+   if (sfxVolume != null && sfxSlider != null) {
       sfxSlider.value = sfxVolume;
    }
 }

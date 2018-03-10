@@ -358,8 +358,8 @@ var orderChaosState = {
 
         var turn = game.isXTurn ?  "order" : "chaos"
         if(game.singleplayer)
-            game.turnStatusText.setText("Current Turn: " + turn)
-        // Below is for multiplayer
+            game.turnStatusText.setText("Current Turn: " + turn)  
+        // Below is for multiplayer 
         else if(game.player === turn)
             game.turnStatusText.setText("Your Turn")
         else
@@ -766,22 +766,20 @@ var orderChaosState = {
         Restart a match between two players, switches the last x player to be o this time and vice versa
      */
     restartMatch(){
-       console.log("REMATCH BITCH")
+       console.log("REMATCH")
         if(game.player === "chaos")
         {
-            game.waiting = true
-            game.player = "Order"
+            game.waiting = false
+            game.player = "order"
             game.playerPieceText.setText("You are Order")
-            game.turnStatusText.setText(game.opponent + "'s turn")
+            game.turnStatusText.setText("Your Turn")
         }
         else if(game.player === "order")
         {
-            game.waiting = false
-            console.log("no longer waiting!")
+            game.waiting = true
             game.player = "chaos"
             game.playerPieceText.setText("You are Chaos")
-            game.turnStatusText.setText("Your Turn")
-            game.opponentKey = data.userkey
+            game.turnStatusText.setText(game.opponent + "'s turn")
         }
 
     },

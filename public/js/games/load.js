@@ -145,7 +145,7 @@ var loadState = {
             turn = game.isXTurn ? "x" : "o"
         if(turn === game.previousPiece)
         {
-            console.log("you double clicking mother fucker")
+            console.log("you double clicking")
             game.isXTurn = !game.isXTurn
             game.waiting = true
             return true
