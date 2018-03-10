@@ -58,7 +58,7 @@ var loadState = {
     */
     create() {
         game.handleOpponentLeaving = this.handleOpponentLeaving
-        //game.showOpponent = this.showOpponent
+        
         game.loadOpponent = this.loadOpponent
         game.disconnectSocket = this.disconnectSocket
         game.checkForDoubleClick = this.checkForDoubleClick
@@ -119,7 +119,7 @@ var loadState = {
                    game.opponentPicURL = url;
                    document.getElementById('opponentUsername').innerHTML = game.opponent;
                    document.getElementById('opponentBattleText').innerHTML = '"' + game.opponentBattleText +'"';
-                   //document.getElementById('cash').innerHTML = '$' + cashMoney;
+                   
                    $('#opponentImage').attr('src', url);
                    document.getElementById('opponentCard').style.visibility = "visible";
                    $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({

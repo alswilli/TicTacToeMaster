@@ -34,12 +34,7 @@ var gameDifficultyState  = {
         game.addMenuOption('Back to Menu Page', 200, function () {
             playSound("click");
             game.state.start("menu");
-            // var dbRefObject = firebase.database().ref('/users/' + game.userkey + '/cash/');
-            // console.log("Cash:", game.cash);
-            // dbRefObject.set(
-            //     game.cash
-            // );
-            // window.location.href = "mainMenu.html" + '#&&' + game.userkey + '&&' + game.username + '&&' + game.battleText + '&&' + game.cash + '&&' + game.url + '&&null';
+            
         });
     //});
 

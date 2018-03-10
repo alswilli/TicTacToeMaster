@@ -1,51 +1,120 @@
 <div class="cardPlain">
+	<div class="games">
+		<div class="cardPlainTitle w3-theme">
+			<h2 style="color:white;" class="centered">Games</h2>
+		</div>
+		<div class="w3-bar-block w3-animate-bottom w3-white" style="border-radius: 5px; width:35%;height: 500px; position:absolute;margin-right: 30px; margin-left: 30px;display: none" id="instructions">
+		</div>
+		<div class="w3-container w3-section">
+			<div class="w3-card w3-left" style="width:175px; margin-left:20%; margin-right:0%; margin-bottom:16px">
+				<header class="w3-container w3-light-blue w3-center">
+					<h5>Tic Tac Toe</h5>
+				</header>
+				<div class="w3-container w3-center" style="background-color: #f2f2f2;">
+					<img src="SiteImages/tictactoe.png" alt="Avatar" style="width:80%" height="125px">
+					<button class="w3-button w3-block w3-dark-grey" id="tictactoeOriginal" type="button" onclick="playTheme('sounds/battle1.wav')">Play</button>
+					<button class="w3-button w3-block w3-deep-purple" type="button" onclick="openInstructions('TTT')">Instructions</button>
+				</div>
+			</div>
 
-    <div class="games">
-        <div class="cardPlainTitle w3-theme">
-            <h2 style="color:white;" class="centered">Games</h2>
-        </div>
-        <div class="w3-container w3-section">
-            <div class="w3-card w3-left" style="width:175px; margin-left:20%; margin-right:0%; margin-bottom:16px" >
-                <header class="w3-container w3-light-blue w3-center">
-                    <h5>Tic Tac Toe</h5>
-                </header>
-                <div class="w3-container w3-center" style="background-color: #f2f2f2;">
-                    <img src="SiteImages/tictactoe.png" alt="Avatar" style="width:80%" height="125px">
-                        <button class="w3-button w3-block w3-dark-grey" id="tictactoeOriginal" type="button" onclick="playTheme('sounds/battle1.wav')">Play</button>
-                        </div>
-            </div>
+			<div class="w3-card w3-left" style="width:175px; float:right; margin-left:20%; margin-right:10%">
+				<header class="w3-container w3-light-blue w3-center">
+					<h5>3D Tic Tac Toe</h5>
+				</header>
+				<div class="w3-container w3-center" style="background-color: #f2f2f2;">
+					<img src="SiteImages/3D.png" alt="Avatar" style="width:80%" height="125px">
+					<button class="w3-button w3-block w3-dark-grey" id="3dtictactoe" type="button">Play</button>
+					<button class="w3-button w3-block w3-deep-purple" type="button" onclick="openInstructions('3DT')">Instructions</button>
+				</div>
 
-            <div class="w3-card w3-left" style="width:175px; float:right; margin-left:20%; margin-right:10%" >
-                <header class="w3-container w3-light-blue w3-center">
-                    <h5>3D Tic Tac Toe</h5>
-                </header>
-                <div class="w3-container w3-center" style="background-color: #f2f2f2;">
-                    <img src="SiteImages/3D.png" alt="Avatar" style="width:80%" height="125px">
-                        <button class="w3-button w3-block w3-dark-grey" id="3dtictactoe" type="button">Play</button>
-                        </div>
+			</div>
+		</div>
+		<div class="w3-container w3-section">
+			<div class="w3-card w3-left" style="width:175px; float:left; margin-left:20%; margin-right:10%; margin-bottom:16px; background-color: #f2f2f2;">
+				<header class="w3-container w3-light-blue w3-center">
+					<h5>Order&#38;Chaos</h5>
+				</header>
+				<div class="w3-container w3-center">
+					<img src="SiteImages/orderChaos.png" alt="Avatar" style="width:80%" height="125px">
+					<button class="w3-button w3-block w3-dark-grey" id="orderChaos">Play</button>
+					<button class="w3-button w3-block w3-deep-purple" type="button" onclick="openInstructions('OAC')">Instructions</button>
+				</div>
+			</div>
 
-            </div>
-        </div>
-        <div class="w3-container w3-section">
-            <div class="w3-card w3-left" style="width:175px; float:left; margin-left:20%; margin-right:10%; margin-bottom:16px; background-color: #f2f2f2;" >
-                <header class="w3-container w3-light-blue w3-center">
-                    <h5>Order&#38;Chaos</h5>
-                </header>
-                <div class="w3-container w3-center">
-                    <img src="SiteImages/orderChaos.png" alt="Avatar" style="width:80%"  height="125px">
-                        <button class="w3-button w3-block w3-dark-grey" id="orderChaos">Play</button>
-                        </div>
-            </div>
-
-            <div class="w3-card w3-left" style="width:175px; float:left; margin-left:10%; margin-right:10%;background-color: #f2f2f2;">
-                <header class="w3-container w3-light-blue w3-center">
-                    <h6>Ultimate Tic Tac Toe</h6>
-                </header>
-                <div class="w3-container w3-center">
-                    <img src="SiteImages/ultimate.png" alt="Avatar" style="width:80%"  height="125px">
-                        <button class="w3-button w3-block w3-dark-grey" id="ultimate">Play</button>
-                        </div>
-            </div>
-        </div>
-    </div>
+			<div class="w3-card w3-left" style="width:175px; float:left; margin-left:10%; margin-right:10%;background-color: #f2f2f2;">
+				<header class="w3-container w3-light-blue w3-center">
+					<h6>Ultimate Tic Tac Toe</h6>
+				</header>
+				<div class="w3-container w3-center">
+					<img src="SiteImages/ultimate.png" alt="Avatar" style="width:80%" height="125px">
+					<button class="w3-button w3-block w3-dark-grey" id="ultimate">Play</button>
+					<button class="w3-button w3-block w3-deep-purple" type="button" onclick="openInstructions('ULT')">Instructions</button>
+				</div>
+			</div>
+		</div>
+		<script id="TTTInfo" type="text/html">
+			<div style="margin: 10px">
+				<h1>Tic Tac Toe</h1>
+				<p style="text-indent: 25px">The object of Tic Tac Toe is to get three in a row. You play on a three by three game board. The first player is known as X and the second is O. Players alternate placing Xs and Os on the game board until either oppent has three in a row or all nine squares are filled. X always goes first, and in the event that no one has three in a row, the stalemate is called a cat game.</p>
+				<br/>
+				<a href="http://www.cyberoculus.com/tic-tac-toe.asp?Action=Rules">Source</a>
+				<br/>
+				<br/>
+				<button class="w3-button w3-block w3-deep-purple" type="button" style="buttom:0" onclick="closeBox()">Return</button>
+			</div>
+		</script>
+		<script id="3DTInfo" type="text/html">
+			<div style="margin: 10px">
+				<h1>3D Tic Tac Toe</h1>
+				<p style="text-indent: 25px">The game is basically the same as regular tic-tac-toe: you try to win by getting four X’s or O’s in a row. The trick is, instead of one grid of nine squares, you have 4 grids of 16 squares, all stacked on top of each other. A diagonal, horizontal, or vertical set of four lets you win, but since the game is 3-D, there are many more winning possibilities.</p>
+				<br/>
+				<a href="https://www.thegamegal.com/2010/08/18/3-d-triple-decker-tic-tac-toe/">Source</a>
+				<br/>
+				<br/>
+				<button class="w3-button w3-block w3-teal" type="button" style="buttom:0" onclick="closeBox()">Return</button>
+			</div>
+		</script>
+		<script id="OACInfo" type="text/html">
+			<div style="margin: 10px">
+				<h1>Order&#38;Chaos</h1>
+				<p style="text-indent: 25px;padding-bottom: 0px">One player is Order and the other is Chaos. With alternating turns, each player places a single counter, either X or O, at any vacant position on the board. The objective of the Order player is to get five counters of the same color in an orthogonal or diagonal row. Chaos wins if the board becomes filled without this happening.</p>
+				<br/>
+				<br/>
+				<a href="https://sites.google.com/site/boardandpieces/list-of-games/order-and-chaos">Source</a>
+				<br/>
+				<br/>
+				<button class="w3-button w3-block w3-teal" type="button" style="buttom:0" onclick="closeBox()">Return</button>
+			</div>
+		</script>
+		<script id="ULTInfo" type="text/html">
+			<div style="margin: 10px">
+				<h1>Ultimate TTT</h1>
+				<p style="text-indent: 25px">Like the original Tic-Tac-Toe, Player 1 is represented by X and Player 2 is represented by O. To start the game, Player 1 places an X on any one of the 81 empty squares, and then players alternate turns. However, after the initial move, players must play the board that mirrors the square from the previous player. If the next move is to a board that has already been won, then that player may choose an open square on any board for that turn. You win boards as usual, but you win the game when you win three boards together (across rows, columns or diagonals). </p>
+				<a href="http://vikeshkhanna.webfactional.com/ultimate/">Source</a>
+				<button class="w3-button w3-block w3-teal" type="button" style="buttom:0" onclick="closeBox()">Return</button>
+			</div>
+		</script>
+		<script>
+			function openInstructions(game){
+				var sidebar=document.getElementById("instructions");
+				if (game=="TTT") {
+					sidebar.innerHTML=document.getElementById("TTTInfo").innerHTML;
+					sidebar.style.right="25px";
+				}else if(game=="3DT"){
+					sidebar.innerHTML=document.getElementById("3DTInfo").innerHTML;
+					sidebar.style.right="500px";
+				} else if(game=="OAC") {
+					sidebar.innerHTML=document.getElementById("OACInfo").innerHTML;
+					sidebar.style.right="25px";
+				}else if(game=="ULT") {
+					sidebar.innerHTML=document.getElementById("ULTInfo").innerHTML;
+					sidebar.style.right="500px";
+				}
+				sidebar.style.display="block";
+			}
+			function closeBox(){
+				document.getElementById("instructions").style.display="none";
+			}
+		</script>
+	</div>
 </div>

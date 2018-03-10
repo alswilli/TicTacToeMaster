@@ -25,7 +25,6 @@ var ticTacState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
 
-
         game.linesToAnimate = 0
 
         game.human = "x";
@@ -83,7 +82,6 @@ var ticTacState = {
 
         game.previousPiece = ""
 
-        //game.drawWinningLine(game.screenWidth/2, game.startingY - 15, game.screenWidth/2, 400)
         //folloowing logic is for multiplayer games
         if(game.singleplayer || game.vsAi)
             return
@@ -138,7 +136,7 @@ var ticTacState = {
         console.log(sprite);
         console.log("x: ", sprite.x);
         console.log("y: ", sprite.y);
-       //console.log(pointer);
+
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
@@ -172,8 +170,6 @@ var ticTacState = {
             game.previousPiece = "o"
         }
 
-        // game.cursorSquares[i][j] = game.addSprite(game.startingX + i*game.squareSize, game.startingY + j*game.squareSize, 'redsquare')
-        // game.cursorSquares[i][j].alpha = 0.5
 
         game.updateTurnStatus(indexX, indexY)
 
@@ -204,7 +200,6 @@ var ticTacState = {
                     console.log("x: ", x)
                     console.log("y: ", y)
                     game.cursorSquares[i][j].alpha = .7
-                    // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 else
                 {
@@ -241,7 +236,7 @@ var ticTacState = {
             if(game.isDraw) {
                 game.displayWinner()
             }
-            //game.displayWinner()
+
             console.log(board)
         }
         game.switchTurn(coordInfo.x, coordInfo.y)
@@ -399,26 +394,6 @@ var ticTacState = {
         if(game.state.current==="win")
             return
 
-        /*if(game.id === id)
-            return
-        //updated the game board
-        game.board = board
-        console.log(board)
-
-        var row = coordInfo.x
-        var col = coordInfo.y
-
-        if(game.isXTurn)
-        {
-            var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'X');
-        }
-        else
-        {
-            var coords = game.convertIndexesToCoords(row, col)
-            game.addSprite(coords[0], coords[1], 'O');
-        }
-        return*/
 
         game.board = board
         //rub out pieces, so we don't draw multiple on top of each other
@@ -496,7 +471,7 @@ var ticTacState = {
         Restart a match between two players, switches the last x player to be o this time and vice versa
      */
     restartMatch(){
-       console.log("REMATCH BITCH")
+       console.log("REMATCH")
         if(game.player === "x")
         {
             game.waiting = true
@@ -563,7 +538,7 @@ var ticTacState = {
                 if(game.isDraw) {
                     game.displayWinner()
                 }
-               //game.displayWinner()
+
                game.waiting = true
            }
            else {
@@ -571,12 +546,10 @@ var ticTacState = {
               game.waiting = true;
               console.log("indexX: "+indexX+" indexY: "+indexY);
               console.log(game.board);
-              //console.log(boardToArray());
 
               var aiMoveCoords = []
               aiMoveCoords = game.aiMakesMove();
-              game.switchTurn(aiMoveCoords[0], aiMoveCoords[1]); // needs to pass ai move instread
-              //console.log(boardToArray());
+              game.switchTurn(aiMoveCoords[0], aiMoveCoords[1]);
               game.waiting = false;
 
            }
@@ -590,7 +563,6 @@ var ticTacState = {
                 if(game.isDraw) {
                     game.displayWinner()
                 }
-                //game.displayWinner()
                 game.waiting = true
             }
             else
@@ -612,8 +584,6 @@ var ticTacState = {
     drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
     {
         game.linesToAnimate++
-        //var piece2 = game.addSpriteNoScale(startX, startY, 'cometTail');
-        //game.add.tween(piece2.scale).to({  y: 2.7}, 500, Phaser.Easing.Linear.None, true);
         var piece = game.addSpriteNoScale(startX, startY, 'comet');
         piece.key = 'comet'
         piece.angle = angle
@@ -630,14 +600,11 @@ var ticTacState = {
         piece2.height = game.squareSize*3 + lineExtra
         piece2.angle = angle
         console.log(startX + "," + startY)
-        //console.log(this)
         piece2.alpha = 0;
         piece2.angle = angle
         piece2.lineExtra = lineExtra
-        //console.log("complete tween")
 
         var tween = game.add.tween(piece2).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
-        //var tween = game.add.tween(line).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
         tween.onComplete.add(game.completeDraw)
     },
 
@@ -654,9 +621,12 @@ var ticTacState = {
         game.endingBoard.forEach(function(element)
         {
 
-            console.log(element)
-             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare')
+            //console.log(element)
+             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background')
+                                 {
+                                 console.log(element.key)
                 game.addSprite(element.x, element.y, element.key);
+                                 }
              else if(element.key === 'cometTail')
              {
                 var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
@@ -693,13 +663,11 @@ var ticTacState = {
         }
         else if (game.difficulty == 'hard') {
             var actualMove = (Math.random() < 0.98) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
-            // var actualMove = move
             console.log("HARD MODE")
         }
         console.log("MOVE: ", move)
         console.log("ACTUAL MOVE: ", actualMove)
 
-        //    var convertedMove = convertMove(move);
         if (actualMove == move)
         {
             console.log("a")
@@ -710,7 +678,6 @@ var ticTacState = {
             console.log("b")
             var convertedMove = game.convertRandMove(actualMove);
         }
-        //    console.log("AI's move: ", move);
         console.log("AI's move: ", move);
         console.log("convertedMove: ", convertedMove);
 
@@ -744,10 +711,7 @@ var ticTacState = {
      */
     placePieceAt(row , col) {
         console.log(game.screenWidth);
-        //    var x = 485 + (col * 115);
-        //    var y = 115   * (row + 1);
         var piece = game.addSprite(game.startingX + col*game.squareSize, game.startingY + row * game.squareSize, 'O');
-        //    var piece = game.addSprite(x, y, 'moon');
         game.placedPieces.push(piece);
         game.board[row][col] = "o";
     },

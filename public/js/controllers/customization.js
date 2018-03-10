@@ -61,7 +61,6 @@ function unlock(buttonId, tagId, imageId) {
    remove(buttonId);
    removeGrayScale(imageId);
    document.getElementById(imageId).addEventListener("click", function () {
-      console.log("selected: ", imageId);
       changeSelection(buttonId);
    });
 }
@@ -129,18 +128,16 @@ function initializeSelected() {
 }
 
 /*
- Handles the interaction with cash amount of player. Checks if the player has enough cash for item. If yes, unlocks item and updates cash to session sotrage and firbase
+ Handles the interaction with cash amount of player. Checks if the player has enough cash for item. If yes, unlocks item and updates cash to app and firbase
  */
 function unlockVerification(buttonId, tagId, imageId) {
    var itemCost = document.getElementById(buttonId).innerHTML.substring(1);
    //for some reason I can't parseInt at the same time so I did it seperately
    itemCost = parseInt(itemCost);
-   var cashMoney = app.money //sessionStorage.getItem("cash");
-   console.log(cashMoney + " - " + itemCost);
+   var cashMoney = app.money 
    if (cashMoney >= itemCost) {
       unlockConfirmation(buttonId, tagId, imageId);
    } else {
-      console.log("you're poor, get some money");
 
       //shows a popup box to tell user he/she doesn't have enough money
       appear('insufficientCash');
@@ -151,9 +148,7 @@ function unlockVerification(buttonId, tagId, imageId) {
 function updateAndUnlock(buttonId, tagId, imageId) {
    //gets item's index number for swapping out character
    var itemIndex = buttonId.charAt(buttonId.length - 1);
-   //console.log("swap index: ",itemIndex);
    if (buttonId.startsWith("board")) {
-      //console.log("initial board unlocked status: ",unlockedBoard);
       unlockedBoard = replaceAtIndex(unlockedBoard, itemIndex, "1");
 
       //gets the reference to the child node storing the string that repsents board unlock status
@@ -162,35 +157,30 @@ function updateAndUnlock(buttonId, tagId, imageId) {
       boardRef.set(
          unlockedBoard
       );
-      //console.log("new board unlock status: ",unlockedBoard);
    } else if (buttonId.startsWith("piece")) {
-      //console.log("initial piece unlocked status: ",unlockedPiece);
       unlockedPiece = replaceAtIndex(unlockedPiece, itemIndex, "1");
       var pieceRef = unlockedRef.child('piece');
       pieceRef.set(
          unlockedPiece
       );
-      //console.log("new piece unlock status: ",unlockedPiece);
    } else if (buttonId.startsWith("background")) {
-      //console.log("initial background unlocked status: ",unlockedBackground);
       unlockedBackground = replaceAtIndex(unlockedBackground, itemIndex, "1");
       var backgroundRef = unlockedRef.child('background');
       backgroundRef.set(
          unlockedBackground
       );
-      //console.log("new background unlock status: ",unlockedBackground);
    } else {
       console.log("buttonId error: incorrectId");
    }
    unlock(buttonId, tagId, imageId);
-   var cashMoney = app.money //sessionStorage.getItem("cash");
+   var cashMoney = app.money 
    var itemCost = document.getElementById(buttonId).innerHTML.substring(1);
    //for some reason I can't parseInt at the same time so I did it seperately
    itemCost = parseInt(itemCost);
    cashMoney = cashMoney - itemCost;
-   app.money = cashMoney //sessionStorage.setItem("cash",cashMoney);//updates cash to session storage
+   app.money = cashMoney 
    root.$broadcast('update', "homePageLink");
-   //console.log(sessionStorage);
+
 
    document.getElementById('cash').innerHTML = '$' + cashMoney;
    //gets reference to cash of user in firebase
