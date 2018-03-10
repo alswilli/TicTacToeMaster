@@ -132,12 +132,12 @@ io.on('connection',function(socket)
                           return
                           }
                     console.log("sent by " + data.id)
-                    if(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid === data.id)
+                    /*if(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid === data.id)
                     {
                           console.log('wut duh')
                           console.log(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid + " " + data.id)
                           return
-                    }
+                    }*/
                     io.nsps['/'].adapter.rooms[socket.player.roomName].lastid = data.id
                     socket.player.lastboard = data.board
                     socket.player.board = data.board
