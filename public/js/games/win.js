@@ -3,7 +3,6 @@
 */
 var challengesRef;
 var leaderboardRef;
-//var userRef;
 console.log("define winstate")
 var winState = {
     create () {
@@ -38,7 +37,6 @@ var winState = {
         {
             playSound("draw");
             message = 'Draw, both players' + ' receive 25 gold coins!' //add sound and or animation here later for getting the money
-            //game.winner = 'o';
             game.cash = game.cash + 25;
             console.log("Current cash amount: ", game.cash);
             if (game.userkey != null) {
@@ -49,7 +47,7 @@ var winState = {
                     updateLeaderboard(game.userkey, "draw");
                 }
             } else {
-                console("USER IS NULL");
+                console.log("USER IS NULL");
             }
             
         }
@@ -121,8 +119,6 @@ var winState = {
         
         app.money = game.cash;
         root.$broadcast('update', "homePageLink");
-
-        //sessionStorage.setItem("cash", game.cash)
         
         // display win message
         const winMessage = game.add.text(
@@ -143,7 +139,6 @@ var winState = {
         // explain how to reStart the game, we will add more options when we have more games
         game.optionCount = 0;
         game.addMenuOption('Play Again',  400, function () {
-                           //game.singleplayer = true
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Return to TicTacToe Menu', 400, function () {
@@ -177,6 +172,7 @@ function updateLeaderboard(userkey, result) {
       case "original":   gametype = "TTT"; break;
       case "3d":         gametype = "3DT"; break;
       case "orderChaos": gametype = "OAC"; break;
+      case "ultimate":   gametype = "ULT"; break;
    }   
     
    //Uses the userkey to retrieve the user reference to update the [win|loss] and the rating
@@ -184,6 +180,7 @@ function updateLeaderboard(userkey, result) {
                                                                                     
       updateScore( snapshot.val(), userkey, gametype, result);
       updateRating(snapshot.val(), userkey, gametype, result);
+      updateChallenges(userkey, result, 'Online');
    });
 }
 
@@ -254,11 +251,21 @@ function updateRating(userRef, userkey, gametype, result) {
 function updateChallenges(userkey, result, line) {
 
     var check;
+    var wins;
+    var leaderWins;
     var cashMoney;
+    var percent = "%"
     var stringCash = app.money; //sessionStorage.getItem("cash");
     //var keyValue = sessionStorage.getItem("userkey");
+    var gametype;
+   switch(game.gametype) {
+      case "original":   gametype = "TTT"; break;
+      case "3d":         gametype = "3DT"; break;
+      case "orderChaos": gametype = "OAC"; break;
+      case "ultimate":   gametype = "ULT"; break;
+   }
     challengesRef = firebase.database().ref('/users/' + app.keyValue + '/challenges');
-    leaderboardRef = firebase.database().ref('leaderboard/' + app.gametype + '/' + keyValue);
+    leaderboardRef = firebase.database().ref('leaderboard/' + gametype + '/' + app.keyValue);
     //userRef = firebase.database().ref('/users/' + app.keyValue);
 
 
@@ -292,7 +299,7 @@ function updateChallenges(userkey, result, line) {
                 //do nothing
             } else {
                 leaderboardRef.once('value', function (snapshot) {
-                    if (snapshot.win == '0' || snapshot.lose == '0') {
+                    if (snapshot.val().win == 0 || snapshot.val().lose == 0) {
                         //do nothing if they have a win or loss
                     } else {
                         if (check == '0%') {
@@ -399,6 +406,90 @@ function updateChallenges(userkey, result, line) {
                 app.money = cashMoney;
                 root.$broadcast('update', "homePageLink");
                 userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+        }
+
+        check = snapshot.val().win100TTT;
+        if(gametype == "TTT" && line == 'Online'){
+            if(check == '99%'){
+                notification("Challenge: TicTacToe Big Hundo Unlocked! +200 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 200;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                leaderboardRef.once('value').then(function(snapshot) {
+                    leaderWins = snapshot.val().win.toString();
+                    wins = leaderWins.concat(percent);
+                    challengesRef.update({win100TTT: wins});
+                });
+            }
+        }
+
+        check = snapshot.val().win1003DT;
+        if(gametype == "3DT" && line == 'Online'){
+            if(check == '99%'){
+                notification("Challenge: 3D TicTacToe Big Hundo Unlocked! +200 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 200;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                leaderboardRef.once('value').then(function(snapshot) {
+                    leaderWins = snapshot.val().win.toString();
+                    wins = leaderWins.concat(percent);
+                    challengesRef.update({win1003DT: wins});
+                });
+            }
+        }
+
+        check = snapshot.val().win100OAC;
+        if(gametype == "OAC" && line == 'Online'){
+            if(check == '99%'){
+                notification("Challenge: Order and Chaos Big Hundo Unlocked! +200 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 200;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                leaderboardRef.once('value').then(function(snapshot) {
+                    leaderWins = snapshot.val().win.toString();
+                    wins = leaderWins.concat(percent);
+                    challengesRef.update({win100OAC: wins});
+                });
+            }
+        }
+
+        check = snapshot.val().win100ULT;
+        if(gametype == "ULT" && line == 'Online'){
+            if(check == '99%'){
+                notification("Challenge: Ultimate TicTacToe Big Hundo Unlocked! +200 Cash Money");
+                cashMoney = parseInt(stringCash);
+                cashMoney = cashMoney + 200;
+                app.money = cashMoney;
+                root.$broadcast('update', "homePageLink");
+                userRef.update({ cash: cashMoney }); //updates cash to firebase;
+            }
+            if(check == '100%'){
+                //do nothing if challenge is complete
+            }else{
+                leaderboardRef.once('value').then(function(snapshot) {
+                    leaderWins = snapshot.val().win.toString();
+                    wins = leaderWins.concat(percent);
+                    challengesRef.update({win100ULT: wins});
+                });
             }
         }
     });

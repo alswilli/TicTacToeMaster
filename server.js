@@ -1,17 +1,7 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-//app.use(express.static(__dirname + '/Public'));
 app.use(express.static('public'))
-
-//var app = require('express')();
-//var http = require('http').Server(app);
-//var io = require('socket.io')(http);
-
-//app.get('/', function(req, res) {
-//        res.sendfile('index.html');
-//});
-
 
 var io = require('socket.io').listen(server);
 
@@ -56,18 +46,14 @@ io.on('connection',function(socket)
       socket.on('postChatMessage', function(data){
         console.log("message: " + data.message);
         data.user = socket.player.username; //app.username
-        // socket.emit('chatMessage', msg);
-        io.sockets.in(socket.player.roomName).emit('chatMessage', data)  
-        // io.emit('chatMessage', data) 
+        io.sockets.in(socket.player.roomName).emit('chatMessage', data)   
       });
 
       socket.on('chatConnected', function(data){
-        // console.log("message: " + data.message);
         io.sockets.in(socket.player.roomName).emit('chatConnection', data)  
       });
 
       socket.on('chatDisconnected', function(data){
-        // console.log("message: " + data.message);
         if(socket.player != undefined)
                 io.sockets.in(socket.player.roomName).emit('chatDisconnection', data)  
       });
@@ -88,16 +74,12 @@ io.on('connection',function(socket)
       });
       
       socket.on('denyChallenge', function(username){
-                // console.log("message: " + data.message);
                 denyChallenge(username)  
         });
       
       socket.on('friendDenied', function(roomName){
                 console.log("everyone leave " + roomName)
                 socket.disconnect();
-                /*io.sockets.clients(roomName).forEach(function(s){
-                      s.leave(roomName);
-                 });*/
       })
          
       socket.on('makeNewPlayer',function(data){
@@ -107,7 +89,6 @@ io.on('connection',function(socket)
                 console.log("incoming data")
                 console.log(data)
                 if(data.friend === undefined && needNewRoom(data.gametype) && data.challengedByFriend != true)
-                //(io.nsps['/'].adapter.rooms[roomName] && io.nsps['/'].adapter.rooms[roomName].length >= server.roomSize)
                 {
                     console.log("increment rooms")
                     roomsNo[data.gametype].num++
@@ -123,7 +104,6 @@ io.on('connection',function(socket)
                 
                 
                 //Send this event to everyone in the room. Fore debugging
-                //io.sockets.in("room-"+data.gametype+server.roomno).emit('connectToRoom', "You are in room no. "+server.roomno);
                 
                 socket.player =
                 {
@@ -136,8 +116,6 @@ io.on('connection',function(socket)
                     roomName: roomName,
                     inFullRoom: false,
                 };
-                
-                //io.nsps['/'].adapter.rooms[socket.player.roomName].full = false
                 
                 console.log("welcome: " + socket.player.username + " to " + socket.player.roomName)
                 //broadcast messagess ; Socket.emit() sends a message to one specific socket
@@ -177,7 +155,7 @@ io.on('connection',function(socket)
                 io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch = 0;
                 socket.on('askForRematch',function(board, x, y)
                 {
-                          //increment number of people ready for a rematch
+                    //increment number of people ready for a rematch
                     io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch++
                     if(io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch >= server.roomSize)
                     {
@@ -207,11 +185,6 @@ io.on('connection',function(socket)
                     console.log(socket.player.roomName + "challenger is " +socket.player.username)
                 }
                 
-                /*socket.on('disconnect',function(){
-                    // sending to all clients in 'game'
-                    io.sockets.in(socket.player.roomName).emit('playerLeft')
-                });*/
-                
                 socket.on('disconnect',function(){ //change this
                           // sending to all clients in 'game'
                           io.sockets.in(socket.player.roomName).emit('playerLeft')
@@ -234,10 +207,7 @@ io.on('connection',function(socket)
                 socket.on('manualDisconnect',function(){
                           console.log(socket.player.username + " disconnecting")
                           socket.disconnect()
-                 });
-                
-                
-                
+                 });  
             }
                 
         );

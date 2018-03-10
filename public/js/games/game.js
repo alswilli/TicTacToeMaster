@@ -30,9 +30,6 @@ function startGame()
     
     game.firstPlay = true
     
-   
-    
-    
     if(app.gameType == "original")
         game.state.add('ticTac', ticTacState)
     else if(app.gameType == "3d")
@@ -64,7 +61,7 @@ function startGame()
             target.stroke = "rgba(0,0,0,0)";
             txt.useHandCursor = false;
         };
-        //txt.useHandCursor = true;
+    
         txt.inputEnabled = true;
         txt.events.onInputUp.add(callback, game);
         txt.events.onInputOver.add(onOver, game);

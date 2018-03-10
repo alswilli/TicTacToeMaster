@@ -9,20 +9,15 @@ angular.module('TicTacToeApp')
          playTheme("main");
 
          $scope.img_url = app.img_url;
-         //update siebar to hilight edit page selection
          $rootScope.$broadcast('update', 'editProfileLink');
 
          $(function () {
             $('#profile_image').change(function (e) {
 
                var img = URL.createObjectURL(e.target.files[0]);
-               console.log(img)
                $('.imageNew').attr('src', img);
             });
          });
-
-         // $('#usernameNew').attr('value', sessionStorage.getItem("name"));
-         // $('#battleTextNew').attr('value', sessionStorage.getItem("battleText"));
 
          $('#usernameNew').attr('value', app.username);
          $('#battleTextNew').attr('value', app.battleText);
@@ -35,7 +30,6 @@ function updateUserInfo(e) {
    e.preventDefault();
 
    console.log(document.getElementById("usernameNew").innerHTML)
-   // sessionStorage.setItem("name", nameOfUser)
 
    // Get image ref
    const storageRef = firebase.storage().ref();
@@ -44,7 +38,6 @@ function updateUserInfo(e) {
 
    if (file != null && file === undefined) {
       alert("Image file invalid, please enter a valid image!");
-      console.log("penios");
       //break;
    } else if (file == null) //Don't want to upload a new profile pic but want to change other stuff
    {
@@ -66,7 +59,6 @@ function updateUserInfo(e) {
       });
    } else // want to change all
    {
-      console.log("file: ", file);
 
       var imageName;
 
@@ -85,8 +77,7 @@ function updateUserInfo(e) {
 
          task.then((snapshot) => {
             const url = snapshot.downloadURL;
-            console.log(name);
-            console.log(newImageName);
+
             firebase.storage().ref(name).getDownloadURL().then(function (url) {
                newUrlVal = url;
 
