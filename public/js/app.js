@@ -50,6 +50,11 @@ var app = angular.module('TicTacToeApp', ['ngRoute']).config(function ($routePro
          controller: 'GameCtrl',
          controllerAs: '/game',
       })
+      .when('/adminTools', {
+         templateUrl: 'views/adminTools.html',
+         controller: 'AdminToolsCtrl',
+         controllerAs: '/adminTools',
+      })
       .otherwise({
          redirectTo: '/home'
       });
@@ -132,3 +137,4 @@ function logout() {
          console.log("Logout Failed!", error);
       });
 }
+

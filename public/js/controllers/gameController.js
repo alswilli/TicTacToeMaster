@@ -78,7 +78,7 @@ function initChat() {
          document.getElementById("box").style.height = "0px";
          document.getElementById("inputBox").style.visibility = "hidden";
          document.getElementById("closeBox").style.visibility = "hidden";
-         
+
          checked = 'justClicked'
          game.notificationCount = 0
 
