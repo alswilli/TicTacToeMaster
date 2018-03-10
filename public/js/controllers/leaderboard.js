@@ -23,6 +23,9 @@ angular.module('TicTacToeApp')
    playerIndex        = 0;
    sorted             = false;
 
+   //Creates the Admin Tools link in the sidebar, should be moved out of leaderboard later.
+   createAdminToolsLink();
+
    getTopPlayersForGame(activeBoard);
 
    //Update sidebar to highlight leaderboard page selection
@@ -285,4 +288,21 @@ function sortPlayers(game) {
          return 0;
       }
    });
+}
+
+/* Creates the Admin Tools link in the side bar if the user has the
+ * specified key value. This should be moved out of leadeboard later.
+ */
+function createAdminToolsLink() {
+   if (app.keyValue == "MLSKZ92Ea7WRjFE7HixlkPIz17N2") {
+      if (document.getElementById("adminToolsLink") == null) {
+         var sidebar = document.getElementById("links");
+
+         var link = document.createElement("a");
+         link.innerHTML= "Admin Tools";
+         link.href = "#/adminTools";
+         link.id = "adminToolsLink";
+         sidebar.appendChild(link);
+      }
+   }
 }
