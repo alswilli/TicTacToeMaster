@@ -44,18 +44,19 @@ var menuState = {
             game.world.centerX, 100, title,
             { font: '50px Arial', fill: '#ffffff' }
         )
-        //setting anchor centers the text on its x, y coordinates 
+        //setting anchor centers the text on its x, y coordinates
         gameName.anchor.setTo(0.5, 0.5)
-        
+
         game.optionCount = 0;
-       
+
         // if (game.gametype == "original") {
         game.addMenuOption('SinglePlayer', 200, function () {
+                        playSound("click");
                         game.singleplayer = true;
                         game.vsAi = true;
                         game.challengingFriend = false
                     //    game.state.start("ticTac");
-                        game.state.start("gameDif"); 
+                        game.state.start("gameDif");
                         });
         // }
 
@@ -65,10 +66,11 @@ var menuState = {
         //                     game.singleplayer = true;
         //                     game.vs3DAi = true;
         //                  //    game.state.start("ticTac");
-        //                     game.state.start("gameDif"); 
+        //                     game.state.start("gameDif");
         //                     });
         //  }
         game.addMenuOption('Local Multiplayer', 200, function () {
+                           playSound("click");
                            game.singleplayer = true
                            game.vsAi = false;
                            game.challengingFriend = false
@@ -76,8 +78,9 @@ var menuState = {
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Online Multiplayer', 200,function () {
-                            document.getElementById("chat-box").style.visibility = "visible";
-                            document.getElementById("open-box").style.visibility = "visible";
+                           playSound("click");
+                           document.getElementById("chat-box").style.visibility = "visible";
+                           document.getElementById("open-box").style.visibility = "visible";
                            game.singleplayer = false
                            game.vsAi = false;
                            game.challengingFriend = false
@@ -85,6 +88,7 @@ var menuState = {
                            game.state.start("ticTac");
                            });
         game.addMenuOption('Challenge Friend', 200,function () {
+                           playSound("click");
                            document.getElementById("chat-box").style.visibility = "visible";
                            document.getElementById("open-box").style.visibility = "visible";
                            game.singleplayer = false
@@ -101,10 +105,11 @@ var menuState = {
             // dbRefObject.set(
             //     game.cash
             // );
+            playSound("click");
             window.location.href = "mainMenu.html" + '#&&' + game.userkey + '&&' + game.username + '&&' + game.battleText + '&&' + game.cash + '&&' + game.url + '&&null';
         });
-    //});        
+    //});
 
     },
-    
+
 };

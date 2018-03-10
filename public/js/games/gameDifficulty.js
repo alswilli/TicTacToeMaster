@@ -9,26 +9,30 @@ var gameDifficultyState  = {
         )
 
         gameDifficultyHeader.anchor.setTo(0.5, 0.5)
-        
+
         game.optionCount = 0;
 
         game.addMenuOption('Easy', 200, function () {
+            playSound("click");
             game.difficulty = 'easy'
             game.state.start("ticTac");
             });
-        
+
         game.addMenuOption('Medium', 200, function () {
+            playSound("click");
             game.difficulty = 'medium'
             game.state.start("ticTac");
             });
 
         game.addMenuOption('Hard', 200, function () {
+            playSound("click");
             game.difficulty = 'hard'
             game.state.start("ticTac");
             });
 
         // If neither option, do the database logic with leaderboards, achievements, currency, etc. (we will add more to here later, thoughwill need to be in home page because href loads first)
         game.addMenuOption('Back to Menu Page', 200, function () {
+            playSound("click");
             game.state.start("menu");
             // var dbRefObject = firebase.database().ref('/users/' + game.userkey + '/cash/');
             // console.log("Cash:", game.cash);
@@ -37,7 +41,7 @@ var gameDifficultyState  = {
             // );
             // window.location.href = "mainMenu.html" + '#&&' + game.userkey + '&&' + game.username + '&&' + game.battleText + '&&' + game.cash + '&&' + game.url + '&&null';
         });
-    //});        
+    //});
 
     },
 };

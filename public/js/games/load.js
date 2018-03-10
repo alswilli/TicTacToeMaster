@@ -16,9 +16,9 @@ console.log(argumentVals);
 
 
 var loadState = {
-  
+
     /*
-        preload is a function called before any game logic is exectued, every state 
+        preload is a function called before any game logic is exectued, every state
         can have its own preload() function,but its easier to keep it all here
     */
     preload() {
@@ -40,18 +40,18 @@ var loadState = {
         game.load.image('forfeit', 'imgs/forfeit.png');
 
         game.load.image('menubackground', 'imgs/menubackgroundtwo.png');
-        
+
         game.load.image('logo', 'imgs/phaser.png');
 
         game.load.image('board', 'imgs/angledBoard.png');
         game.load.image('greensquare', prefix + 'greensquare.png')
         game.load.image('redsquare', prefix + 'redsquare.png')
         game.load.image('poopemoji', 'imgs/poop.png')
-        
+
         game.load.image('square', prefix + 'square.png')
         console.log(prefix)
-    },  
-    
+    },
+
     /*
         creates this state, which has the sole purpose of switching to the menu after
         it loads the images
@@ -64,7 +64,7 @@ var loadState = {
         game.checkForDoubleClick = this.checkForDoubleClick
         game.animateOpponentLeaving = this.animateOpponentLeaving
         game.startMultiplayer = this.startMultiplayer
-        
+
         game.gametype = app.gameType;
         game.userkey = app.keyValue;
         game.nameOfUser = app.username;
@@ -76,11 +76,11 @@ var loadState = {
         game.opponentLeft = false;
         game.state.start('menu');
     },
-    
+
     handleOpponentLeaving()
     {
         console.log("opponent left")
-        
+        playSound("oppLeft");
         if(game.state.current==="ticTac")
             {
                 Client.disconnectedFromChat({"opponent": game.opponent});
@@ -93,12 +93,13 @@ var loadState = {
         }
         game.opponentLeft = true;
         $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
-                                                                            'right' : '-20%'    
-                                                                            });  
+                                                                            'right' : '-20%'
+                                                                            });
     },
-    
+
     loadOpponent(data)
     {
+        playSound("oppJoined");
         if(game.id === data.id)
         {
             game.opponent = data.challenger
@@ -109,32 +110,32 @@ var loadState = {
             game.opponent = data.username
             game.opponentKey = data.userkey
         }
-        firebase.database().ref('/users/' + game.opponentKey).once('value').then(function(snapshot)                                                         
+        firebase.database().ref('/users/' + game.opponentKey).once('value').then(function(snapshot)
         {
-             game.opponentBattleText = (snapshot.val().battleText);            
+             game.opponentBattleText = (snapshot.val().battleText);
              var img = (snapshot.val().image);
-             firebase.storage().ref(img).getDownloadURL().then(function(url) 
+             firebase.storage().ref(img).getDownloadURL().then(function(url)
              {
                    game.opponentPicURL = url;
                    document.getElementById('opponentUsername').innerHTML = game.opponent;
                    document.getElementById('opponentBattleText').innerHTML = '"' + game.opponentBattleText +'"';
                    //document.getElementById('cash').innerHTML = '$' + cashMoney;
                    $('#opponentImage').attr('src', url);
-                   document.getElementById('opponentCard').style.visibility = "visible";                                           
+                   document.getElementById('opponentCard').style.visibility = "visible";
                    $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
-                                                                                       'right' : '0%'    
-                                                                                       });  
+                                                                                       'right' : '0%'
+                                                                                       });
                    game.opponentLeft = false;
                    game.startMatch(data);
               })
      })
     },
-    
+
     disconnectSocket()
     {
         Client.disconnect();
     },
-    
+
     checkForDoubleClick()
     {
         var turn
@@ -152,25 +153,25 @@ var loadState = {
         else
             return false
     },
-    
+
     animateOpponentLeaving()
     {
         game.opponentLeft = true;
         $('#opponentCard').css({ 'right': '0px', 'right': '-20%' }).animate({
-                                                                            'right' : '-20%'    
+                                                                            'right' : '-20%'
                                                                             });
     },
-    
+
     startMultiplayer()
     {
         if(game.firstPlay === true)
         {
-            
+
             if(game.challengingFriend)
             {
                 Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey, "friend":game.friend.username});
             }
-            else 
+            else
             {
                 makeClient();
                 Client.makeNewPlayer({"name":game.username, "gametype":game.gametype, "userkey":game.userkey});
@@ -184,9 +185,9 @@ var loadState = {
             game.askForRematch()
         }
     }
-    
-    
-    
+
+
+
 };
 
 

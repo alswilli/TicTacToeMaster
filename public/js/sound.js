@@ -92,11 +92,17 @@ function getSoundVolume(soundType) {
 function getSoundPath(sound) {
    if (sound == "main")   return "sounds/main_menu.mp3";
    if (sound == "game")   return "sounds/lobby1.wav";
+
    if (sound == "lose")   return "sounds/lose_drums1.wav";
-   if (sound == "draw")   return "sounds/lose_drums2.wav";
+   if (sound == "draw")   return "sounds/draw1.wav";
    if (sound == "win")    return "sounds/win1.mp3";
-   if (sound == "select") return "sounds/menu_select.wav"
-   if (sound == "piece")  return "sounds/click2.wav"
+   if (sound == "hover")  return "sounds/select4.mp3";
+   if (sound == "click")  return "sounds/select3.wav";
+   if (sound == "achievement")   return "sounds/achievement1.mp3";
+   if (sound == "placeMyPiece")  return "sounds/click2.wav";
+   if (sound == "placeOppPiece") return "sounds/click3.wav";
+   if (sound == "oppJoined") return "sounds/slide_in.wav";
+   if (sound == "oppLeft")   return "sounds/slide_out.wav";
 }
 
 /* Toggles whether the sound button is muted or not.
@@ -149,6 +155,7 @@ function adjustVolume(slider) {
    for (var i=0; i<sounds.length; i++) {
       sounds[i].volume = slider.value;
    }
+   console.log(soundType+" : "+slider.value);
 }
 
 /* Stores the volume value of the given sound type.

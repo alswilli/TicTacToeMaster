@@ -14,25 +14,25 @@ var ultimateTTTState = {
      */
     update() {
     },
-    
+
     preload() {
         game.load.image('comet', 'imgs/comet.png');
         game.load.image('cometTail', 'imgs/cometTail.png');
     },
-    
-    
+
+
     /*
      called when the game starts
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
-        
-		//create background
-		var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+
+      //create background
+      var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
         background.anchor.set(0.5);
         background.width = game.screenWidth;
         background.height = 700;
-        
+
         game.boardHeight = 102
         game.boardOffset = 15
         game.pieceWidth = 38
@@ -45,8 +45,8 @@ var ultimateTTTState = {
         game.isDraw = false
         game.magicSquare = false
         game.firstTime = true
-        
-        
+
+
         // game.boardIsDraw = {}
 
         // game.boardIsDraw = [];
@@ -54,14 +54,14 @@ var ultimateTTTState = {
         //     game.boardIsDraw[i]=new Array(game.n)
         // }
 
-         
+
         game.turns = 0
         game.linesToAnimate = 0
 
         game.boardTurns = [];
         for (var i=0; i < game.n; i++) {
             game.boardTurns[i]=new Array(game.n)
-        }  
+        }
 
         for (var i=0; i < game.n; i++)
         {
@@ -72,7 +72,7 @@ var ultimateTTTState = {
         }
 
         console.log("First Time")
-        
+
         //the top left coordinate to place the whole board at, we will make game
         //not hardcoded in the furture to center the board, but I believe we need jQuery
         //to get window size and I didn't feel like learning that right now
@@ -96,7 +96,7 @@ var ultimateTTTState = {
         game.bigBoardLogic = []
         for (var i=0; i < game.n; i++) {
             game.bigBoardLogic[i]=new Array(game.n)
-        }  
+        }
 
         for (var i=0; i < game.n; i++)
         {
@@ -109,7 +109,7 @@ var ultimateTTTState = {
         game.magicBoardLogic = []
         for (var i=0; i < game.n; i++) {
             game.magicBoardLogic[i]=new Array(game.n)
-        }  
+        }
 
         for (var i=0; i < game.n; i++)
         {
@@ -118,15 +118,15 @@ var ultimateTTTState = {
                 game.magicBoardLogic[i][j] = "null"
             }
         }
-        
+
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
 
         game.cursorSquares = []
         for (var i=0; i < game.n; i++) {
             game.cursorSquares[i]=new Array(game.n)
-        } 
-        
+        }
+
         game.redSquares = []
         for (var i=0; i < game.n; i++) {
             game.redSquares[i]=new Array(game.n)
@@ -138,7 +138,7 @@ var ultimateTTTState = {
                     game.redSquares[i][j][k]=new Array(game.n)
                 }
             }
-        } 
+        }
 
         for (var i=0; i < game.n; i++)
         {
@@ -157,7 +157,7 @@ var ultimateTTTState = {
             }
         }
         game.firstTime = false
-        
+
         //create an internal representation of the board as a 2D array
         game.board = game.makeBoardAsArray(game.n)
         //create the board on screen and makes each square clickable
@@ -167,13 +167,13 @@ var ultimateTTTState = {
         //folloowing logic is for multiplayer games
         if(game.singleplayer || game.vsAi)
             return
-        
+
         game.previousPiece = ""
         //if this is the first play against an opponent, create a new player on the server
         game.startMultiplayer()
-        
+
     },
-    
+
     /*
      returns nxn 4D array
      board[i][j] = big board coordinates
@@ -192,9 +192,9 @@ var ultimateTTTState = {
                     board[i][j][k]=new Array(n)
                 }
             }
-            
+
         }
-        
+
         for (var i=0; i < n; i++)
         {
             for (var j=0; j < n; j++)
@@ -207,10 +207,10 @@ var ultimateTTTState = {
                 }
             }
         }
-        
+
         return board;
     },
-    
+
     /*
      creates the board on screen with clickable squares, game.n, game.board, and
      game.startingCX and Y must be defined before calling game function
@@ -246,32 +246,33 @@ var ultimateTTTState = {
         }
         game.drawLines()
     },
-    
-    
-    
+
+
+
     /*
         places a piece on an empty square, either x or o depending whose turn it is
      */
     placePiece(sprite, pointer)
     {
+        playSound("placeMyPiece");
         //if we are waiting for the opponent, do nothing on click
         if(game.waiting)
             return
         if(game.multiplayer && game.checkForDoubleClick())
             return
-        //the indexes in the 2D big array corresponding to the clicked square    
+        //the indexes in the 2D big array corresponding to the clicked square
         var bigIndexX = sprite.bigXindex
         console.log("bX: ", bigIndexX)
         var bigIndexY = sprite.bigYindex
         console.log("bY: ", bigIndexY)
-        
+
         //the indexes in the 2D little array corresponding to the clicked square
         var littleIndexX = sprite.littleXindex
         console.log("lX: ", littleIndexX)
         var littleIndexY = sprite.littleYindex
         console.log("lY: ", littleIndexY)
-        
-        sprite.isEnabled = false  
+
+        sprite.isEnabled = false
 
         if(game.magicBoardLogic[bigIndexX][bigIndexY] === "magic")
         {
@@ -284,12 +285,12 @@ var ultimateTTTState = {
         // }
         else if(game.bigBoardLogic[bigIndexX][bigIndexY] === "open")
             console.log('OPEN')
-        else if(game.bigBoardLogic[bigIndexX][bigIndexY] === "closed") 
+        else if(game.bigBoardLogic[bigIndexX][bigIndexY] === "closed")
         {
             console.log('CLOSED')
             return
         }
-        
+
         //if the clicked square OR BIGSQUARE is not empty, i.e it has a value other than a blank
         //string, don't do anything
         if(typeof game.board[bigIndexY][bigIndexX] === 'string')
@@ -307,7 +308,7 @@ var ultimateTTTState = {
         //     return
         if(game.multiplayer)
             game.waiting = true;
-           
+
          //place either an x or o, depending whose turn it is
         if(game.isXTurn)
         {
@@ -322,11 +323,11 @@ var ultimateTTTState = {
             game.board[bigIndexY][bigIndexX][littleIndexY][littleIndexX] = "o";
             game.previousPiece = "o";
         }
-        
+
 
         game.updateTurnStatus(bigIndexX, bigIndexY, littleIndexX, littleIndexY)
     },
-    
+
     /*
         switch current turn, and display whose turn it is
      */
@@ -371,7 +372,7 @@ var ultimateTTTState = {
                     console.log("lx: ", lx)
                     console.log("ly: ", ly)
                     game.bigBoardLogic[i][j] = "open"
-                    game.cursorSquares[i][j].alpha = .7 
+                    game.cursorSquares[i][j].alpha = .7
                     // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 // If the click on a open spot sends you to magic board
@@ -381,7 +382,7 @@ var ultimateTTTState = {
                     {
                         for (var j = 0; j < 3; j++)
                         {
-                                // Set all squares to closed 
+                                // Set all squares to closed
                                 game.bigBoardLogic[i][j] = "closed"
                                 game.cursorSquares[i][j].alpha = 0
                         }
@@ -405,7 +406,7 @@ var ultimateTTTState = {
                     }
 
                     if (ly+1 < 3) {
-                        game.bigBoardLogic[lx][ly+1] = "open" // Bottom 
+                        game.bigBoardLogic[lx][ly+1] = "open" // Bottom
                         game.cursorSquares[lx][ly+1].alpha = .7
                         if (lx == x && ly+1 == y)
                             connectedSquare = true
@@ -443,7 +444,7 @@ var ultimateTTTState = {
                         game.bigBoardLogic[lx-1][ly+1] = "open" // Bottom left
                         game.cursorSquares[lx-1][ly+1].alpha = .7
                         if (lx-1 == x && ly+1 == y)
-                            connectedSquare = true 
+                            connectedSquare = true
                     }
 
                     for (var i = 0; i < 3; i++)
@@ -453,7 +454,7 @@ var ultimateTTTState = {
                                 // Set everything but the magic square(s) to open
                                 // game.bigBoardLogic[i][j] = "open"
                                 // game.cursorSquares[i][j].alpha = .7
-        
+
                                 if (game.magicBoardLogic[i][j] === "magic")
                                     // game.bigBoardLogic[i][j] = "closed"
                                     game.cursorSquares[i][j].alpha = 0
@@ -512,7 +513,7 @@ var ultimateTTTState = {
                             if (lx+2 == x && ly+1 == y)
                                 connectedSquare = true
                         }
-    
+
                         if (lx-2 > -1) {
                             console.log("B");
                             game.bigBoardLogic[lx-2][ly] = "open" // Left
@@ -552,15 +553,15 @@ var ultimateTTTState = {
                             if (lx-2 == x && ly+1 == y)
                                 connectedSquare = true
                         }
-    
+
                         if (ly+2 < 3) {
                             console.log("C");
-                            game.bigBoardLogic[lx][ly+2] = "open" // Bottom 
+                            game.bigBoardLogic[lx][ly+2] = "open" // Bottom
                             game.cursorSquares[lx][ly+2].alpha = .7
                             if (lx == x && ly+2 == y)
                                 connectedSquare = true
                         }
-    
+
                         if (ly-2 > -1) {
                             console.log("D");
                             game.bigBoardLogic[lx][ly-2] = "open" // Top
@@ -568,7 +569,7 @@ var ultimateTTTState = {
                             if (lx == x && ly-2 == y)
                                 connectedSquare = true
                         }
-    
+
                         if (lx+2 < 3 && ly-2 > -1) {
                             console.log("E");
                             game.bigBoardLogic[lx+2][ly-2] = "open" // Top right
@@ -576,7 +577,7 @@ var ultimateTTTState = {
                             if (lx+2 == x && ly-2 == y)
                                 connectedSquare = true
                         }
-    
+
                         if (lx-2 > -1 && ly-2 > -1) {
                             console.log("F");
                             game.bigBoardLogic[lx-2][ly-2] = "open" // Top left
@@ -584,7 +585,7 @@ var ultimateTTTState = {
                             if (lx-2 == x && ly-2 == y)
                                 connectedSquare = true
                         }
-    
+
                         if (lx+2 < 3 && ly+2 < 3) {
                             console.log("g");
                             game.bigBoardLogic[lx+2][ly+2] = "open" // Bottom right
@@ -592,13 +593,13 @@ var ultimateTTTState = {
                             if (lx+2 == x && ly+2 == y)
                                 connectedSquare = true
                         }
-    
+
                         if (lx-2 > -1 && ly+2 < 3) {
                             console.log("H");
                             game.bigBoardLogic[lx-2][ly+2] = "open" // Bottom left
                             game.cursorSquares[lx-2][ly+2].alpha = .7
                             if (lx-2 == x && ly+2 == y)
-                                connectedSquare = true 
+                                connectedSquare = true
                         }
                     }
 
@@ -609,7 +610,7 @@ var ultimateTTTState = {
                                 // Set everything but the magic square(s) to open
                                 // game.bigBoardLogic[i][j] = "open"
                                 // game.cursorSquares[i][j].alpha = .7
-        
+
                                 if (game.magicBoardLogic[i][j] === "magic")
                                     // game.bigBoardLogic[i][j] = "closed"
                                     game.cursorSquares[i][j].alpha = 0
@@ -637,17 +638,19 @@ var ultimateTTTState = {
         else
             game.turnStatusText.setText(game.opponent + "'s turn")
     },
-    
+
     /*
         Make sure only one player is waiting at a time for the opponent
      */
     synchronizeTurn(id, coordInfo)
     {
         //if the id received is this player, that means this player just moved, so they should be waiting now
-        if(game.id === id)
-            game.waiting = true
-        else
-            game.waiting = false
+        if(game.id === id) {
+            game.waiting = true;
+        }else {
+            playSound("placeOppPiece");
+            game.waiting = false;
+        }
         if(game.isOver(coordInfo.bx, coordInfo.by, coordInfo.lx, coordInfo.ly))
         {
             if(game.isDraw) {
@@ -664,7 +667,7 @@ var ultimateTTTState = {
         console.log("synchronizre it")
         game.switchTurn(bx,by,lx,ly) // May need to change so that it is passing bigX and bigY for updating small board turn count
     },
-    
+
     /*
      adds a sprite to the screen and returns a reference to it, scales image down
      to half its size, we can change game later
@@ -676,7 +679,7 @@ var ultimateTTTState = {
         sprite.height = game.squareSize
         return sprite
     },
-    
+
     /*
      prints 2D array board to console, used for debugging
      */
@@ -698,7 +701,7 @@ var ultimateTTTState = {
         }
         console.log("");
     },
-    
+
     /*
      check if the game is over, given the index of the piece that was just placed
      */
@@ -711,13 +714,13 @@ var ultimateTTTState = {
 
         var lPosDiagonal = new Set()
         var lNegDiagonal = new Set()
-        
+
         var bHorizontal = new Set()
         var bVertical = new Set()
 
         var bPosDiagonal = new Set()
         var bNegDiagonal = new Set()
-        
+
         // First, check the little boards
         for (var y=0; y < game.n; y++){
             //check the possible horizontal and vertical wins for the given placement
@@ -774,7 +777,7 @@ var ultimateTTTState = {
             game.board[bRow][bCol] = 'Draw'
             console.log("lDraw")
         }
-        
+
         // return gameOver
         // TODO: make function called "update big board", pass (boardOver)
         if(boardOver == true)
@@ -807,7 +810,7 @@ var ultimateTTTState = {
         {
             gameOver = true
             game.isDraw = false
-            
+
             var lineAngle = 0
             var startingX = game.startingX + (game.squareSize * 3 * (bCol+1)) - (game.squareSize*3/2)
             game.drawWinningLine(startingX, game.startingY - 15, startingX, 800, lineAngle, 330)
@@ -843,9 +846,9 @@ var ultimateTTTState = {
             game.isDraw = true
             console.log("bDraw")
         }
-        
+
         return gameOver
-        
+
     },
 
     /*
@@ -871,16 +874,16 @@ var ultimateTTTState = {
     //     sprite.width = width
     //     sprite.height = height
 
-    //     // var mask = new PIXI.Graphics();   
-    //     // mask.position.x = x;   
-    //     // mask.position.y = y;   
-    //     // mask.beginFill(0, 1);   
-    //     // mask.moveTo(0, 0);   
-    //     // mask.lineTo(100, 0);   
-    //     // mask.lineTo(100, 100);   
-    //     // mask.lineTo(0, 100);   
-    //     // mask.lineTo(0, 0);   
-    //     // mask.endFill();   
+    //     // var mask = new PIXI.Graphics();
+    //     // mask.position.x = x;
+    //     // mask.position.y = y;
+    //     // mask.beginFill(0, 1);
+    //     // mask.moveTo(0, 0);
+    //     // mask.lineTo(100, 0);
+    //     // mask.lineTo(100, 100);
+    //     // mask.lineTo(0, 100);
+    //     // mask.lineTo(0, 0);
+    //     // mask.endFill();
     //     // sprite.mask = mask;
 
     //     return sprite
@@ -917,13 +920,13 @@ var ultimateTTTState = {
             bigPiece.big = true
             game.board[bRow][bCol] = "o";
         }
-        
+
         game.magicBoardLogic[bCol][bRow] = "magic"
         game.bigBoardLogic[bCol][bRow] = "closed"
         console.log("IN updateBigBoard, length of game.bigPlacedPieces = " + game.bigPlacedPieces.length)
         // game.updateTurnStatus(bigIndexX, bigIndexY, littleIndexX, littleIndexY)
     },
-    
+
     /*
      switch the the winState, indicating who the winner is
      */
@@ -939,13 +942,13 @@ var ultimateTTTState = {
                 game.winner = game.opponent
         }
 
-        
+
         game.saveBoard()
-        
+
         game.state.start('win')
     },
-    
-    
+
+
     /*
      save the ending board for game state, so that is can be displayed in the winState
      */
@@ -957,7 +960,7 @@ var ultimateTTTState = {
               game.endingBoard.push(item)
         });
     },
-    
+
     /*
         Update the board, given a 2D array of the board. Used to update boards between two players
      */
@@ -970,10 +973,10 @@ var ultimateTTTState = {
         //updated the game board
         game.board = board
         console.log(board)
-            
+
         var row = coordInfo.x
         var col = coordInfo.y
-            
+
         if(game.isXTurn)
         {
             var coords = game.convertIndexesToCoords(row, col)
@@ -999,7 +1002,7 @@ var ultimateTTTState = {
         //draw the pieces on the screen
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {
-                
+
                 var bx = game.startingX + i*game.squareSize*3;
                 var by = game.startingY + j * game.squareSize*3;
                 if(game.board[j][i] === "x"){
@@ -1021,7 +1024,7 @@ var ultimateTTTState = {
                     // I think a poop emoji image would be best here
 
                     // var bigPiece = game.addDrawSpriteWithWidth(game.startingX + bCol*game.squareSize*3, game.startingY + bRow*game.squareSize*3, 'star', 'moon', game.squareSize*3, game.squareSize*3)
-                    
+
                     var bigPiece1 = game.addSpriteWithWidth(bx, by, 'poopemoji', game.squareSize*3, game.squareSize*3)
                     bigPiece1.big = true
                     //game.bigPlacedPieces.push(bigPiece1);
@@ -1040,7 +1043,7 @@ var ultimateTTTState = {
                         }
                         else if(game.board[j][i][l][k] === "x"){
                             game.addSprite(lx, ly, 'X');
-                            
+
                         }
                         else if(game.board[j][i][l][k] === "o"){
                             game.addSprite(lx, ly, 'O');
@@ -1050,24 +1053,24 @@ var ultimateTTTState = {
             }
         }
     },
-    
+
     convertIndexesToCoords(row, col)
     {
         var x = game.startingX + row *game.squareSize;
         var y = game.startingY + col * game.squareSize;
         return [x, y]
     },
-    
-    
+
+
     assignID(id){
         game.id = id;
         console.log("id is "+ game.id)
     },
-    
+
     assignRoom(room){
         game.room = room
     },
-    
+
     /*
         Start an initial match between two players
      */
@@ -1097,9 +1100,9 @@ var ultimateTTTState = {
         //game.showOpponent();
         console.log("you are challenged by " + game.opponent)
         console.log("you are challenged by key " + game.opponentKey)
-        
+
     },
-    
+
     /*
         Restart a match between two players, switches the last x player to be o this time and vice versa
      */
@@ -1120,7 +1123,7 @@ var ultimateTTTState = {
             game.playerPieceText.setText("You are X")
             game.turnStatusText.setText("Your Turn")
         }
-        
+
     },
 
     /*
@@ -1133,13 +1136,13 @@ var ultimateTTTState = {
         game.turnStatusText.setText("Waiting for opponent")
         Client.askForRematch(game.room)
     },
-    
+
     /*
         Initialize the texts used to display turn status and matching status
      */
     addTexts(){
         var startingMessage = (game.singleplayer || game.vsAi) ? "Current Turn: X" : "Searching for Opponent"
-        
+
         game.turnStatusText = game.add.text(
             game.world.centerX, 50, startingMessage,
                     { font: '50px Arial', fill: '#ffffff' }
@@ -1147,7 +1150,7 @@ var ultimateTTTState = {
         //setting anchor centers the text on its x, y coordinates
         game.turnStatusText.anchor.setTo(0.5, 0.5)
         game.turnStatusText.key = 'text'
-        
+
         game.playerPieceText = game.add.text(
             game.world.centerX, 600-50, '',
                 { font: '50px Arial', fill: '#ffffff' }
@@ -1155,11 +1158,11 @@ var ultimateTTTState = {
         //setting anchor centers the text on its x, y coordinates
         game.playerPieceText .anchor.setTo(0.5, 0.5)
         game.playerPieceText.key = 'text'
-        
-        
-        
+
+
+
     },
-    
+
     /*
         Update the status of the current turn player
      */
@@ -1171,22 +1174,22 @@ var ultimateTTTState = {
                  if(game.isDraw) {
                      game.displayWinner()
                  }
-                //game.displayWinner()  
+                //game.displayWinner()
                 game.waiting = true
             }
             else {
-               game.switchTurn(bigIndexX, bigIndexY, littleIndexX, littleIndexY); 
+               game.switchTurn(bigIndexX, bigIndexY, littleIndexX, littleIndexY);
                game.waiting = true;
             //    console.log("indexX: "+indexX+" indexY: "+indexY);
                console.log(game.board);
                //console.log(boardToArray());
-               
+
                var aiMoveCoords = []
                aiMoveCoords = game.aiMakesMove(littleIndexX, littleIndexY);
                game.switchTurn(aiMoveCoords[0], aiMoveCoords[1], aiMoveCoords[2], aiMoveCoords[3]); // needs to pass ai move instread
                //console.log(boardToArray());
                game.waiting = false;
-               
+
             }
         }
         else if(game.singleplayer)
@@ -1209,14 +1212,14 @@ var ultimateTTTState = {
             var data = {board:game.board, bx:bigIndexX, by:bigIndexY, lx: littleIndexX, ly: littleIndexY, id:game.id};
             Client.sendClick(data);
         }
-        
+
         //for debugging
         game.printBoard();
     },
-    
+
     rescaleSprites()
     {
-        
+
         game.endingBoard.forEach(function(element) {
              if(element.key != 'text' && element.key != 'redsquare' && !element.big && element.key != 'cometTail' && element.key != 'greensquare')
                     game.addSprite(element.x, element.y, element.key);
@@ -1232,7 +1235,7 @@ var ultimateTTTState = {
          });
         game.drawLines()
     },
-    
+
     drawLines()
     {
         for (var i = 1; i < 3; i++)
@@ -1241,14 +1244,14 @@ var ultimateTTTState = {
             horzLine.lineStyle(6, 0xffff0, 1);
             horzLine.lineTo(game.squareSize*9,0);
             horzLine.endFill();
-            
+
             var vertLine = game.add.graphics(game.startingX + i*game.squareSize*3, game.startingY)
             vertLine.lineStyle(6, 0xffff0, 1);
             vertLine.lineTo(0,game.squareSize*9);
             vertLine.endFill();
         }
     },
-    
+
     drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
     {
         game.linesToAnimate++
@@ -1262,7 +1265,7 @@ var ultimateTTTState = {
         game.tstartY = startY
         tween.onComplete.add(function() { game.showLine(startX, startY, angle, lineExtra); });
     },
-    
+
     showLine(startX, startY, angle, lineExtra)
     {
         var piece2 = game.addSpriteNoScale(startX , startY, 'cometTail');
@@ -1275,13 +1278,13 @@ var ultimateTTTState = {
         piece2.angle = angle
         piece2.lineExtra = lineExtra
         //console.log("complete tween")
-        
+
         var tween = game.add.tween(piece2).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
         //var tween = game.add.tween(line).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
         tween.onComplete.add(game.completeDraw)
     },
-    
-    
+
+
     completeDraw()
     {
         game.linesToAnimate--
@@ -1289,10 +1292,10 @@ var ultimateTTTState = {
         if(game.linesToAnimate === 0)
             game.displayWinner()
             },
-    
+
     addSpriteNoScale(x, y, name) {
         var sprite = game.add.sprite(x, y, name);
-        
+
         return sprite
     },
 
@@ -1300,7 +1303,7 @@ var ultimateTTTState = {
     // var human = "x";
     // var ai    = "o";
 
-        
+
     /* This is called when for the ai to make a move.
     * Converts the board to a single array for minimax to calculate where to play a move.
     * Then we place the move there for the AI.
@@ -1327,32 +1330,32 @@ var ultimateTTTState = {
         else if (game.difficulty == 'hard') {
             var actualMove = (Math.random() < 0.98) ? move : newBoardArr[Math.floor(Math.random()*newBoardArr.length)]
             // var actualMove = move
-            console.log("HARD MODE")   
+            console.log("HARD MODE")
         }
         console.log("MOVE: ", move)
         console.log("ACTUAL MOVE: ", actualMove)
-        
+
         //    var convertedMove = convertMove(move);
         if (actualMove == move)
         {
             console.log("a")
             var convertedMove = game.convertMove(actualMove);
-        } 
+        }
         else
         {
             console.log("b")
-            var convertedMove = game.convertRandMove(actualMove);   
-        } 
+            var convertedMove = game.convertRandMove(actualMove);
+        }
         //    console.log("AI's move: ", move);
         console.log("AI's move: ", move);
         console.log("convertedMove: ", convertedMove);
-        
+
         game.placePieceAt(y, x, convertedMove.row, convertedMove.column, boardArr[0]);
 
         if(game.isOver(x, y, convertedMove.column, convertedMove.row)) {
             game.displayWinner();
         }
-        
+
         // boardArr = game.boardToArray(convertedMove.column, convertedMove.row);
 
         // if ( game.gameIsWon(boardArr[0], game.human) || game.gameIsWon(boardArr[0], game.ai) ) {
@@ -1376,8 +1379,8 @@ var ultimateTTTState = {
         return array;
     },
 
-    
-    /* Draws a piece at the given index 
+
+    /* Draws a piece at the given index
     */
     placePieceAt(y , x , row , col, boardArr) {
         var piece = game.addSprite(game.startingX + x*game.squareSize*3 + col*game.squareSize, game.startingY + y * game.squareSize*3 + row*game.squareSize, 'O');
@@ -1414,8 +1417,8 @@ var ultimateTTTState = {
     //    game.board[row][col] = "o";
     },
 
-        
-    /* Converts the board to a single array 
+
+    /* Converts the board to a single array
     */
     boardToArray(x, y) {
         // Needs to pass big board coords (need to stay constant so it plays on on board)
@@ -1441,13 +1444,13 @@ var ultimateTTTState = {
             console.log("NEW SPOT: ", newSpot)
             x = newSpot.a
             y = newSpot.b
-        }  
+        }
 
         var i = x
         console.log('i: ', i)
         var j = y
         console.log('j: ', j)
-        
+
         for (var k=0; k<3; k++) {
             for (var l=0; l<3; l++) {
                 if (game.board[j][i][k][l] != "" && game.board[j][i][k][l] != "undefined") {
@@ -1467,7 +1470,7 @@ var ultimateTTTState = {
     */
     convertMove(move) {
         var loc = {};
-        
+
         loc.row    = Math.floor(move.index / 3);
         loc.column = move.index % 3;
         return loc;
@@ -1477,13 +1480,13 @@ var ultimateTTTState = {
     */
     convertRandMove(move) {
         var loc = {};
-        
+
         loc.row    = Math.floor(move / 3);
         loc.column = move % 3;
         return loc;
     },
 
-        
+
     /* Returns the list of indexes of empty spaces on the board
     */
     emptyIndexies(board){
@@ -1494,19 +1497,19 @@ var ultimateTTTState = {
     /* Tests if the given player has won the board by checking all combinations
     * 0 1 2
     * 3 4 5
-    * 6 7 8 
+    * 6 7 8
     */
     gameIsWon(board, player) {
     if ( (board[0] == player && board[1] == player && board[2] == player) || //Horizontals
             (board[3] == player && board[4] == player && board[5] == player) ||
             (board[6] == player && board[7] == player && board[8] == player) ||
-            
+
             (board[0] == player && board[3] == player && board[6] == player) || //Verticals
             (board[1] == player && board[4] == player && board[7] == player) ||
             (board[2] == player && board[5] == player && board[8] == player) ||
-        
+
             (board[0] == player && board[4] == player && board[8] == player) || //Diagonals
-            (board[2] == player && board[4] == player && board[6] == player) ) 
+            (board[2] == player && board[4] == player && board[6] == player) )
     {
         return true;
     }
@@ -1514,12 +1517,12 @@ var ultimateTTTState = {
     },
 
 
-    /* This is the minimax algorithm that recursively chooses the best move to play for the 
-    * ai by playing ahead. 
+    /* This is the minimax algorithm that recursively chooses the best move to play for the
+    * ai by playing ahead.
     * https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
     */
     minimax(newBoard, player) {
-    
+
         if ((newBoard.length) == 9) {
             var move = {};
             var availSpots = game.emptyIndexies(newBoard);
@@ -1529,7 +1532,7 @@ var ultimateTTTState = {
         }
 
         var availSpots = game.emptyIndexies(newBoard);
-        
+
         if (game.gameIsWon(newBoard, human)) {
             return {score: -10};
         }
@@ -1539,17 +1542,17 @@ var ultimateTTTState = {
         else if (availSpots.length == 0) {
             return {score:   0};
         }
-        
+
         var moves = []; //Collects all the objects
-        
+
         for (var i=0; i<availSpots.length; i++) {
-            
-            //Create an object for each and store the index of that spot 
+
+            //Create an object for each and store the index of that spot
             var move = {};
             move.index = newBoard[availSpots[i]];
-            
+
             newBoard[availSpots[i]] = player; //Set the empty spot to the current player
-            
+
             if (player == ai) {
                 var result = game.minimax(newBoard, human);
                 move.score = result.score;
@@ -1558,19 +1561,19 @@ var ultimateTTTState = {
                 var result = game.minimax(newBoard, ai);
                 move.score = result.score;
             }
-            
+
             newBoard[availSpots[i]] = move.index; //Reset the spot to empty
-            
+
             moves.push(move); //Push the spot to empty
         }
 
-        
+
         //If it's the ai's turn, loop over the moves and choose the one with the highest score
         var bestMove;
-        
+
         if (player == ai) {
             var bestScore = -10000;
-            
+
             for (var i=0; i<moves.length; i++) {
                 if (moves[i].score > bestScore) {
                     bestScore = moves[i].score;
@@ -1579,9 +1582,9 @@ var ultimateTTTState = {
             }
         }
         //Else it's the player's turn, so we loop over the moves and chosoe the one with the lowest score
-        else { 
+        else {
             var bestScore = 10000;
-            
+
             for (var i=0; i<moves.length; i++) {
                 if (moves[i].score < bestScore) {
                     bestScore = moves[i].score;
@@ -1589,15 +1592,15 @@ var ultimateTTTState = {
                 }
             }
         }
-        
+
         //Return the chosen move(object) from the moves array
         return moves[bestMove];
     },
-    
-    
+
+
     /*
         asign functions ot the game object, so they can be called by the client
-        technically this is a state object, so the functions in this file are not 
+        technically this is a state object, so the functions in this file are not
         automatically assigned to the game object.
      */
     assignFunctions()

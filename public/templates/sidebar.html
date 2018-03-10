@@ -24,13 +24,13 @@
         <td><a>BGM</a></td>
         <td><button id="bgmButton" class="soundButton" onclick="toggleSound(this)" value="on"></button></td>
         <td><input id="bgmSlider" class="slider" type="range" min="0" max="1" step="0.01" oninput="adjustVolume(this)"
-                   onchange="storeVolume('theme', this.value)" value="0.3"></td>
+                   onchange="storeVolume('theme', this.value)" value="0.2"></td>
       </tr>
       <tr id="botSlider">
         <td><a>SFX</a></td>
         <td><button id="sfxButton" class="soundButton" onclick="toggleSound(this)" value="on"></button></td>
         <td><input id="sfxSlider" class="slider" type="range" min="0" max="1" step="0.01" oninput="adjustVolume(this)"
-                   onchange="storeVolume('effect', this.value)" value="0.9"></td>
+                   onchange="storeVolume('effect', this.value)" value="0.5"></td>
       </tr>
     </table>
   </div>
