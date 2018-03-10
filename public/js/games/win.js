@@ -41,9 +41,9 @@ var winState = {
             console.log("Current cash amount: ", game.cash);
             if (game.userkey != null) {
                 if (game.singleplayer == true) {
-                    updateChallenges(game.userkey, "Draw", "Offline");
+                    updateChallenges(game.userkey, "Draw", "Offline", 'idk');
                 } else {
-                    updateChallenges(game.userkey, "Draw", "Online");
+                    updateChallenges(game.userkey, "Draw", "Online", 'idk');
                     updateLeaderboard(game.userkey, "draw");
                 }
             } else {
@@ -54,24 +54,29 @@ var winState = {
         else
         {
             if (game.forfeit) {
-                message = game.winner + ' wins via opponent forfeiting! '
+                console.log(game.player);
+                message = game.winner + ' wins via opponent forfeiting! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
                 submessage = game.winner + ' receives 50 gold coins!'
             }
-            else {
-                message = game.winner + ' wins! '
+            else { 
+               message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
                 submessage = game.winner + ' receives 50 gold coins!'
             }
             
             
             if (game.singleplayer == true)
             {
-                playSound("win");
+                if (game.winner == 'o') {
+                   playSound("lose");
+                }else {
+                   playSound("win");
+                }
                 game.cash = game.cash + 50;
                 console.log("Current cash amount: ", game.cash);
                 console.log("game.player:", game.player);
                 console.log("game.userkey", game.userkey);
                 console.log("game.username", game.username);
-                updateChallenges(game.userkey, "idk", "Offline");
+                updateChallenges(game.userkey, "idk", "Offline", 'idk');
             }
             else 
             {
@@ -89,7 +94,7 @@ var winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
-                        updateChallenges(game.userkey, "Wins", "Online");
+                        updateChallenges(game.userkey, "Wins", "Online", 'idk');
                         updateLeaderboard(game.userkey, "win");
                     }else {
                         console("USER IS NULL: Not updating score");  
@@ -101,7 +106,7 @@ var winState = {
                     console.log("game.player:", game.player);
                     console.log("game.userkey:", game.userkey);
                     if (game.userkey != null) {
-                        updateChallenges(game.userkey, "Losses", "Online");
+                        updateChallenges(game.userkey, "Losses", "Online", 'idk');
                         updateLeaderboard(game.userkey, "lose");
                     }else {
                         console.log("USER IS NULL: Not updating score");
@@ -174,9 +179,9 @@ function updateLeaderboard(userkey, result) {
                                                                                     
       updateScore( snapshot.val(), userkey, gametype, result);
       updateRating(snapshot.val(), userkey, gametype, result);
+      updateChallenges(userkey, result, 'Online', gametype);
    });
 }
-
 
 /* Updates the [win|loss] count of the user 
  */
@@ -191,7 +196,6 @@ function updateScore(userRef, userkey, gametype, result) {
     
    firebase.database().ref().child('leaderboard/'+gametype+'/'+userkey).update({ [result]: resultCount});
 }
-
 
 /* Calculates and updates the elo rating of the user given the result = [win|draw|loss]
  * Rating calculation is based on https://en.wikipedia.org/wiki/Elo_rating_system
@@ -243,7 +247,7 @@ function updateRating(userRef, userkey, gametype, result) {
 
 //takes in the userkey, the result of the game as 'Wins' 'Losses' or 'Draw',
 //and takes in the line to see if it is online or offline
-function updateChallenges(userkey, result, line) {
+function updateChallenges(userkey, result, line, gametype) {
 
     var check;
     var cashMoney;

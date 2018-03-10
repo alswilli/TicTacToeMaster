@@ -1,18 +1,19 @@
-<div class="cardPlain">  
+<div class="cardPlain">
     <div class="customization">
-    <div id="insufficientCash"> 
+    <div id="insufficientCash">
         <div class="insufficientCash-content">
             <header>Insufficient Cash</header>
             <p>Win more games and complete achievements to get more cash.</p>
-            <button id="closePopUp" class="w3-button w3-blue-gray" onclick="remove('insufficientCash')"> close </button>
+            <button id="closePopUp" class="w3-button w3-theme" onclick="remove('insufficientCash')"> close </button>
         </div>
     </div>
-    <div class="cardPlainTitle w3-blue-gray" style="border-radius: 5px;">
+    <div class="cardPlainTitle w3-theme" style="border-radius: 5px;">
         <h2 style="color:white;" class="centered">Tile Design</h2>
     </div>
-    <div id="confirmation"> 
+    <div id="confirmation">
         <div class="confirmation-content">
-            <header class="w3-blue-gray">Confirmation</header>
+            <!--					<span onclick="remove('confirmation')" class="w3-button w3-display-topright">&times;</span>-->
+            <header class="w3-theme">Confirmation</header>
             <div id="confirmInfo">
                 <p></p>
                 <img id="confirmationImage" style="width:100%; max-width: 300px">
@@ -58,7 +59,7 @@
                 <div class="w3-col l3 s6">
                     <div class="w3-container">
                         <div class="w3-display-container">
-                            <img id="boardImage2" src="imgs/waluigi.png" class="w3-grayscale-max">
+                            <img id="boardImage2" src="imgs/board2.png" class="w3-grayscale-max">
                             <span id="boardLockTag2" class="w3-tag w3-display-topleft">Locked</span>
                             <span id="boardSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
                             <div class="w3-display-middle w3-display-hover">
@@ -85,12 +86,12 @@
                 </div>
             </div>
         </div>
-        <div class="cardPlainTitle w3-blue-gray" style="border-radius: 5px;">
-					<button id="togglePiece" class="w3-button w3-black" onclick="togglePiece()">Toggle Piece</button>
+        <div class="cardPlainTitle w3-theme" style="border-radius: 5px;">
+               <button id="togglePiece" class="w3-button w3-black" onclick="togglePiece()">Toggle Piece</button>
           <h2 style="color:white;" class="centered">Piece Design</h2>
         </div>
         <div class="pieceDesign w3-container">
-            
+
             <div class="w3-row">
             <div class="w3-col l3 s6">
                 <div class="w3-container">
@@ -123,7 +124,7 @@
             <div class="w3-col l3 s6">
                 <div class="w3-container">
                     <div class="w3-display-container">
-                        <img id="pieceImage2" src="imgs/waluigi.png" class="w3-grayscale-max pieceImg">
+                        <img id="pieceImage2" src="imgs/pieceX2.png" class="w3-grayscale-max pieceImg">
                         <span id="pieceLockTag2" class="w3-tag w3-display-topleft">Locked</span>
                         <span id="pieceSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
                         <div class="w3-display-middle w3-display-hover">
@@ -150,7 +151,7 @@
             </div>
         </div>
     </div>
-    <div class="cardPlainTitle w3-blue-gray" style="border-radius: 5px;">
+    <div class="cardPlainTitle w3-theme" style="border-radius: 5px;">
         <h2 style="color:white;" class="centered">Background Design</h2>
     </div>
         <div class="backgroundDesign w3-container">
@@ -186,7 +187,7 @@
             <div class="w3-col l3 s6">
                 <div class="w3-container">
                     <div class="w3-display-container">
-                        <img id="backgroundImage2" src="imgs/waluigi.png" class="w3-grayscale-max">
+                        <img id="backgroundImage2" src="imgs/background2.png" class="w3-grayscale-max">
                         <span id="backgroundLockTag2" class="w3-tag w3-display-topleft">Locked</span>
                         <span id="backgroundSelectedTag2" class="w3-tag w3-green w3-display-topright" style="display: none">Selected</span>
                         <div class="w3-display-middle w3-display-hover">
