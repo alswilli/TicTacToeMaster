@@ -26,11 +26,7 @@ var challengeFriendState = {
         background.height = 700;
         document.getElementById("challengeFriend").style.visibility = "visible";
         
-        /*game.world.forEach(function(item)
-                           {
-                           console.log(item)
-                                                      item.destroy()
-                           });*/
+
         
         $('#challengeFriendForm').submit(function()
                                          {
