@@ -20,9 +20,9 @@ var orderChaosState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
         
-				var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
-    		background.anchor.set(0.5);
-				background.width = game.screenWidth;
+		var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+    	background.anchor.set(0.5);
+		background.width = game.screenWidth;
         background.height = 700;
 			
         game.linesToAnimate = 0
@@ -33,7 +33,6 @@ var orderChaosState = {
         game.isDraw = false
         game.turns = 0
         game.XPicked = true;
-        //game.pickedPiece = 'X'
         game.forfeit = false
         
         //for ai
@@ -186,12 +185,10 @@ var orderChaosState = {
                 if (j == 0) {
                     game.pickPieceBoard[i][j] = square;
                     var pieceImg = game.addSprite(square.x, square.y, 'X');
-                    //game.placedPieces.push(pieceImg);
                 }
                 if (j == 1) {
                     game.pickPieceBoard[i][j] = square;
                     var pieceImg = game.addSprite(square.x, square.y, 'O');
-                    //game.placedPieces.push(pieceImg);
                     square.alpha = 0.4; 
                 }
             }
@@ -279,9 +276,7 @@ var orderChaosState = {
             return
         if(game.multiplayer && game.checkForDoubleClick())
             return
-        // if(!game.piecePicked){
-        //     game.pickPiece();
-        // }
+
         //the indexes in the 2D array corresponding to the clicked square
         var indexX = sprite.xIndex
         var indexY = sprite.yIndex
@@ -380,7 +375,6 @@ var orderChaosState = {
                     console.log("x: ", x)
                     console.log("y: ", y)
                     game.cursorSquares[i][j].alpha = .7
-                    // game.cursorSquares[i][j].tint = 0xffffff
                 }
                 else
                 {
@@ -424,7 +418,6 @@ var orderChaosState = {
             if(game.isDraw) { // drawing lines
                 game.displayWinner()
             }
-            //game.displayWinner()
         }
         game.switchTurn(coordInfo.x, coordInfo.y)
     },
@@ -649,16 +642,12 @@ var orderChaosState = {
      switch the the winState, indicating who the winner is
      */
     displayWinner() {
-        console.log("POOPNUT")
         var winningPiece = game.isDraw ? 'chaos' : 'order'
         if (game.forfeit) {
-            console.log("a")
             if (game.isXTurn) {
-                console.log("b")
                 winningPiece = 'chaos'
             }
             else {
-                console.log("c")
                 winningPiece = 'order'
             }
         }
@@ -666,13 +655,10 @@ var orderChaosState = {
             game.winner = winningPiece
         else
         {
-            console.log("d")
             if(game.player === winningPiece) {
-                console.log("e")
                 game.winner = game.username
             }
             else {
-                console.log("f")
                 game.winner = game.opponent
             }
         }
@@ -702,33 +688,14 @@ var orderChaosState = {
     {
         if(game.state.current==="win")
             return
-        /*if(game.id === id)
-         return
-         //updated the game board
-         game.board = board
-         console.log(board)
-         
-         var row = coordInfo.x
-         var col = coordInfo.y
-         
-         if(game.isXTurn)
-         {
-         var coords = game.convertIndexesToCoords(row, col)
-         game.addSprite(coords[0], coords[1], 'X');
-         }
-         else
-         {
-         var coords = game.convertIndexesToCoords(row, col)
-         game.addSprite(coords[0], coords[1], 'O');
-         }
-         return*/
-            game.board = board
-            //rub out pieces, so we don't draw multiple on top of each other
-            for(var i in game.placedPieces)
-            {
-                game.placedPieces[i].kill();
-                game.placedPieces.splice(i, 1);
-            }
+
+        game.board = board
+        //rub out pieces, so we don't draw multiple on top of each other
+        for(var i in game.placedPieces)
+        {
+            game.placedPieces[i].kill();
+            game.placedPieces.splice(i, 1);
+        }
         //draw the pieces on the screen
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {
@@ -874,8 +841,7 @@ var orderChaosState = {
             if(game.isOver(indexX, indexY)) {
                 if(game.isDraw) {
                     game.displayWinner()
-                }
-                //game.displayWinner()  
+                }  
                 game.waiting = true
             }
             else if(game.playerMove){
@@ -883,11 +849,9 @@ var orderChaosState = {
                 game.waiting = true;
                 console.log("indexX: "+indexX+" indexY: "+indexY);
                 console.log(game.board);
-                //console.log(/*threeD*/game.boardToArray());
                 
                 game.aiMakesMove(indexY, indexX);
                 game.switchTurn();
-                //console.log(/*threeD*/game.boardToArray());
                 game.waiting = false;
                 
             }
@@ -901,7 +865,6 @@ var orderChaosState = {
                 if(game.isDraw || game.forfeit) {
                     game.displayWinner()
                 }
-                //game.displayWinner()
                 game.waiting = true
             }
             else
@@ -923,8 +886,6 @@ var orderChaosState = {
     drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
     {
         game.linesToAnimate++
-        //var piece2 = game.addSpriteNoScale(startX, startY, 'cometTail');
-        //game.add.tween(piece2.scale).to({  y: 2.7}, 500, Phaser.Easing.Linear.None, true);
         var piece = game.addSpriteNoScale(startX, startY, 'comet');
         piece.key = 'comet'
         piece.angle = angle
@@ -941,14 +902,12 @@ var orderChaosState = {
         piece2.height = game.squareSize*3 + lineExtra
         piece2.angle = angle
         console.log(startX + "," + startY)
-        //console.log(this)
+
         piece2.alpha = 0;
         piece2.angle = angle
         piece2.lineExtra = lineExtra
-        //console.log("complete tween")
         
         var tween = game.add.tween(piece2).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true);
-        //var tween = game.add.tween(line).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
         tween.onComplete.add(game.completeDraw)
     },
     

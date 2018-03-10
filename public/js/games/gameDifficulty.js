@@ -30,12 +30,7 @@ var gameDifficultyState  = {
         // If neither option, do the database logic with leaderboards, achievements, currency, etc. (we will add more to here later, thoughwill need to be in home page because href loads first)
         game.addMenuOption('Back to Menu Page', 200, function () {
             game.state.start("menu");
-            // var dbRefObject = firebase.database().ref('/users/' + game.userkey + '/cash/');
-            // console.log("Cash:", game.cash);
-            // dbRefObject.set(
-            //     game.cash
-            // );
-            // window.location.href = "mainMenu.html" + '#&&' + game.userkey + '&&' + game.username + '&&' + game.battleText + '&&' + game.cash + '&&' + game.url + '&&null';
+            
         });
     //});        
 

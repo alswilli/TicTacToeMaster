@@ -51,8 +51,6 @@ function initializeChallenge() {
       challenge100OAC = userChallenges.win100OAC;
       challenge100ULT = userChallenges.win100ULT;
 
-      console.log("challengePiece in: ", challengePiece);
-
       var challenge = document.getElementById('challengePiece');
       challenge.setAttribute('data-width', challengePiece);
 

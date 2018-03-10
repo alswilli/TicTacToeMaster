@@ -1,13 +1,3 @@
-// Initialize Firebase
-/*var config = {
-    apiKey: "AIzaSyARQqkwmw-yDfR4Fl7eyDSs464kPyDTWpo",
-    authDomain: "tictactoemaster-b46ab.firebaseapp.com",
-    databaseURL: "https://tictactoemaster-b46ab.firebaseio.com",
-    projectId: "tictactoemaster-b46ab",
-    storageBucket: "tictactoemaster-b46ab.appspot.com",
-    messagingSenderId: "1050901435462"
-};
-firebase.initializeApp(config);*/
 
 /*
     The menu displayed before starting the game. Very simple right now, just displays
@@ -49,25 +39,13 @@ var menuState = {
         
         game.optionCount = 0;
        
-        // if (game.gametype == "original") {
         game.addMenuOption('SinglePlayer', 200, function () {
                         game.singleplayer = true;
                         game.vsAi = true;
                         game.challengingFriend = false
-                    //    game.state.start("ticTac");
                         game.state.start("gameDif"); 
                         });
-        // }
 
-
-        // if (game.gametype == "3d") {
-        //     game.addMenuOption('SinglePlayer', 200, function () {
-        //                     game.singleplayer = true;
-        //                     game.vs3DAi = true;
-        //                  //    game.state.start("ticTac");
-        //                     game.state.start("gameDif"); 
-        //                     });
-        //  }
         game.addMenuOption('Local Multiplayer', 200, function () {
                            game.singleplayer = true
                            game.vsAi = false;
@@ -96,14 +74,8 @@ var menuState = {
         // If neither option, do the database logic with leaderboards, achievements, currency, etc. (we will add more to here later, thoughwill need to be in home page because href loads first)
         game.addMenuOption('Exit to Home Page', 250, function () {
 
-            // var dbRefObject = firebase.database().ref('/users/' + game.userkey + '/cash/');
-            // console.log("Cash:", game.cash);
-            // dbRefObject.set(
-            //     game.cash
-            // );
             window.location.href = "mainMenu.html" + '#&&' + game.userkey + '&&' + game.username + '&&' + game.battleText + '&&' + game.cash + '&&' + game.url + '&&null';
-        });
-    //});        
+        });        
 
     },
     
