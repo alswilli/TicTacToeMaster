@@ -702,33 +702,14 @@ var orderChaosState = {
     {
         if(game.state.current==="win")
             return
-        /*if(game.id === id)
-         return
-         //updated the game board
-         game.board = board
-         console.log(board)
-         
-         var row = coordInfo.x
-         var col = coordInfo.y
-         
-         if(game.isXTurn)
-         {
-         var coords = game.convertIndexesToCoords(row, col)
-         game.addSprite(coords[0], coords[1], 'X');
-         }
-         else
-         {
-         var coords = game.convertIndexesToCoords(row, col)
-         game.addSprite(coords[0], coords[1], 'O');
-         }
-         return*/
-            game.board = board
-            //rub out pieces, so we don't draw multiple on top of each other
-            for(var i in game.placedPieces)
-            {
-                game.placedPieces[i].kill();
-                game.placedPieces.splice(i, 1);
-            }
+        
+        game.board = board
+        //rub out pieces, so we don't draw multiple on top of each other
+        for(var i in game.placedPieces)
+        {
+            game.placedPieces[i].kill();
+            game.placedPieces.splice(i, 1);
+        }
         //draw the pieces on the screen
         for(var i=0; i < game.n; i++) {
             for (var j=0; j < game.n; j ++) {

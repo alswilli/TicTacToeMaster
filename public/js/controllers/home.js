@@ -30,7 +30,6 @@ angular.module('TicTacToeApp')
 
             app.gameType = "original";
             sessionStorage.setItem("gameType", "original")
-            console.log(app.gameType)
             $window.location.href = "#/game";
 
          });

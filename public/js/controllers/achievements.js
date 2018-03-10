@@ -47,8 +47,6 @@ function initializeChallenge() {
       challengeX = userChallenges.x;
       challengeMode = userChallenges.mode;
 
-      console.log("challengePiece in: ", challengePiece);
-
       var challenge = document.getElementById('challengePiece');
       challenge.setAttribute('data-width', challengePiece);
 
