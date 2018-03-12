@@ -619,11 +619,16 @@ var ticTacState = {
 
     showSprites()
     {
+        game.placedPieces.forEach(function(element)
+        {
+            game.addSprite(element.x, element.y, element.key);
+        });
+        
         game.endingBoard.forEach(function(element)
         {
 
             //console.log(element)
-             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background')
+             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background' && element.key != 'X' && element.key != 'O')
                                  {
                                  console.log(element.key)
                 game.addSprite(element.x, element.y, element.key);

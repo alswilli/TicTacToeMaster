@@ -165,6 +165,9 @@ var loadState = {
 
     startMultiplayer()
     {
+        document.getElementById("chat-box").style.visibility = "visible";
+        document.getElementById("open-box").style.visibility = "visible";
+        
         if(game.firstPlay === true)
         {
 
@@ -190,7 +193,7 @@ var loadState = {
     updatePlacedPieces(sprite)
     {
         if(sprite.key === "X" || sprite.key === "O")
-            game.placedPieces.push(sprite)
+           game.placedPieces.push(sprite)
     }
 
 

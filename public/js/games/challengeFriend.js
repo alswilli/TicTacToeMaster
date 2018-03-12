@@ -10,6 +10,8 @@ var challengeFriendState = {
         Client.checkForFriendChallenge({"name":game.username, "gametype":game.gametype, "userkey":game.userkey})
         game.makeChallengeMenu = this.makeChallengeMenu
         game.confirmChallenge = this.confirmChallenge
+        
+        document.getElementById("open-box").style.visibility = "hidden";
 
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'menubackground');
         background.anchor.set(0.5);
@@ -25,7 +27,7 @@ var challengeFriendState = {
         background.width = game.screenWidth;
         background.height = 700;
         document.getElementById("challengeFriend").style.visibility = "visible";
-
+        
 
 
         $('#challengeFriendForm').submit(function()

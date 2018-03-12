@@ -187,12 +187,14 @@ var orderChaosState = {
                 if (j == 0) {
                     game.pickPieceBoard[i][j] = square;
                     var pieceImg = game.addSprite(square.x, square.y, 'X');
+                    var index = game.placedPieces.indexOf(pieceImg)
+                    game.placedPieces.splice(index, 1);
                 }
                 if (j == 1) {
                     game.pickPieceBoard[i][j] = square;
                     var pieceImg = game.addSprite(square.x, square.y, 'O');
-
-                    square.alpha = 0.4;
+                    var index = game.placedPieces.indexOf(pieceImg)
+                    game.placedPieces.splice(index, 1);
 
                 }
             }
@@ -938,12 +940,17 @@ var orderChaosState = {
 
     showSprites()
     {
+        game.placedPieces.forEach(function(element)
+        {
+            game.addSprite(element.x, element.y, element.key);
+        });
+        
         game.endingBoard.forEach(function(element)
          {
 
          console.log(element)
-         if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background')
-         game.addSprite(element.x, element.y, element.key);
+         if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background' && element.key != 'X' && element.key != 'O' )
+            game.addSprite(element.x, element.y, element.key);
          else if(element.key === 'cometTail')
          {
              var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
