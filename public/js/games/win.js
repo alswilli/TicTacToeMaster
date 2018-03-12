@@ -294,7 +294,7 @@ function updateChallenges(userkey, result, line) {
                 //do nothing
             } else {
                 leaderboardRef.once('value', function (snapshot) {
-                    if (snapshot.val().win == 0 || snapshot.val().lose == 0) {
+                    if (snapshot.val().win == 0 && snapshot.val().lose == 0) {
                         //do nothing if they have a win or loss
                     } else {
                         if (check == '0%') {
