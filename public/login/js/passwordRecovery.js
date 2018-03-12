@@ -15,18 +15,17 @@ $(document).ready(function () {
 
    //Submit email
    function passwordRetreival(event) {
-      //alert("Email verified: Password Token sent!")
       event.preventDefault();
 
       // Get email value
       var email = getInputVal('email');
       console.log(email);
 
-      //var crapola = false;
       var inDB = false;
 
       var key;
 
+      // Verify email: Send to next page if found, else, alert user no email found
       firebase.database().ref().child('users').orderByChild('email').equalTo(email).on("value", function (snapshot) {
          var key;
          console.log("snapshot.val", snapshot.val());
@@ -46,6 +45,7 @@ $(document).ready(function () {
 
       var messagesRef = firebase.database().ref('forgotEmails');
 
+      // Retrieves value for id passed
       function getInputVal(id) {
          return document.getElementById(id).value;
       }
