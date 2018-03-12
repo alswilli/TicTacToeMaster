@@ -11,7 +11,6 @@ var threeDticTacState = {
     update() {
     },
 
-
     /*
      called when the game starts
      */
