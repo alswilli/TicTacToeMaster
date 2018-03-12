@@ -31,6 +31,7 @@ function animateProgressBar(el, width) {
    });
 }
 
+// Main function for getting the challenges progreession data from the user and displaying it on screen
 function initializeChallenge() {
 
    challengesRef.once('value', function (snapshot) {

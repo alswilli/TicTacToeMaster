@@ -8,7 +8,8 @@ angular.module('TicTacToeApp')
 
          //update siebar to hilight home page selection
          $rootScope.$broadcast('update', "homePageLink");
-         //add onclick listeners ot every game button
+
+         //onclick listeners at every game button used for starting the correct game in game.js
          $('#3dtictactoe').on('click', function (e) {
             e.preventDefault();
 

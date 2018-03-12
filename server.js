@@ -1,3 +1,4 @@
+// Initialize necessary vars
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -42,17 +43,19 @@ io.on('connection',function(socket)
 {
       console.log("new connection!")
       
-      
+      // Signals posting of chat message
       socket.on('postChatMessage', function(data){
         console.log("message: " + data.message);
         data.user = socket.player.username; //app.username
         io.sockets.in(socket.player.roomName).emit('chatMessage', data)   
       });
 
+      // Signals posting of chat connection message
       socket.on('chatConnected', function(data){
         io.sockets.in(socket.player.roomName).emit('chatConnection', data)  
       });
 
+      // Signals posting of chat disconnection message
       socket.on('chatDisconnected', function(data){
         if(socket.player != undefined)
                 io.sockets.in(socket.player.roomName).emit('chatDisconnection', data)  
@@ -132,12 +135,7 @@ io.on('connection',function(socket)
                           return
                           }
                     console.log("sent by " + data.id)
-                    /*if(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid === data.id)
-                    {
-                          console.log('wut duh')
-                          console.log(io.nsps['/'].adapter.rooms[socket.player.roomName].lastid + " " + data.id)
-                          return
-                    }*/
+            
                     io.nsps['/'].adapter.rooms[socket.player.roomName].lastid = data.id
                     socket.player.lastboard = data.board
                     socket.player.board = data.board
@@ -214,6 +212,7 @@ io.on('connection',function(socket)
       }
 );
 
+// Initialize game room 
 function initGameRoom(gametype)
 {
     roomsNo[gametype] = Object()
@@ -221,11 +220,14 @@ function initGameRoom(gametype)
     roomsNo[gametype].total = 0
 }
 
+// Creates a new room for when current room is full
 function needNewRoom(gametype)
 {
     console.log("roomsNo[" + gametype + "] total = " + roomsNo[gametype].total)
     return roomsNo[gametype].total % server.roomSize === 0
 }
+
+// Gets name of room passed
 function getRoomName(data)
 {
     console.log("friend of " + data.name + ": " + data.friend)
@@ -238,6 +240,7 @@ function getRoomName(data)
     
 }
 
+// Updates statuses for each room 
 function updateRoomStatus(data)
 {
     console.log(data.username + " left " + data.roomName)
@@ -250,7 +253,7 @@ function updateRoomStatus(data)
      console.log("now there are " +roomsNo[data.gametype].total)
 }
 
-
+// Denies a challenger's invitation
 function denyChallenge(name) {
     io.sockets.in(name).emit('playerLeft') 
 }

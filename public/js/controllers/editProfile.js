@@ -1,8 +1,6 @@
 angular.module('TicTacToeApp')
    .controller('EditProfileCtrl',
       function EditCtrl($scope, $rootScope) {
-
-
          'use strict';
 
          initSoundPrefs();
@@ -21,11 +19,10 @@ angular.module('TicTacToeApp')
 
          $('#usernameNew').attr('value', app.username);
          $('#battleTextNew').attr('value', app.battleText);
-
          $('#btn-applyChanges').on('click', updateUserInfo);
-
       });
 
+// Updates user info based on input to form
 function updateUserInfo(e) {
    e.preventDefault();
 
@@ -38,7 +35,6 @@ function updateUserInfo(e) {
 
    if (file != null && file === undefined) {
       alert("Image file invalid, please enter a valid image!");
-      //break;
    } else if (file == null) //Don't want to upload a new profile pic but want to change other stuff
    {
 

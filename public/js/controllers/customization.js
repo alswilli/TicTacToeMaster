@@ -8,7 +8,6 @@ var selectedList; //String representation of what is slected for each customizat
 var root
 //update the cash displayed on the sidebar
 
-//
 angular.module('TicTacToeApp')
    .controller('CustomizationCtrl',
       function CustomizationCtrl($scope, $rootScope) {
