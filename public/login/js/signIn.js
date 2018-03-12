@@ -16,6 +16,7 @@ $(document).ready(function () {
    var dbRef = firebase.database();
    var auth = null;
 
+   // Initialize firebase vars
    var keyValue;
    var nameOfUser;
    var battleText;
@@ -38,13 +39,14 @@ $(document).ready(function () {
             .then(function (authData) {
                console.log("Authenticated successfully");
 
-               // TO-DO: Something that Austin did so it wouldn't fluke before refreshing
+               // Begin signing in now that user is validated
                isValidated = true;
                auth = authData;
 
                keyValue = firebase.auth().currentUser.uid;
 
                if (isValidated == true) {
+                  // Get data vars
                   firebase.database().ref('/users/' + keyValue).once('value').then(function (snapshot) {
                      nameOfUser = (snapshot.val().username);
                      console.log("Name of user: ", nameOfUser);
@@ -55,8 +57,8 @@ $(document).ready(function () {
                      cashMoney = (snapshot.val().cash);
                      console.log("Selected Customization: ", img);
                      selected = (snapshot.val().selected);
-
-
+                     
+                    // Set data vars
                      firebase.storage().ref(img).getDownloadURL().then(function (url) {
                         urlVal = url;
                         sessionStorage.setItem("name", nameOfUser)
@@ -66,7 +68,7 @@ $(document).ready(function () {
                         sessionStorage.setItem("picUrl", urlVal)
                         sessionStorage.setItem("imageName", null)
                         sessionStorage.setItem("selectedList", selected)
-                        window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
+                        window.location.href = "mainMenu.html"; 
                         console.log("hola");
                      })
                   })
@@ -77,7 +79,6 @@ $(document).ready(function () {
             .catch(function (error) {
                $('#error').css("visibility", "visible")
                console.log("Login Failed!", error);
-               //$('#messageModalLabel').html(spanText('ERROR: '+error.code, ['danger']))
             });
       }
    });
@@ -85,7 +86,8 @@ $(document).ready(function () {
    $('#guestlogin').on('click', function (e) {
       e.preventDefault();
 
-      firebase.database().ref('/users/bRfjYiEy7iWn67IHnrqh0ksUjLY2').once('value').then(function (snapshot) {
+      // Get guest account data vars
+      firebase.database().ref('/users/2EwweHnCwMNg5mrG0YEOu8qA2OB2').once('value').then(function (snapshot) {
          nameOfUser = (snapshot.val().username);
          console.log("Name of user: ", nameOfUser);
          battleText = (snapshot.val().battleText);
@@ -95,16 +97,17 @@ $(document).ready(function () {
          cashMoney = (snapshot.val().cash);
          selected = (snapshot.val().selected);
 
+         // Set guest account data vars
          firebase.storage().ref(img).getDownloadURL().then(function (url) {
             urlVal = url;
             sessionStorage.setItem("name", nameOfUser)
-            sessionStorage.setItem("userkey", 'bRfjYiEy7iWn67IHnrqh0ksUjLY2')
+            sessionStorage.setItem("userkey", '2EwweHnCwMNg5mrG0YEOu8qA2OB2')
             sessionStorage.setItem("battleText", battleText)
             sessionStorage.setItem("cash", cashMoney)
             sessionStorage.setItem("picUrl", urlVal)
             sessionStorage.setItem("imageName", null)
             sessionStorage.setItem("selectedList", selected)
-            window.location.href = "mainMenu.html"; /*+ '#&&' + keyValue + '&&' + nameOfUser + '&&' + battleText + '&&' + cashMoney + '&&' + urlVal + '&&null';*/
+            window.location.href = "mainMenu.html"; 
             console.log("holaGuest");
          })
       })
