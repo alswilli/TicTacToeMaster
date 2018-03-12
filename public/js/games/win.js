@@ -28,8 +28,6 @@ var winState = {
                                      game.addSprite(element.x, element.y, element.key);
                                      });
             }
-
-
         var message
         var submessage = ""
         //display that the game ended in a draw or display the winner
@@ -49,7 +47,6 @@ var winState = {
             } else {
                 console.log("USER IS NULL");
             }
-
         }
         else
         {
@@ -255,8 +252,7 @@ function updateChallenges(userkey, result, line) {
     var leaderWins;
     var cashMoney;
     var percent = "%"
-    var stringCash = app.money; //sessionStorage.getItem("cash");
-    //var keyValue = sessionStorage.getItem("userkey");
+    var stringCash = app.money; 
     var gametype;
    switch(game.gametype) {
       case "original":   gametype = "TTT"; break;
@@ -266,7 +262,6 @@ function updateChallenges(userkey, result, line) {
    }
     challengesRef = firebase.database().ref('/users/' + app.keyValue + '/challenges');
     leaderboardRef = firebase.database().ref('leaderboard/' + gametype + '/' + app.keyValue);
-    //userRef = firebase.database().ref('/users/' + app.keyValue);
 
 
     //check for getting a draw match challenge
@@ -495,6 +490,7 @@ function updateChallenges(userkey, result, line) {
     });
 }
 
+// Function for showing notifications
 function notification(message) {
     var x = document.getElementById("snackbar")
     x.className = "show";

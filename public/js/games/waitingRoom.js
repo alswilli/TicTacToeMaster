@@ -21,6 +21,8 @@ var waitingRoomState = {
         game.challengingFriend = false
         game.optionCount = 0;
         
+        // Various waiting room menu options initialized below
+
         game.addMenuOption('Search For Another', 200, function () {
                     game.firstPlay = true
                     game.state.start("ticTac");

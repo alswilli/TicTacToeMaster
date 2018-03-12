@@ -18,6 +18,7 @@ var challengeFriendState = {
 
     },
 
+    // Initialized menu used for initiating a challenger invite
     makeChallengeMenu()
     {
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'menubackground');
@@ -58,6 +59,7 @@ var challengeFriendState = {
 
     },
 
+    // Initialized menu used for accepting a challenger invite
     confirmChallenge(data)
     {
         const text = game.add.text(
@@ -94,13 +96,14 @@ var challengeFriendState = {
 };
 
 
-
+// Searches database for name of friend you are challenging
 function findFriend(friendName) {
    console.log("go to the firebase")
    //check for the username in firebase
    firebase.database().ref('/users/').orderByChild('username').equalTo(friendName).limitToFirst(1).once("value", sendChallenge)
 }
 
+// Sends challenge invite to friend (which they see upon opening challenger game menu tab)
 function sendChallenge(snapshot) {
    console.log(snapshot.val())
    snapshot.forEach(function (childSnapshot) {
@@ -110,7 +113,6 @@ function sendChallenge(snapshot) {
       game.friend = value
 
    });
-   //game.friend = snapshot.val()
    console.log("FRIEND")
    console.log(game.friend)
    if (game.friend) {
