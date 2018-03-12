@@ -31,23 +31,18 @@ var loadState = {
         var pieceIndex;
         var backgroundIndex;
 
-
+        // Load image references into the game for later loading while playing
         game.load.image('X', prefix + 'pieceX'+app.selected.charAt(1)+'.png');
         game.load.image('square', prefix + 'board'+app.selected.charAt(0)+'.png');
         game.load.image('O', prefix + 'pieceO'+app.selected.charAt(1)+'.png');
         game.load.image('background', 'imgs/background'+app.selected.charAt(2)+'.png');
-
         game.load.image('forfeit', 'imgs/forfeit.png');
-
         game.load.image('menubackground', 'imgs/menubackgroundtwo.png');
-
         game.load.image('logo', 'imgs/phaser.png');
-
         game.load.image('board', 'imgs/angledBoard.png');
         game.load.image('greensquare', prefix + 'greensquare.png')
         game.load.image('redsquare', prefix + 'redsquare.png')
         game.load.image('poopemoji', 'imgs/poop.png')
-
         game.load.image('square', prefix + 'square.png')
         console.log(prefix)
     },
@@ -78,6 +73,7 @@ var loadState = {
         game.state.start('menu');
     },
 
+    // Handles front end and back end aspects of opponents leaving (relating to loading elements)
     handleOpponentLeaving()
     {
         console.log("opponent left")
@@ -98,6 +94,7 @@ var loadState = {
                                                                             });
     },
 
+    // Loads opponents data for their battle card
     loadOpponent(data)
     {
         playSound("oppJoined");
@@ -137,6 +134,7 @@ var loadState = {
         Client.disconnect();
     },
 
+    // Inhibits double clicking on turn
     checkForDoubleClick()
     {
         var turn
@@ -155,6 +153,7 @@ var loadState = {
             return false
     },
 
+    // Simple animation for opponent leaving game
     animateOpponentLeaving()
     {
         game.opponentLeft = true;
@@ -163,6 +162,7 @@ var loadState = {
                                                                             });
     },
 
+    // Initilaizes the client to start multiplayer
     startMultiplayer()
     {
         document.getElementById("chat-box").style.visibility = "visible";
@@ -190,6 +190,7 @@ var loadState = {
         }
     },
     
+    // Sets up array to udate pieces on board
     updatePlacedPieces(sprite)
     {
         if(sprite.key === "X" || sprite.key === "O")

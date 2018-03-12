@@ -30,7 +30,6 @@ $('#btn-submit').on('click', function (e) {
 
     if(file === undefined){
         alert("Image file invalid, please enter a valid image!");
-        //break;
     }else{
         console.log("file: ", file);
 
@@ -42,6 +41,8 @@ $('#btn-submit').on('click', function (e) {
         const metadata = {
             contentType: file.type
         };
+
+        // Save image file in storage with unique name (using date)
         const task = storageRef.child(name).put(file, metadata);
         imageName = name;
         
@@ -52,6 +53,8 @@ $('#btn-submit').on('click', function (e) {
         }).catch((error) => {
             console.error(error);
         });
+
+        // Set up vars for crerating new user
 
         var data = {
             image: imageName,
@@ -130,6 +133,7 @@ $('#btn-submit').on('click', function (e) {
     }   
 });
 
+// Sets profile image in image box when file uploaded
 $(function () {
    $('#profile_image').change(function (e) {
 
@@ -138,10 +142,12 @@ $(function () {
    });
 });
 
+// Retrieves value for id passed
 function getInputVal(id) {
    return document.getElementById(id).value;
 }
 
+// Logic for confirming password selection
 function passwordRetrieval() {
    if (true) {
       var con = confirm("Email verified: Password Token sent!");

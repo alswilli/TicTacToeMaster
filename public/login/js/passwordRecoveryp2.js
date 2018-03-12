@@ -10,6 +10,7 @@ $(document).ready(function () {
    };
    firebase.initializeApp(config);
 
+   // Initialize db vars
    var keyValue = window.location.hash.substring(1)
    var userSecQ;
    var userSecQAnswer;
@@ -53,6 +54,7 @@ $(document).ready(function () {
 
    }
 
+   // Retrieves value for id passed
    function getInputVal(id) {
       return document.getElementById(id).value;
    }

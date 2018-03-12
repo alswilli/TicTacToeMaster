@@ -20,6 +20,7 @@ var menuState = {
         background.width = game.screenWidth;
         background.height = 700;
 
+        // Set up title for menu page to display
         var title
         if(game.gametype === "original")
             title = 'Tic Tac Toe'
@@ -39,6 +40,7 @@ var menuState = {
 
         game.optionCount = 0;
 
+        // Various menu display elements initialized below
 
         game.addMenuOption('SinglePlayer', 200, function () {
                         playSound("click");

@@ -10,8 +10,11 @@ $(document).ready(function() {
    };
    firebase.initializeApp(config);
 
+   // Initioalize needed vars
    var passwordVal;
    var keyVal = window.location.hash.substring(1)
+
+   // Print users password
    firebase.database().ref('/users/' + keyVal).once('value').then(function (snapshot) {
       passwordVal = (snapshot.val().password);
       console.log("foundKey:", passwordVal);

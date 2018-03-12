@@ -18,8 +18,6 @@ angular.module('TicTacToeApp')
          //create socket connection
          makeClient();
 
-
-
          startGame();
          //force disconnect when changing current route
          $scope.$on('$routeChangeStart', function (event) {
@@ -33,6 +31,7 @@ angular.module('TicTacToeApp')
 
       });
 
+// Initializes the chat div for the client and handles post requests
 function initChat() {
    var clicked = false;
    var checked = null;

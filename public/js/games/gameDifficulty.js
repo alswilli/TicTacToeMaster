@@ -12,6 +12,8 @@ var gameDifficultyState  = {
 
         game.optionCount = 0;
 
+        // Various menu options initialized below
+
         game.addMenuOption('Easy', 200, function () {
             playSound("click");
             game.difficulty = 'easy'

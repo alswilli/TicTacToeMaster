@@ -1,3 +1,8 @@
+/* The functions below are used in our AI found in 3D-TTT and Order and Chaos to respond to 
+player moves. When the player makes a move, the AI places an opposing piece to block that move
+depending on whether it creates the current longest sequence of pieces that are the same (hence,
+it is "blocking" the best moves made by the player)*/ 
+
 function blockHorizontal(board, col, row)
 {
     for(var i = 1; i < game.n; i++)

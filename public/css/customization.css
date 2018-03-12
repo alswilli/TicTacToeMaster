@@ -1,85 +1,103 @@
 .boardDesign img{
-	width: 150px; 
-	height: 150px
+	width: 150px;
+	height: 150px;
 }
+
+.boardDesign p{
+	color: white;
+	font-size: 18px;
+}
+
 .pieceDesign img{
-	width: 150px; 
-	height: 150px
+	width: 150px;
+	height: 150px;
 }
+
+.pieceDesign p{
+	color: white;
+	font-size: 18px;
+}
+
 .backgroundDesign img{
-	width: 100%; 
-	height: 150px
+	width: 100%;
+	height: 150px;
 }
+
+.backgroundDesign p{
+	color: white;
+	font-size: 18px;
+}
+
 #insufficientCash {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
-    padding-top: 25%; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		display: none;
+		position: fixed;
+		z-index: 1;
+		padding-top: 25%; /* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
 .insufficientCash-content{
-    position: relative;
-    background-color: white;
-    margin: auto;
-    width: 375px;
-    height: auto;
+		position: relative;
+		background-color: white;
+		margin: auto;
+		width: 375px;
+		height: auto;
 }
 
 .insufficientCash-content p{
-    padding: 15px;
+		padding: 15px;
 }
 
 .insufficientCash-content header {
-    padding: 10px;
-    font-weight: bold;
-    font-size: 18px;
+		padding: 10px;
+		font-weight: bold;
+		font-size: 18px;
 }
 
 #confirmation {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
-    padding-top: 10%; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		display: none;
+		position: fixed;
+		z-index: 1;
+		padding-top: 10%; /* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
 .confirmation-content{
-    position: relative;
-    background-color: white;
-    margin: auto;
-    width: 300px;
-    height: auto;
+		position: relative;
+		background-color: white;
+		margin: auto;
+		width: 300px;
+		height: auto;
 }
 
 #confirmInfo{
-    padding: 10px;
+		padding: 10px;
 }
 .confirmation-content p{
-    margin-top: 0px;
+		margin-top: 0px;
 }
 
 .confirmation-content header{
-    padding: 10px;
-    font-weight: bold;
-    font-size: 18px;
+		padding: 10px;
+		font-weight: bold;
+		font-size: 18px;
 }
 
 #confirmButtons{
-    width: 117px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+		width: 117px;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
 }
 #togglePiece{
 		float: right;

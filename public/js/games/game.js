@@ -30,6 +30,7 @@ function startGame()
 
     game.firstPlay = true
 
+    // Sets up gamestate for game when it gets loaded
     if(app.gameType == "original")
         game.state.add('ticTac', ticTacState)
     else if(app.gameType == "3d")
@@ -41,7 +42,9 @@ function startGame()
     else
         console.log("unknown gametype: ", game.gametype)
 
-                    game.optionCount = 0;
+    game.optionCount = 0;
+
+    // Contructor used to create menu options on game menu screen
     game.addMenuOption = function(text, startY, callback) {
         console.log("MAKE MENU")
 
@@ -69,7 +72,6 @@ function startGame()
         txt.events.onInputOut.add(onOut, game);
 
         game.optionCount++;
-
 
     },
 
