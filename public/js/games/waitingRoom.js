@@ -4,6 +4,11 @@ var waitingRoomState = {
      called to initialize this state
      */
     create() {
+        //init the background image
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
         
         // display game name
         const gameName = game.add.text(

@@ -187,12 +187,14 @@ var orderChaosState = {
                 if (j == 0) {
                     game.pickPieceBoard[i][j] = square;
                     var pieceImg = game.addSprite(square.x, square.y, 'X');
+                    pieceImg.isPP = true
                     var index = game.placedPieces.indexOf(pieceImg)
                     game.placedPieces.splice(index, 1);
                 }
                 if (j == 1) {
                     game.pickPieceBoard[i][j] = square;
                     var pieceImg = game.addSprite(square.x, square.y, 'O');
+                    pieceImg.isPP = true
                     var index = game.placedPieces.indexOf(pieceImg)
                     game.placedPieces.splice(index, 1);
 
@@ -546,6 +548,7 @@ var orderChaosState = {
             console.log("horz")
             gameOver = true
             game.isDraw = false
+            //set angles, and coords to draw the winning line animation
             var lineAngle = -90
 
             var extraSpace
@@ -564,6 +567,7 @@ var orderChaosState = {
             console.log("vert")
             gameOver = true
             game.isDraw = false
+            //set angles, and coords to draw the winning line animation
             var extraSpace
             if(vertical.size === 1)
                 extraSpace = 0
@@ -584,6 +588,7 @@ var orderChaosState = {
             console.log("posD")
             gameOver = true
             game.isDraw = false
+            //set angles, and coords to draw the winning line animation
             var extraXSpace =  0
             var extraYSpace = 0
             if(posDiagonal.size === 1 && !posDiagonal.has(""))
@@ -609,7 +614,7 @@ var orderChaosState = {
             gameOver = true
             game.isDraw = false
 
-
+            //set angles, and coords to draw the winning line animation
             var extraXSpace =  0
             var extraYSpace = 0
             if(negDiagonal.size === 1 && !negDiagonal.has(""))
@@ -849,7 +854,7 @@ var orderChaosState = {
         if (game.vsAi) {
             console.log("updateTurnStatus: single player AI");
             if(game.isOver(indexX, indexY)) {
-                if(game.isDraw) {
+                if(game.isDraw || game.forfeit) {
                     game.displayWinner()
 
                 }
@@ -938,27 +943,39 @@ var orderChaosState = {
         return sprite
     },
 
+    /*
+        redisplay the sprites in the win state
+     */
     showSprites()
     {
-        game.placedPieces.forEach(function(element)
-        {
-            game.addSprite(element.x, element.y, element.key);
-        });
         
+        var winningLine = null
         game.endingBoard.forEach(function(element)
          {
 
-         console.log(element)
-         if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background' && element.key != 'X' && element.key != 'O' )
-            game.addSprite(element.x, element.y, element.key);
-         else if(element.key === 'cometTail')
-         {
-             var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
-             cometTail.height = game.squareSize*3 + element.lineExtra
-             cometTail.angle = element.angle
+             console.log(element)
+             if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background' && element.key != 'X' && element.key != 'O' )
+                game.addSprite(element.x, element.y, element.key);
+             else if(element.key === 'cometTail')
+             {
+                 winningLine = element
 
-         }
+             }
+            else if(element.isPP)
+                game.addSprite(element.x, element.y, element.key);
          });
+        
+        game.placedPieces.forEach(function(element)
+        {
+                                  game.addSprite(element.x, element.y, element.key);
+        });
+        //draw winning line over every other element
+        if(winningLine != null)
+        {
+            var cometTail = game.addSpriteNoScale(winningLine .x, winningLine .y, winningLine .key)
+            cometTail.height = game.squareSize*3 + winningLine.lineExtra
+            cometTail.angle = winningLine.angle
+        }
     },
 
     /*  This is called when for the ai to make a move. Depending on difficulty setting, has a probablity

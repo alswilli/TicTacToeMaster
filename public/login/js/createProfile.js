@@ -97,12 +97,24 @@ $('#btn-submit').on('click', function (e) {
            username: data.username
         };
        
+        var alreadyExists = false
         if (data.email != '' && data.password != '') {
             //create the user
             firebase.auth()
               .createUserWithEmailAndPassword(data.email, data.password)
+              .catch(function (error) 
+              {
+                     console.log(error)
+                     alreadyExists = true
+               })
               .then(function (user) {
                   //now user is needed to be logged in to save data
+                 if(alreadyExists)
+                  {
+                    alert("email " + data.email + " is already in use by another user, please used a different email address")
+                    return
+                  }
+                    
                   console.log("Authenticated successfully with payload:", user);
                   alert("User profile created!");
                   auth = user;
@@ -116,6 +128,7 @@ $('#btn-submit').on('click', function (e) {
                     })
     
               .catch(function (error) {
+                
                   console.log("Error creating user:", error);
               });
 

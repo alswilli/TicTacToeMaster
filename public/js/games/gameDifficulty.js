@@ -1,6 +1,13 @@
 var gameDifficultyState  = {
 
     create() {
+        //init the background image
+        var background = game.add.sprite(game.world.centerX, game.world.centerY, 'menubackground');
+        background.anchor.set(0.5);
+        background.width = game.screenWidth;
+        background.height = 700;
+        
+        
         var title = "Select Difficulty"
 
         const gameDifficultyHeader = game.add.text(

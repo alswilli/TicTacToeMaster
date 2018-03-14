@@ -747,6 +747,7 @@ var ultimateTTTState = {
         {
             gameOver = true
             game.isDraw = false
+            //set angles, and coords to draw the winning line animation
             var lineAngle = -90
             var startingY = game.startingX + (game.squareSize * 3* (bRow)) - game.squareSize/4
             var endingX = game.screenWidth + 100
@@ -756,7 +757,7 @@ var ultimateTTTState = {
         {
             gameOver = true
             game.isDraw = false
-
+            //set angles, and coords to draw the winning line animation
             var lineAngle = 0
             var startingX = game.startingX + (game.squareSize * 3 * (bCol+1)) - (game.squareSize*3/2)
             game.drawWinningLine(startingX, game.startingY - 15, startingX, 800, lineAngle, 330)
@@ -767,6 +768,7 @@ var ultimateTTTState = {
         {
             gameOver = true
             game.isDraw = false
+            //set angles, and coords to draw the winning line animation
             var lineAngle = -45
             var startingX = game.startingX
             var startingY = game.startingY + 15
@@ -778,6 +780,7 @@ var ultimateTTTState = {
         {
             gameOver = true
             game.isDraw = false
+            //set angles, and coords to draw the winning line animation
             var lineAngle = -135
             var startingX = game.startingX
             var startingY = game.startingY + (game.squareSize * 3 * game.n)

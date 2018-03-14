@@ -10,18 +10,21 @@ app.use('/css',express.static(__dirname + '/css'));
 app.use('/js',express.static(__dirname + '/js'));
 app.use('/imgs',express.static(__dirname + '/imgs'));
 
+//redirect to login
 app.get('/',function(req,res){
         res.sendFile(__dirname+'/index.html');
 });
 
+//used for running localhost
 server.listen(process.env.PORT || 8081,function(){
               console.log('Listening on '+server.address().port);
               });
-
-server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
+// Keep track of the last id assigned to a new player
+server.lastPlayderID = 0; 
 server.roomno = 1;
 server.roomSize = 2;
 
+//create rooms for each game
 var roomsNo = {}
 initGameRoom("original")
 initGameRoom("3d")
@@ -76,21 +79,26 @@ io.on('connection',function(socket)
             }
       });
       
+      //called when a challenge is denied
       socket.on('denyChallenge', function(username){
                 denyChallenge(username)  
         });
       
+      //called disconnects the challenging friend from the room created for their friend on denial
       socket.on('friendDenied', function(roomName){
                 console.log("everyone leave " + roomName)
                 socket.disconnect();
       })
          
+      //logic to handle players in game
       socket.on('makeNewPlayer',function(data){
             //create new player
                 //Increase roomno if 2 clients are present in a room.
                 var roomName = getRoomName(data)
                 console.log("incoming data")
                 console.log(data)
+                //if there are 2 people in a room, increment the room number so 
+                //the next random matching starts in a new room
                 if(data.friend === undefined && needNewRoom(data.gametype) && data.challengedByFriend != true)
                 {
                     console.log("increment rooms")
@@ -101,13 +109,14 @@ io.on('connection',function(socket)
                      roomsNo[data.gametype].total++
 
                 console.log("there are now " + roomsNo[data.gametype].total + " players")
+                //join the roomName assigned to this player, based on gametype and 
+                //if they are random matching or playing a friend
                 socket.join(roomName);
+                //assign the friend name to the room, if applicable
                 if(data.friend != undefined)
                     io.sockets.adapter.rooms[roomName].friendName = data.name
                 
-                
-                //Send this event to everyone in the room. Fore debugging
-                
+                //create an object representing a player
                 socket.player =
                 {
                     id: server.lastPlayderID++,
@@ -126,19 +135,24 @@ io.on('connection',function(socket)
                 //and as a second argument, the output of Client.getAllPlayers()
                 socket.emit('confirmPlayer',socket.player);
                 
+                //used to send information about a click to both players in a room,
+                //i.e used to send the new board to both players
                 socket.on('click',function(data)
                 {
                     console.log('server received click '+data.board);
+                    //if the same board is sent more than onece, ignore it
                     if(JSON.stringify(data.board) === JSON.stringify(socket.player.lastboard))
-                          {
-                          console.log('wut')
+                    {
+                          console.log('double click detected')
                           return
-                          }
+                    }
                     console.log("sent by " + data.id)
             
+                    //update board info in the room
                     io.nsps['/'].adapter.rooms[socket.player.roomName].lastid = data.id
                     socket.player.lastboard = data.board
                     socket.player.board = data.board
+                    //send message to switch turn in game
                     io.sockets.in(socket.player.roomName).emit('switchTurn',socket.player,data);
                           
                 });
@@ -155,6 +169,7 @@ io.on('connection',function(socket)
                 {
                     //increment number of people ready for a rematch
                     io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch++
+                    //if both players are ready, start the rematch
                     if(io.nsps['/'].adapter.rooms[socket.player.roomName].readyForRematch >= server.roomSize)
                     {
                         // sending to all clients in 'game'
@@ -174,7 +189,7 @@ io.on('connection',function(socket)
                     // sending to all clients in 'game'
                     io.sockets.in(socket.player.roomName).emit('startGame', socket.player);
                 }
-                //challenger is first person in the room
+                //else challenger is first person in the room
                 else
                 {
                     io.nsps['/'].adapter.rooms[socket.player.roomName].challenger = socket.player.username
@@ -183,13 +198,15 @@ io.on('connection',function(socket)
                     console.log(socket.player.roomName + "challenger is " +socket.player.username)
                 }
                 
-                socket.on('disconnect',function(){ //change this
+                //update room status when a player disconnects
+                socket.on('disconnect',function(){ 
                           // sending to all clients in 'game'
                           io.sockets.in(socket.player.roomName).emit('playerLeft')
                           updateRoomStatus(socket.player)
                           socket.disconnect();
                 });
                 
+                //handle player quitting
                 socket.on('playerQuit',function(){
                           // sending to all clients in 'game' room, including sender
                           socket.to(socket.player.roomName).emit('playerLeft')
@@ -197,6 +214,7 @@ io.on('connection',function(socket)
                           socket.disconnect();
                 });
                 
+                //indicate that a room is full
                 socket.on('markRoomFull',function(){
                           socket.player.inFullRoom = true;
                           console.log(socket.player.username + " is in a full room ")

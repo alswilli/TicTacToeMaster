@@ -1,3 +1,4 @@
+//used to update challenges and leaderboard
 var keyValue = sessionStorage.getItem("userkey");
 var challengesRef = firebase.database().ref('/users/' + keyValue + '/challenges');
 var userRef = firebase.database().ref('/users/' + keyValue);
@@ -14,6 +15,9 @@ var ticTacState = {
     update() {
     },
 
+    /*
+        called before create, to load images specific to this game
+     */
     preload() {
         game.load.image('comet', 'imgs/comet.png');
         game.load.image('cometTail', 'imgs/cometTail.png');
@@ -25,21 +29,25 @@ var ticTacState = {
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
 
+        //the number of winning line to finish animating before displaying win screen
+        
         game.linesToAnimate = 0
 
+        //used for ai minimax
         game.human = "x";
         game.ai    = "o";
 
-
+        //init the background image
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
         background.anchor.set(0.5);
         background.width = game.screenWidth;
         background.height = 700;
 
-
+        //used for displaying squares scaled to size
         game.squareSize = 115
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 3
+        //flags for turn and win status
         game.isXTurn = true
         game.isDraw = false
         game.turns = 0
@@ -58,6 +66,8 @@ var ticTacState = {
         //asign functions ot the game object, so they can be called by the client
         this.assignFunctions()
 
+        //used to display the previous placed peice, i.e hilight the square
+        //that was last placed a peice in
         game.cursorSquares = []
         for (var i=0; i < game.n; i++) {
             game.cursorSquares[i]=new Array(game.n)
@@ -67,7 +77,6 @@ var ticTacState = {
         {
             for (var j=0; j < game.n; j++)
             {
-                console.log("HERE")
                 game.cursorSquares[i][j] = game.addSprite(game.startingX + i*game.squareSize, game.startingY + j*game.squareSize, 'redsquare')
                 game.cursorSquares[i][j].alpha = 0
             }
@@ -79,7 +88,7 @@ var ticTacState = {
         game.makeBoardOnScreen()
         //add messages that display turn status, connection statuses
         this.addTexts()
-
+        //used to track double clicks
         game.previousPiece = ""
 
         //folloowing logic is for multiplayer games
@@ -305,6 +314,7 @@ var ticTacState = {
         {
             gameOver = true
             game.isDraw = false
+            //set angles, and coords to draw the winning line animation
             var lineAngle = -90
             var startingY = game.startingX + (game.squareSize * (row)) - game.squareSize/2 - 15
             var endingX = game.screenWidth + 100
@@ -314,6 +324,7 @@ var ticTacState = {
         {
             gameOver = true
             game.isDraw = false
+             //set angles, and coords to draw the winning line animation
             var lineAngle = 0
             var startingX = game.startingX + (game.squareSize * (col+1)) - game.squareSize/2
             game.drawWinningLine(startingX, game.startingY - 15, startingX, 800, lineAngle, 45)
@@ -324,6 +335,7 @@ var ticTacState = {
         {
             gameOver = true
             game.isDraw = false
+             //set angles, and coords to draw the winning line animation
             var lineAngle = -45
             var startingX = game.startingX
             var startingY = game.startingY + 15
@@ -336,7 +348,7 @@ var ticTacState = {
         {
             gameOver = true
             game.isDraw = false
-
+             //set angles, and coords to draw the winning line animation
             var lineAngle = -135
             var startingX = game.startingX
             var startingY = game.startingY + (game.squareSize * game.n)
@@ -419,6 +431,9 @@ var ticTacState = {
         }
     },
 
+    /*
+        given array indexes, convert them to world coordinates
+     */
     convertIndexesToCoords(row, col)
     {
         var x = game.startingX + row *game.squareSize;
@@ -581,6 +596,10 @@ var ticTacState = {
         game.printBoard();
     },
 
+    /*
+        Begin the animation to draw the winning row by making a comet shoot
+        across the screen
+     */
     drawWinningLine(startX, startY, endX, endY, angle, lineExtra)
     {
         game.linesToAnimate++
@@ -593,6 +612,9 @@ var ticTacState = {
         tween.onComplete.add(function() { game.showLine(startX, startY, angle, lineExtra); });
     },
 
+    /*
+        After the commet has shot off screen, fade in the line
+     */
     showLine(startX, startY, angle, lineExtra)
     {
         var piece2 = game.addSpriteNoScale(startX , startY, 'cometTail');
@@ -610,6 +632,10 @@ var ticTacState = {
     },
 
 
+    /*
+        Once the winning line has faded in, check if there are no more lines
+        to animate and display the inw screen
+     */
     completeDraw()
     {
         game.linesToAnimate--
@@ -617,30 +643,39 @@ var ticTacState = {
             game.displayWinner()
     },
 
+    /*
+        used to redisplay the sprites in winstate
+     */
     showSprites()
     {
-        game.placedPieces.forEach(function(element)
-        {
-            game.addSprite(element.x, element.y, element.key);
-        });
         
+        var winningLine = null
         game.endingBoard.forEach(function(element)
         {
 
-            //console.log(element)
+            //add a sprite if it requires no additional scaling and should be in winstate
              if(element.key != 'text' && element.key != 'cometTail'  && element.key != 'redsquare' && element.key != 'background' && element.key != 'X' && element.key != 'O')
-                                 {
-                                 console.log(element.key)
+             {
+                                 
                 game.addSprite(element.x, element.y, element.key);
-                                 }
+             }
              else if(element.key === 'cometTail')
              {
-                var cometTail = game.addSpriteNoScale(element.x, element.y, element.key)
-                cometTail.height = game.squareSize*3 + element.lineExtra
-                cometTail.angle = element.angle
-
+                winningLine = element
              }
          });
+        
+        game.placedPieces.forEach(function(element)
+        {
+                                  game.addSprite(element.x, element.y, element.key);
+         });
+        //draw winning line over every other element
+        if(winningLine != null)
+        {
+            var cometTail = game.addSpriteNoScale(winningLine.x, winningLine.y, winningLine.key)
+            cometTail.height = game.squareSize*3 + winningLine.lineExtra
+            cometTail.angle = winningLine.angle
+        }
     },
 
 
@@ -773,6 +808,8 @@ var ticTacState = {
     emptyIndexies(board){
         return  board.filter(tile => tile != "o" && tile != "x");
     },
+    
+    /****************************************** Tic Tac Toe AI************************/
 
 
     /* Tests if the given player has won the board by checking all combinations
@@ -957,4 +994,4 @@ function notification(message) {
     x.innerHTML = message;
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
-/****************************************** Tic Tac Toe AI ************************/
+

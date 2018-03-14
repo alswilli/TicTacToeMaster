@@ -16,11 +16,14 @@ var threeDticTacState = {
      */
     create () {
         /****game.var adds a new "class variable" to game state, like in other languages****/
+        
+        //init the background
         var background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
         background.anchor.set(0.5);
         background.width = game.screenWidth;
         background.height = 700;
-
+        
+        //set variables to size the board, these settings produce a nice looking board
         game.boardHeight = game.cache.getImage('square').height * 4
         game.boardOffset = 15
         game.pieceWidth = 50
@@ -29,6 +32,7 @@ var threeDticTacState = {
         game.boardHeightScaled = game.squareSize * 4 * 0.6
         //the size of the board, i.e nxn board, 3x3 for tictactoe
         game.n = 4
+        //flags to keep track of turn, win status
         game.isXTurn = true
         game.isDraw = false
         game.turns = 0
@@ -63,15 +67,15 @@ var threeDticTacState = {
         this.addTexts()
 
 
-        //folloowing logic is for multiplayer games
+        //following logic is for multiplayer games
         if(game.singleplayer || game.vsAi)
             return
 
-            game.previousPiece = ""
+        game.previousPiece = ""
             //if this is the first play against an opponent, create a new player on the server
             game.startMultiplayer()
 
-            },
+        },
 
     /*
      returns nxn 3D array
@@ -107,23 +111,27 @@ var threeDticTacState = {
      */
     makeBoardOnScreenBetter(name, alpha)
     {
+        //scale for the squares, seems to display nicely with these settings
         var xScale = 0.9;
         var yScale = 0.6;
+        var width = 32
         game.spriteSquares = game.makeBoardAsArray(game.n)
         for (var i=0; i < game.n; i++)
         {
+            //offset for placing elements on Y axis
             var adjustmentY = game.startingY + (i * (game.boardHeight + game.boardOffset) * 0.6)
             for (var j=0; j < game.n; j++)
             {
                 for (var k=0; k < game.n; k++)
                 {
+                    //indexes for placing the sprites in arrays
                     indexX = j
                     indexY = k
                     //convert the indexes to actual coordinates on the screen
                     var sheared = game.convertToShearCoords(indexX * game.pieceWidth, indexY * game.pieceHeight)
                     //adjust the x and y values to where they should appear on the screen, this number seems to
                     //adjust tiles well
-                    var width = 32
+                    
                     var worldX = game.startingX + sheared[1] * xScale + (j * width * xScale/2)
                     var worldY = sheared[0] + adjustmentY
                     //87 X 50 is the dimension of the image, hardcoded so when we add future custom tiles
@@ -147,6 +155,7 @@ var threeDticTacState = {
                         game.spriteSquares[i][j][k] = square
                     else if(name === 'redsquare')
                         game.cursorSquares[i][j][k] = square
+                    //used to display the winning squares in win state
                     else if(name === 'greensquare')
                     {
                         if(game.winningSquares[i][j][k] != "")
@@ -189,7 +198,8 @@ var threeDticTacState = {
     },
 
     /*
-     Checks if the square to the left of a sprite is clicked, since images overlap now
+     Checks if the square to the left of a sprite is clicked, since images overlap, and the sprite drawn 
+     last receives all input for sprites it is draw on top of
      */
     checkAdjacentShears(sprite, pointer)
     {
@@ -234,20 +244,21 @@ var threeDticTacState = {
         if(game.board[boardNum][indexY][indexX] != "")
             return
 
-            var Ypadding = 3
-            var Xpadding = 15
-            if(game.isXTurn)
-            {
-                var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'X');
-                game.board[boardNum][indexY][indexX] = "x"
-                game.previousPiece = "x"
-            }
-            else
-            {
-                var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'O');
-                game.board[boardNum][indexY][indexX] = "o"
-                game.previousPiece = "o"
-            }
+        var Ypadding = 3
+        var Xpadding = 15
+        //place appropriate piece based on current turn
+        if(game.isXTurn)
+        {
+            var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'X');
+            game.board[boardNum][indexY][indexX] = "x"
+            game.previousPiece = "x"
+        }
+        else
+        {
+            var piece = game.addSprite(sprite.x + Xpadding, sprite.y + Ypadding, 'O');
+            game.board[boardNum][indexY][indexX] = "o"
+            game.previousPiece = "o"
+        }
         game.updateHilightedSquare(boardNum, indexX, indexY)
 
         game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
@@ -373,6 +384,9 @@ var threeDticTacState = {
 
         //create Sets for each direction. Since a Set has unique entries, if there
         //is only one entry and it is not an empty string, that entry is the winner
+        
+        //vertCoords, horCoors, etc are used to store the coordinates of squares in a winning 
+        //row so that we can track these squares and make them light up green in the win screen
         var horizontal = new Set()
         var horCoords = []
         var hor = 0
@@ -485,6 +499,8 @@ var threeDticTacState = {
      */
     checkIfVertical3D(col, row)
     {
+        //vertCoords, horCoors, etc are used to store the coordinates of squares in a winning 
+        //row so that we can track these squares and make them light up green in the win screen
         var vertical = new Set()
         var vertCoords = []
         var vert = 0
@@ -516,6 +532,8 @@ var threeDticTacState = {
      */
     checkLocalDiagonals3D(board, fixedCol, fixedRow)
     {
+        //vertCoords, horCoors, etc are used to store the coordinates of squares in a winning 
+        //row so that we can track these squares and make them light up green in the win screen
         var positiveHorizontal = new Set()
         var posHorCoords = []
         var posHor = 0
@@ -637,6 +655,8 @@ var threeDticTacState = {
      */
     checkMainDiagonals3D()
     {
+        //vertCoords, horCoors, etc are used to store the coordinates of squares in a winning 
+        //row so that we can track these squares and make them light up green in the win screen
         var mainTopLeft= new Set()
         var topLeftCoords = []
         var topLeft = 0
@@ -979,7 +999,9 @@ var threeDticTacState = {
     },
 
 
-
+    /*
+        Converts a point in world coordinates to indexes of a board, i.e array indexes
+     */
     convertToIndexes(point)
     {
         var height = game.cache.getImage('board').height

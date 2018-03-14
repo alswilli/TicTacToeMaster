@@ -34,8 +34,15 @@ var winState = {
         if(game.isDraw && game.gametype != "orderChaos")
         {
             playSound("draw");
-            message = 'Draw, both players' + ' receive 25 gold coins!' //add sound and or animation here later for getting the money
-            game.cash = game.cash + 25;
+            if(!game.singleplayer)
+            {
+                message = 'Draw, both players' + ' receive 25 gold coins!' //add sound and or animation here later for getting the money
+                game.cash = game.cash + 25;
+            }
+            else
+               message = 'Draw...' 
+            
+            
             console.log("Current cash amount: ", game.cash);
             if (game.userkey != null) {
                 if (game.singleplayer == true) {
@@ -53,11 +60,13 @@ var winState = {
             if (game.forfeit) {
                 console.log(game.player);
                 message = game.winner + ' wins via opponent forfeiting! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
-                submessage = game.winner + ' receives 50 gold coins!'
+                if(!game.singleplayer)
+                    submessage = game.winner + ' receives 50 gold coins!'
             }
             else {
                message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
-                submessage = game.winner + ' receives 50 gold coins!'
+                if(!game.singleplayer)
+                    submessage = game.winner + ' receives 50 gold coins!'
             }
 
 
@@ -68,7 +77,7 @@ var winState = {
                 }else {
                    playSound("win");
                 }
-                game.cash = game.cash + 50;
+                //game.cash = game.cash + 50;
                 console.log("Current cash amount: ", game.cash);
                 console.log("game.player:", game.player);
                 console.log("game.userkey", game.userkey);

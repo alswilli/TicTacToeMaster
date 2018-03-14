@@ -9,8 +9,10 @@ var config = {
 };
 firebase.initializeApp(config);
 
+//initialize game reference
 var game = null;
-var MAX_GAME_NUM = 1
+//max games phaser allows before needing a page refresh
+var MAX_GAME_NUM = 3
 
 /*
     app is the main object that controlls the website. The routeProvider controlls which page to

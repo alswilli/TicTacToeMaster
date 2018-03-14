@@ -4,7 +4,7 @@ function makeClient() {
    Client = {};
    Client.socket = io.connect();
 
-/*functions that can be called directly form the game to communicate with the server*/
+/*functions that can be called directly from the game to communicate with the server*/
    Client.chatMessage = function (data) {
       console.log("sending new message!")
       console.log("Message at client: ", data.message)
