@@ -259,7 +259,13 @@ var threeDticTacState = {
             game.board[boardNum][indexY][indexX] = "o"
             game.previousPiece = "o"
         }
+        
+        
         game.updateHilightedSquare(boardNum, indexX, indexY)
+        
+        //don't update turn status here if we are updating from an opponent's move online, this is handled separately
+        if(game.updatingOnline)
+            return
 
         game.updateTurnStatus(boardNum, indexX, indexY, sprite.x, sprite.y)
     },
@@ -831,23 +837,23 @@ var threeDticTacState = {
             return
         if(game.id === id)
             return
-        //updated the game board
-        game.board = board
+        
 
         var boardNum = coordInfo.boardNum
-        var x = coordInfo.worldX
-        var y = coordInfo.worldY
-
-        var Ypadding = 3
-        var Xpadding = 15
-        if(game.isXTurn)
-        {
-            game.addSprite(x + Xpadding, y + Ypadding, 'X');
-        }
-        else
-        {
-            game.addSprite(x + Xpadding, y + Ypadding, 'O');
-        }
+          //  {board:game.board, boardNum:boardNum, worldX:worldX, worldY:worldY, x:indexX, y:indexY, id:game.id};
+            console.log(coordInfo)
+        var x = coordInfo.x
+        var y = coordInfo.y
+            
+        //place piece at coordinates given, set flag that this is updating in an online game
+        game.updatingOnline = true
+        game.placePieceNoPointer( game.spriteSquares[boardNum][x][y] )
+        console.log(game.spriteSquares[boardNum][x][y])
+        game.updatingOnline = false
+            
+        //updated the game board
+        game.board = board
+        
     },
 
     convertIndexesToCoords(boardNum, indexX, indexY)
