@@ -246,7 +246,6 @@ var ticTacState = {
                 game.displayWinner()
             }
 
-            console.log(board)
         }
         game.switchTurn(coordInfo.x, coordInfo.y)
     },
