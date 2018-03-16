@@ -613,10 +613,12 @@ var ultimateTTTState = {
         }
         if(game.isOver(coordInfo.bx, coordInfo.by, coordInfo.lx, coordInfo.ly))
         {
+            
             game.waiting = true
             if(game.isDraw) {
                 game.displayWinner()
             }
+            return
             //game.displayWinner()
             
         }

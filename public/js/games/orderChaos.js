@@ -428,6 +428,7 @@ var orderChaosState = {
             if(game.isDraw) { // drawing lines
                 game.displayWinner()
             }
+            return
         }
         game.switchTurn(coordInfo.x, coordInfo.y)
     },

@@ -323,7 +323,10 @@ var threeDticTacState = {
             else
                 game.waiting = false
         if(game.isOver(coordInfo.boardNum, coordInfo.x, coordInfo.y))
+        {
             game.displayWinner()
+            return
+        }
         game.switchTurn(coordInfo.boardNum, coordInfo.x, coordInfo.y)
     },
 

@@ -245,6 +245,7 @@ var ticTacState = {
             if(game.isDraw) {
                 game.displayWinner()
             }
+            return
 
         }
         game.switchTurn(coordInfo.x, coordInfo.y)
