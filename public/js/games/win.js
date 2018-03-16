@@ -70,7 +70,7 @@ var winState = {
                message = game.winner + ' wins! '// + game.winner //+ ' receives 50 gold coins!' //add sound and or animation here later for getting the money
                 if(!game.singleplayer)
                     submessage = game.winner + ' receives 50 gold coins!'
-                else if(game.vsAi && game.winner === 'x')
+                else if(game.vsAi && (game.winner === 'x' || game.winner === 'order'))
                     submessage = 'you receive 50 gold coins!'
             }
 
@@ -82,7 +82,7 @@ var winState = {
                 }else {
                    playSound("win");
                 }
-                if(game.vsAi && game.winner === 'x')
+                if(game.vsAi && (game.winner === 'x' || game.winner === 'order'))
                     game.cash = game.cash + 50;
                 console.log("Current cash amount: ", game.cash);
                 console.log("game.player:", game.player);
