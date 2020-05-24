@@ -1,5 +1,7 @@
 # TicTacToeMaster
 
+NOTE: If creating a user is giving an error, make sure your password is 6 characters long, email uses @, and have a valid picture.
+
 Link to demo: https://www.youtube.com/watch?v=AgtZBP0WBWY
 
 NOTE: The Firebase Storage API has changed since we launched the app, causing user login to fail (404 error when authenticating user information). Please log in as Guest for now. 
